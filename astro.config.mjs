@@ -4,6 +4,7 @@ import react from '@astrojs/react';
 import mdx from '@astrojs/mdx';
 import cloudflare from '@astrojs/cloudflare';
 import tailwindcss from '@tailwindcss/vite';
+import sitemap from './src/integrations/sitemap.ts';
 
 // NOTE: Astro 6 removed `output: 'hybrid'`. For a 95%-SSG site with a few future
 // API routes (S2+), `output: 'static'` is the cleaner default — pages prerender
@@ -17,7 +18,7 @@ export default defineConfig({
   }),
   trailingSlash: 'always',
   build: { format: 'directory' },
-  integrations: [react(), mdx()],
+  integrations: [react(), mdx(), sitemap({ site: 'https://symptomatik.com' })],
   vite: {
     plugins: [tailwindcss()],
   },
