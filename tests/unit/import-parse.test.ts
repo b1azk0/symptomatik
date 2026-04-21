@@ -42,14 +42,15 @@ describe('rowToFrontmatter', () => {
     expect(fm.updatedAt).toBe('2026-04-21');
   });
 
-  it('throws when metaTitle exceeds 60 chars', () => {
-    // Script policy: fail loudly rather than silently truncate
-    expect(() =>
-      rowToFrontmatter(
-        { ...enRow, 'meta title': 'x'.repeat(200) },
-        { lang: 'en', canonicalSlug: 'x', today: new Date('2026-04-21') },
-      ),
-    ).toThrow(/metaTitle exceeds 60 chars/);
+  it('truncates overlong metaTitle/metaDescription with an ellipsis (policy: match Google SERP truncation)', () => {
+    const fm = rowToFrontmatter(
+      { ...enRow, 'meta title': 'x'.repeat(200), 'meta description': 'y'.repeat(400) },
+      { lang: 'en', canonicalSlug: 'x', today: new Date('2026-04-21') },
+    );
+    expect(fm.metaTitle.length).toBe(60);
+    expect(fm.metaTitle.endsWith('…')).toBe(true);
+    expect(fm.metaDescription.length).toBe(160);
+    expect(fm.metaDescription.endsWith('…')).toBe(true);
   });
 });
 

@@ -18,6 +18,15 @@ const PL_DIACRITICS: Record<string, string> = {
   ś: 's', Ś: 's', ź: 'z', Ź: 'z', ż: 'z', Ż: 'z',
 };
 
+/**
+ * Truncate `s` to `max` chars. If truncation occurs, append `…` (U+2026, 1 char)
+ * so the max is always respected and truncation is user-visible.
+ */
+export function truncateWithEllipsis(s: string, max: number): string {
+  if (s.length <= max) return s;
+  return s.slice(0, max - 1) + '…';
+}
+
 export function slugify(input: string): string {
   if (!input) return '';
   let s = input;
@@ -119,19 +128,15 @@ export function rowToFrontmatter(row: Row, opts: RowToFrontmatterOpts): Frontmat
   const category = row[m['category'] ?? '']?.trim() ?? '';
 
   const slug = opts.lang === 'en' ? opts.canonicalSlug : slugify(testName);
-  const metaTitle = (row[m['metaTitle'] ?? ''] ?? '').trim();
-  const metaDescription = (row[m['metaDescription'] ?? ''] ?? '').trim();
+  const metaTitleRaw = (row[m['metaTitle'] ?? ''] ?? '').trim();
+  const metaDescriptionRaw = (row[m['metaDescription'] ?? ''] ?? '').trim();
 
-  if (metaTitle.length > 60) {
-    throw new Error(
-      `metaTitle exceeds 60 chars for "${testName}" (${opts.lang}): ${metaTitle.length} chars`,
-    );
-  }
-  if (metaDescription.length > 160) {
-    throw new Error(
-      `metaDescription exceeds 160 chars for "${testName}" (${opts.lang}): ${metaDescription.length} chars`,
-    );
-  }
+  // Meta tag limits: Google truncates metaTitle at ~60 chars and metaDescription
+  // at ~160 chars in SERPs anyway. Rather than reject overlong values (which
+  // would drop whole rows from the import), we truncate to the limit and let
+  // main() log a warning so the content team can fix the source at leisure.
+  const metaTitle = truncateWithEllipsis(metaTitleRaw, 60);
+  const metaDescription = truncateWithEllipsis(metaDescriptionRaw, 160);
 
   const sections: { heading: string; body: string }[] = [];
   for (let i = 1; i <= 5; i++) {
