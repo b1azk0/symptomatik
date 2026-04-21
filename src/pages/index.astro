@@ -1,12 +1,14 @@
 ---
 import '../styles/global.css';
+import { Button } from '@/components/ui/button';
 ---
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <title>Symptomatik</title>
   </head>
-  <body class="min-h-screen flex items-center justify-center">
-    <h1 class="text-4xl font-serif text-gray-900">Symptomatik — scaffold bootstrapping</h1>
+  <body class="min-h-screen flex items-center justify-center flex-col gap-6">
+    <h1 class="text-4xl font-serif text-gray-900">Symptomatik</h1>
+    <Button client:load>shadcn works</Button>
   </body>
 </html>

@@ -2,7 +2,7 @@
 
 Multilingual (EN/ES/PL) health platform: lab results interpretation, symptom checker, mental health self-assessments, and health calculators. Freemium with Premium subscription.
 
-**Status:** Design phase — S0 Foundation Scaffold spec written, awaiting implementation plan.
+**Status:** S0 in progress — T4 complete: Astro 6 + React 18 + Tailwind 4 + shadcn/ui neutral installed; baseline Button component working.
 **Entity:** Digital Savages
 **Remote:** `github.com/b1azk0/symptomatik` (hosted under Blazej's personal GitHub; entity-owned by Digital Savages)
 

@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-04-21 — T4: Install shadcn/ui neutral preset + baseline Button (S0)
+
+- Ran `shadcn@latest init --defaults -t astro` — detected Astro framework, Tailwind 4, and `@/*` alias automatically
+- `components.json` created with `"baseColor": "neutral"`, `"cssVariables": true`, style `base-nova` (shadcn v4 default using Base UI primitives instead of Radix)
+- `src/lib/utils.ts` created — exports `cn()` helper using `clsx` + `tailwind-merge`
+- `src/components/ui/button.tsx` created — uses `@base-ui/react/button` primitive with `class-variance-authority` variants
+- `src/styles/global.css` updated: shadcn appended `@import "tw-animate-css"`, `@import "shadcn/tailwind.css"`, `@import "@fontsource-variable/geist"`, `@custom-variant dark`, and full neutral CSS variables to `:root` + `.dark` blocks; our `@import 'tailwindcss'` preserved at line 1 and `@config '../../tailwind.config.ts'` preserved after imports; brand vars (`--color-brand-*`) preserved intact
+- New runtime deps added: `@base-ui/react`, `@fontsource-variable/geist`, `class-variance-authority`, `clsx`, `lucide-react`, `shadcn`, `tailwind-merge`, `tw-animate-css`
+- `src/pages/index.astro` updated with smoke-test Button (`client:load`)
+- `pnpm build` exits 0; dev-server curl confirms `shadcn works` in rendered HTML
+
 ## 2026-04-21 — T3: Add React 18, Tailwind 4, MDX, Cloudflare adapter (S0)
 
 - Installed `@astrojs/react`, `@astrojs/mdx`, `@astrojs/cloudflare`, `react@18`, `react-dom@18`, `tailwindcss@4`, `@tailwindcss/vite`, `@types/react@18`, `@types/react-dom@18`
