@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-04-21 — Host repo under b1azk0, not Digital-Savages org
+
+- Moved GitHub hosting from `Digital-Savages/symptomatik` to `b1azk0/symptomatik`
+- Repo now hosted under Blazej's personal GitHub account; business-entity ownership remains Digital Savages
+- Origin remote updated to https://github.com/b1azk0/symptomatik.git
+- Updated spec + README accordingly
+
 ## 2026-04-21 — Resolve spec open items: ownership, Excel source, domain
 
 - GitHub ownership locked: `github.com/Digital-Savages/symptomatik` (Digital Savages org)

@@ -2,7 +2,7 @@
 
 **Date:** 2026-04-21
 **Status:** Draft — pending Blazej review
-**Repo:** `~/GitHub/symptomatik` → `github.com/Digital-Savages/symptomatik` (Digital Savages GitHub org)
+**Repo:** `~/GitHub/symptomatik` → `github.com/b1azk0/symptomatik` (hosted under Blazej's personal GitHub account; business-entity-owned by Digital Savages)
 **Entity:** Digital Savages
 **Domain:** symptomatik.com — being connected to Blazej's Cloudflare account
 **Related:** ClaudioBrain (context), blazejmrozinski.com (Astro + CF reference pattern)
@@ -354,7 +354,7 @@ Neither is wired into any S0 page. They are scaffold for S2 (rate-limit) and S8 
 
 ## Deploy Pipeline
 
-- **Repo:** `github.com/Digital-Savages/symptomatik`, private for S0.
+- **Repo:** `github.com/b1azk0/symptomatik`, private for S0.
 - **Cloudflare Pages project:** connected to GitHub, builds on every push.
 - **Production branch:** `main`.
 - **Preview deploys:** every non-`main` branch → `<branch>.symptomatik.pages.dev`.

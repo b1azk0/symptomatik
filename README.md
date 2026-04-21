@@ -4,7 +4,7 @@ Multilingual (EN/ES/PL) health platform: lab results interpretation, symptom che
 
 **Status:** Design phase — S0 Foundation Scaffold spec written, awaiting implementation plan.
 **Entity:** Digital Savages
-**Remote:** `github.com/Digital-Savages/symptomatik` (to be created)
+**Remote:** `github.com/b1azk0/symptomatik` (hosted under Blazej's personal GitHub; entity-owned by Digital Savages)
 
 ## Decomposition
 
