@@ -14,12 +14,12 @@ export default defineConfig({
   output: 'static',
   adapter: cloudflare({
     imageService: 'compile',
-    platformProxy: { enabled: true },
   }),
   trailingSlash: 'always',
   build: { format: 'directory' },
   integrations: [react(), mdx()],
   vite: {
+    // @ts-expect-error — @tailwindcss/vite plugin typings vs Vite's PluginOption: works at runtime
     plugins: [tailwindcss()],
   },
   i18n: {

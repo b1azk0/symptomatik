@@ -30,7 +30,7 @@ describe('onRequest middleware', () => {
   it('passes non-/en/ requests through to next() and sets locale=en on root', async () => {
     const ctx = makeContext('https://symptomatik.com/medical-tests/cbc/');
     const next = vi.fn().mockResolvedValue(new Response('ok'));
-    const res = await onRequest(ctx as any, next);
+    const res = (await onRequest(ctx as any, next)) as Response;
     expect(next).toHaveBeenCalledOnce();
     expect(res.status).toBe(200);
     expect(ctx.locals.locale).toBe('en');
@@ -46,7 +46,7 @@ describe('onRequest middleware', () => {
   it('301-redirects /en/... to unprefixed', async () => {
     const ctx = makeContext('https://symptomatik.com/en/medical-tests/cbc/');
     const next = vi.fn();
-    const res = await onRequest(ctx as any, next);
+    const res = (await onRequest(ctx as any, next)) as Response;
     expect(next).not.toHaveBeenCalled();
     expect(res.status).toBe(301);
     expect(res.headers.get('Location')).toBe('/medical-tests/cbc/');
@@ -54,7 +54,7 @@ describe('onRequest middleware', () => {
 
   it('301-redirects bare /en/ to /', async () => {
     const ctx = makeContext('https://symptomatik.com/en/');
-    const res = await onRequest(ctx as any, vi.fn());
+    const res = (await onRequest(ctx as any, vi.fn())) as Response;
     expect(res.status).toBe(301);
     expect(res.headers.get('Location')).toBe('/');
   });
