@@ -3,6 +3,8 @@
 Multilingual (EN/ES/PL) health platform: lab results interpretation, symptom checker, mental health self-assessments, and health calculators. Freemium with Premium subscription.
 
 **Status:** Design phase — S0 Foundation Scaffold spec written, awaiting implementation plan.
+**Entity:** Digital Savages
+**Remote:** `github.com/Digital-Savages/symptomatik` (to be created)
 
 ## Decomposition
 
@@ -34,9 +36,9 @@ Full detail in the S0 design spec.
 
 ## Sources
 
-- **Source spec:** `Symptomatik_-_Website_Agent_Spec_v1.pdf` (user's Downloads folder)
-- **Content source:** Excel with 102 medical test landing pages in EN + PL (`Final Symptomatik_-_Core_LPs_English+Polish.xlsx`)
-- **ES content:** Not yet produced; routing scaffolded, content comes via LLM-assisted translation later
+- **Source spec:** `Symptomatik_-_Website_Agent_Spec_v1.pdf` (user's Downloads folder — external to repo)
+- **Content source:** [`content-sources/medical-tests.xlsx`](content-sources/medical-tests.xlsx) — 102 medical test landing pages in EN + PL, in-repo for reproducibility
+- **ES content:** Not yet produced; routing scaffolded, content comes via LLM-assisted translation in a later sub-project
 
 ## Related
 

@@ -2,9 +2,9 @@
 
 **Date:** 2026-04-21
 **Status:** Draft — pending Blazej review
-**Repo:** `~/GitHub/symptomatik` (to be initialized)
+**Repo:** `~/GitHub/symptomatik` → `github.com/Digital-Savages/symptomatik` (Digital Savages GitHub org)
 **Entity:** Digital Savages
-**Domain:** symptomatik.com (assumed registered; DNS to point at Cloudflare nameservers)
+**Domain:** symptomatik.com — being connected to Blazej's Cloudflare account
 **Related:** ClaudioBrain (context), blazejmrozinski.com (Astro + CF reference pattern)
 
 ## Context
@@ -80,6 +80,8 @@ Symptomatik.com is a planned multilingual (EN/ES/PL) health platform offering la
 
 ```
 symptomatik/
+├── content-sources/
+│   └── medical-tests.xlsx              # Source-of-truth content; generator reads from here
 ├── src/
 │   ├── components/
 │   │   ├── BaseLayout.astro
@@ -237,10 +239,11 @@ export const collections = { 'medical-tests': medicalTest };
 
 **CLI:**
 ```
-pnpm import:tests --excel <path> --locales en,pl --out src/content/medical-tests [--dry-run]
+pnpm import:tests [--excel <path>] [--locales en,pl] [--out src/content/medical-tests] [--dry-run]
 ```
+Default `--excel` is `content-sources/medical-tests.xlsx` (in-repo source of truth).
 
-**Source:** `/Users/bajzel/Downloads/Final Symptomatik_-_Core_LPs_English+Polish.xlsx`
+**Source:** `content-sources/medical-tests.xlsx` (copied into the repo so builds are reproducible from any machine). Original filename in user's Downloads was `Final Symptomatik_-_Core_LPs_English+Polish.xlsx`.
 - Sheet `EN - SEO optimized` — 18 columns: Test name, Test name II, Category, AI use-case, Meta title, Meta description, H1 title, H1_text, H2_1..H2_5 + _text columns.
 - Sheet `PL - original` — 21 columns: same fields in Polish + URL_ending + SCHEMA columns.
 
@@ -351,7 +354,7 @@ Neither is wired into any S0 page. They are scaffold for S2 (rate-limit) and S8 
 
 ## Deploy Pipeline
 
-- **Repo:** `github.com/<owner>/symptomatik`, private for S0.
+- **Repo:** `github.com/Digital-Savages/symptomatik`, private for S0.
 - **Cloudflare Pages project:** connected to GitHub, builds on every push.
 - **Production branch:** `main`.
 - **Preview deploys:** every non-`main` branch → `<branch>.symptomatik.pages.dev`.
@@ -405,7 +408,7 @@ Run all 12 items against the preview deployment of the release PR **before mergi
 | Cloudflare Workers CPU/memory limits bite S8 (PDF/OCR) | Mitigated: `FileStore` + separate service (Hetzner-hosted OCR endpoint or serverless GPU provider). Will be explicitly addressed in S8 spec. |
 | Brand direction deferred; content pages ship with neutrals | Low-risk — token-swap is cheap via shadcn CSS vars. Hard deadline: before S1 goes live. |
 | Excel → MDX generator edge cases (weird characters, locale-specific quoting) | Dry-run mode + validation failures force human review before first real import. |
-| `symptomatik.com` domain ownership / DNS state unknown | If not registered or not CF-pointed, S0 still ships to `*.pages.dev`; custom domain is a late-stage cutover. |
+| `symptomatik.com` domain cutover timing | Blazej connecting to Cloudflare account now. If DNS lag, S0 ships first to `*.pages.dev`; custom-domain attach is a late-stage cutover with no code impact. |
 | ES content absent; routing scaffolded but empty | Legal per Google (partial hreflang coverage is handled). S1 or S9 produces ES via LLM-assisted translation. |
 
 ## Next Steps After This Spec Is Approved

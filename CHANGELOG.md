@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-04-21 — Resolve spec open items: ownership, Excel source, domain
+
+- GitHub ownership locked: `github.com/Digital-Savages/symptomatik` (Digital Savages org)
+- Content source copied into repo at `content-sources/medical-tests.xlsx` (was user's Downloads); Excel → MDX generator now reads from in-repo source by default, making builds reproducible from any machine
+- Domain: Blazej connecting `symptomatik.com` to his Cloudflare account; fallback is `*.pages.dev` subdomain until DNS settles
+- Updated spec + README accordingly
+
 ## 2026-04-21 — Initial commit: S0 design spec
 
 - Initialized repo
