@@ -15,7 +15,9 @@
     "test": "vitest run",
     "test:e2e": "playwright test",
     "lint": "echo 'no linter configured yet'",
-    "import:tests": "tsx scripts/import-medical-tests.ts"
+    "import:tests": "tsx scripts/import-medical-tests.ts",
+    "validate:jsonld": "tsx scripts/validate-jsonld.ts",
+    "validate:i18n": "tsx scripts/validate-i18n-coverage.ts"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.8",
