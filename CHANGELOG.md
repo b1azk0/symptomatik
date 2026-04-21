@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-04-21 — S0 implementation plan
+
+- Wrote 40-task implementation plan for S0 at `docs/superpowers/plans/2026-04-21-symptomatik-s0-foundation-scaffold.md`
+- Plan structured in 10 phases: scaffold, i18n infra, content pipeline, SEO utilities + core components, cookie consent, pages + routing, sitemap + robots, infra interfaces, CI quality gates, deploy + golden-path verification
+- Each task is TDD-style (failing test → run → implement → run → commit) where applicable; config and visual tasks use smoke-check patterns
+- Golden-path verification: 12-point checklist against production (or pages.dev fallback) before declaring S0 shipped
+
 ## 2026-04-21 — Host repo under b1azk0, not Digital-Savages org
 
 - Moved GitHub hosting from `Digital-Savages/symptomatik` to `b1azk0/symptomatik`
