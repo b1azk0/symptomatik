@@ -26,9 +26,11 @@
     "@types/react": "^18.3.28",
     "@types/react-dom": "^18.3.7",
     "astro": "^6.1.8",
+    "happy-dom": "^20.9.0",
     "tailwindcss": "^4",
     "tsx": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^2"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",
