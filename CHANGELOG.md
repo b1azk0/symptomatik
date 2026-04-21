@@ -1,5 +1,36 @@
 # Changelog
 
+## 2026-04-21 — S0 Phases 1–9 complete (T1–T37), paused awaiting CF Pages setup
+
+27 commits on branch `s0-foundation`. 37 of 40 S0 tasks complete. Remaining:
+T38 (Cloudflare Pages dashboard setup — manual), T39 (custom domain), T40
+(12-point golden-path verification — needs live URL to run against).
+
+Built across phases:
+- **Phase 1 (T1–T5)** — pnpm + strict TS, Astro 6 scaffold, React 18 + Tailwind 4 +
+  shadcn/ui + Cloudflare adapter, project CLAUDE.md
+- **Phase 2 (T6–T10)** — i18n: locales, buildURL, UI strings, middleware for
+  /en/ 301s, content-alternates loader
+- **Phase 3 (T11–T14)** — Zod schema, Excel → MDX importer, CBC MDX generated (EN + PL)
+- **Phase 4 (T15–T22)** — SEO helpers (canonicalURL, alternatesFor, JSON-LD for
+  MedicalWebPage / BreadcrumbList / WebSite), components (SEOHead, MedicalDisclaimer,
+  LanguageSwitcher, BreadcrumbNav, BaseLayout, ContentLayout)
+- **Phase 5 (T23)** — CookieConsent React island
+- **Phase 6 (T24–T27)** — Homepage + EN content catch-all + PL routes + ES stubs
+- **Phase 7 (T28–T29)** — Custom sitemap integration + robots.txt + favicon
+- **Phase 8 (T30–T31)** — RateLimiter + FileStore infra interfaces (CF + in-memory impls)
+- **Phase 9 (T32–T37)** — Playwright + axe + Lighthouse CI + JSON-LD validator +
+  i18n coverage script + GitHub Actions workflow
+
+Test coverage: 62 Vitest unit tests + 11 Playwright E2E tests (1 skipped, CF-only).
+
+Side-decisions made during implementation (documented in spec + plan):
+- Astro 5 → 6 upgrade (forced by `@astrojs/cloudflare@13` peer dep)
+- `output: 'hybrid'` → `output: 'static'` (former removed in Astro 6)
+- Truncate-with-ellipsis for overlong meta values (instead of rejecting rows)
+- shadcn v4's `base-nova` style (Base UI primitives, not Radix)
+- Vitest 2 → 4 upgrade (Vite 7 compat — Astro 6 ships Vite 7)
+
 ## 2026-04-21 — T12+T13: Excel → MDX importer with slugify + full pipeline (S0)
 
 - Installed `exceljs@4` as devDependency
