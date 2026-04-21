@@ -1,0 +1,54 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import MedicalDisclaimer from './MedicalDisclaimer.astro';
+import BreadcrumbNav from './BreadcrumbNav.astro';
+import { t } from '@/i18n/ui';
+import type { Locale } from '@/i18n/locales';
+import type { Alternate } from '@/lib/seo/meta';
+
+interface BreadcrumbItem {
+  label: string;
+  href?: string;
+}
+interface Props {
+  title: string;
+  description: string;
+  canonical: string;
+  alternates: Alternate[];
+  locale: Locale;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[] | undefined;
+  breadcrumbs: BreadcrumbItem[];
+  h1: string;
+  h1Text: string;
+  sections: { heading: string; body: string }[];
+  updatedAt: Date;
+}
+
+const {
+  title, description, canonical, alternates, locale, jsonLd,
+  breadcrumbs, h1, h1Text, sections, updatedAt,
+} = Astro.props as Props;
+
+const reviewedLabel = t(locale, 'lastReviewed');
+const reviewedStr = updatedAt.toISOString().slice(0, 10);
+---
+<BaseLayout {title} {description} {canonical} {alternates} {locale} {jsonLd}>
+  <BreadcrumbNav items={breadcrumbs} />
+  <article class="prose max-w-none">
+    <h1 class="font-serif text-3xl md:text-4xl text-neutral-900 mt-2 mb-4">{h1}</h1>
+    <p class="text-neutral-700 leading-relaxed">{h1Text}</p>
+
+    <MedicalDisclaimer locale={locale} variant="content" />
+
+    {sections.map((s) => (
+      <section class="mt-8">
+        <h2 class="font-serif text-2xl text-neutral-900 mb-2">{s.heading}</h2>
+        <p class="text-neutral-700 leading-relaxed">{s.body}</p>
+      </section>
+    ))}
+
+    <p class="text-xs text-neutral-500 mt-12">
+      <time datetime={reviewedStr}>{reviewedLabel}: {reviewedStr}</time>
+    </p>
+  </article>
+</BaseLayout>

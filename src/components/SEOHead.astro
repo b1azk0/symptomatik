@@ -6,8 +6,8 @@ interface Props {
   description: string;
   canonical: string;
   alternates: Alternate[];
-  ogImage?: string;
-  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  ogImage?: string | undefined;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[] | undefined;
   locale: string;
 }
 
