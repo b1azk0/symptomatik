@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-04-21 — T12+T13: Excel → MDX importer with slugify + full pipeline (S0)
+
+- Installed `exceljs@4` as devDependency
+- Created `scripts/import-medical-tests.ts` — full TypeScript CLI for Excel → MDX import
+  - Exports `slugify()` (Polish diacritics, parens stripped, NFKD normalised)
+  - Exports `Frontmatter` interface, `rowToFrontmatter()`, `renderMdx()`
+  - EN-first canonical slug pre-pass; PL rows aligned by index
+  - Idempotent: `extractExistingPublishedAt` preserves original `publishedAt` on re-runs
+  - Validates loudly: metaTitle > 60 chars, metaDescription > 160 chars, missing H2 sections — throws with row + test name; `main()` catches per-row and warns+skips
+  - Slug collisions in source data deduped with `-2`/`-3` suffix + warning
+  - Row count mismatch between EN and PL sheets: warns and processes only aligned rows (PL sheet has 4 extra rows + last ~5 misaligned vs EN)
+  - Supports `--excel`, `--locales`, `--out`, `--dry-run`, `--only <slug>` flags
+- Created `tests/unit/slugify.test.ts` — 6 tests covering lowercase/hyphenate, parens, Polish diacritics, multi-space collapse, slashes, empty input
+- Created `tests/unit/import-parse.test.ts` — 3 tests covering `rowToFrontmatter` (EN canonical frontmatter), metaTitle throw, `renderMdx` output format
+- `pnpm import:tests --dry-run` → 174 planned files (EN + PL, with skips for data quality issues in Excel)
+- Data quality findings in `content-sources/medical-tests.xlsx`: 3 duplicate test names in EN sheet (Lipoprotein(a), Homocysteine, PHQ-9); 4 metaDescription/metaTitle violations in EN; ~28 in PL; PL sheet has 4 extra rows + ordering drift at row ~100
+- All 43 tests pass; `pnpm check` 0 errors 0 warnings
+
 ## 2026-04-21 — T4: Install shadcn/ui neutral preset + baseline Button (S0)
 
 - Ran `shadcn@latest init --defaults -t astro` — detected Astro framework, Tailwind 4, and `@/*` alias automatically
