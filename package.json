@@ -4,7 +4,9 @@
   "private": true,
   "type": "module",
   "packageManager": "pnpm@9",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
@@ -14,5 +16,11 @@
     "test:e2e": "playwright test",
     "lint": "echo 'no linter configured yet'",
     "import:tests": "tsx scripts/import-medical-tests.ts"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.8",
+    "astro": "^5",
+    "tsx": "^4",
+    "typescript": "^5"
   }
 }
