@@ -63,18 +63,18 @@ Symptomatik.com is a planned multilingual (EN/ES/PL) health platform offering la
 
 | Layer | Choice | Notes |
 |---|---|---|
-| Framework | Astro 5.x | Latest stable |
+| Framework | Astro 6.x | Latest stable (Astro 5 → 6 upgrade taken during implementation because `@astrojs/cloudflare@13` and `@astrojs/mdx@5` require Astro 6 peer dep) |
 | Islands | React 18+ via `@astrojs/react` | For interactive components only (language switcher fine as `.astro`; CookieConsent as React) |
 | Styling | Tailwind CSS 4.x | Utility-first |
 | Component library | shadcn/ui | Neutral preset, Astro-compatible setup |
 | Content | Astro Content Collections + MDX, Zod schemas | Strict schema enforcement |
 | Language | TypeScript strict mode | `tsc --noEmit` enforced in CI |
 | Node target | v20+ | Tooling and CI runtime |
-| Deploy adapter | `@astrojs/cloudflare` | **Hybrid mode** — SSG by default, on-demand routes ready for S2+ |
+| Deploy adapter | `@astrojs/cloudflare` | **Astro 6 `output: 'static'` + adapter** — SSG by default; API routes opt out via `export const prerender = false` per file (Astro 6 removed the `'hybrid'` literal; this pattern is the equivalent intent) |
 | Host | Cloudflare Pages + Workers | Preview deploys per branch |
 | CI | GitHub Actions | See §9 |
 
-**Hybrid-mode rationale:** spec requires API routes for S2+. Hybrid lets us ship predominantly SSG pages in S0 and add `/api/...` routes later without re-architecting.
+**Output-mode rationale:** spec requires API routes for S2+. Astro 6 uses `output: 'static'` (default SSG) + the Cloudflare adapter, and any future API route file opts out of prerendering with `export const prerender = false`. This preserves the original "mostly static, on-demand when needed" intent without the deprecated `'hybrid'` literal.
 
 ## Directory Layout (S0 target)
 

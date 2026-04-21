@@ -5,13 +5,13 @@ import mdx from '@astrojs/mdx';
 import cloudflare from '@astrojs/cloudflare';
 import tailwindcss from '@tailwindcss/vite';
 
-// NOTE: Astro 5/6 removed `output: 'hybrid'`. Equivalent intent (mostly static,
-// API routes on-demand) is achieved with `output: 'server'` + per-page
-// `export const prerender = true`. Static pages opt-in; SSR routes available
-// for S2+ API work without any config change.
+// NOTE: Astro 6 removed `output: 'hybrid'`. For a 95%-SSG site with a few future
+// API routes (S2+), `output: 'static'` is the cleaner default — pages prerender
+// automatically; only API routes opt out via `export const prerender = false`.
+// The Cloudflare adapter still enables server routes when prerender is disabled.
 export default defineConfig({
   site: 'https://symptomatik.com',
-  output: 'server',
+  output: 'static',
   adapter: cloudflare({
     imageService: 'compile',
     platformProxy: { enabled: true },

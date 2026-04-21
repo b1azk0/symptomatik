@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@config '../../tailwind.config.ts';
 
 :root {
   --color-brand-primary: #2563eb;
