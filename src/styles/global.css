@@ -1,0 +1,18 @@
+@import 'tailwindcss';
+
+:root {
+  --color-brand-primary: #2563eb;
+  --color-brand-disclaimer-bg: #fef3c7;
+  --color-brand-disclaimer-border: #f59e0b;
+}
+
+html {
+  font-family: theme('fontFamily.sans');
+  color: #1f2937;
+  background: #ffffff;
+}
+
+body {
+  margin: 0;
+  line-height: 1.6;
+}
