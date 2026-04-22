@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-04-22 — T38: documented Cloudflare Pages setup in README
+
+Added "Deploy" section to README with the one-time dashboard setup checklist
+and production/preview env-var reference. Commit also serves as the trigger
+push to kick off the first `s0-foundation` preview build on Cloudflare Pages.
+
 ## 2026-04-21 — S0 Phases 1–9 complete (T1–T37), paused awaiting CF Pages setup
 
 27 commits on branch `s0-foundation`. 37 of 40 S0 tasks complete. Remaining:

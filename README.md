@@ -54,6 +54,22 @@ If you're picking this up fresh — here's where we are:
 - **`@config '../../tailwind.config.ts'`** in `global.css` — Tailwind 4 requires the directive to pick up the JS config file
 - **Sitemap output** lands in `dist/client/` because the Cloudflare adapter moves static assets there post-build — served at the site root on CF Pages deploys
 
+## Deploy
+
+Cloudflare Pages is connected to `main` branch. Builds on every push; preview deploys on every non-`main` branch.
+
+**Initial setup (one-time):**
+1. Cloudflare → Workers & Pages → Create → Pages → Connect to Git
+2. Repo: `b1azk0/symptomatik`; project name: `symptomatik`; production branch: `main`
+3. Framework preset: Astro; build command: `pnpm build`; output directory: `dist`; root: `/`
+4. Preview branches: "All non-Production branches"
+5. Compatibility date `2025-01-01`, flag `nodejs_compat`
+
+**Environment variables (Production and Preview):**
+- `PUBLIC_SITE_URL` — `https://symptomatik.com` (prod) / `https://<branch>.symptomatik.pages.dev` (preview)
+- `PUBLIC_CF_ANALYTICS_TOKEN` — Cloudflare Web Analytics beacon token (fill after enabling Web Analytics)
+- `PUBLIC_GA4_ID` — Google Analytics 4 measurement ID (optional; loads only on user consent)
+
 ## Sources
 
 - **Source spec:** `Symptomatik_-_Website_Agent_Spec_v1.pdf` (user's Downloads folder — external to repo)
