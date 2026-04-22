@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-04-22 — T38: trigger first preview build from s0-foundation
+
+Git reconnected in Cloudflare dashboard after initial OAuth link broke.
+Project configured as Workers-with-Assets (not classic Pages); production
+branch set to `s0-foundation` temporarily so preview builds happen on
+every push. Will flip production back to `main` after golden-path
+verification (T40) passes and we merge.
+
 ## 2026-04-22 — T38: documented Cloudflare Pages setup in README
 
 Added "Deploy" section to README with the one-time dashboard setup checklist
