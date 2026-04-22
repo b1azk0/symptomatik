@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-04-22 — T38: add wrangler as explicit devDependency
+
+`wrangler` is a peerDep of `@astrojs/cloudflare@13`, which pnpm does
+not auto-install. CF Workers Build's `npx wrangler deploy` failed with
+"wrangler: not found". Added `wrangler@^4.61.1` to devDependencies so
+it lands in `node_modules/.bin/` on `pnpm install`.
+
 ## 2026-04-22 — T38: bump Node floor to 22 (Astro 6 requirement)
 
 Astro 6 requires Node >=22.12.0. `.nvmrc` was pinned to `20` and
