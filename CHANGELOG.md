@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-04-22 — T38: pin packageManager to full semver for CF Workers Build
+
+Cloudflare's corepack integration rejects loose `pnpm@9` with
+"expected a semver version" and fails dep install. Pinned to
+`pnpm@9.15.9` (matches local + lockfile).
+
 ## 2026-04-22 — T38: trigger first preview build from s0-foundation
 
 Git reconnected in Cloudflare dashboard after initial OAuth link broke.
