@@ -14,6 +14,34 @@ Astro 6 requires Node >=22.12.0. `.nvmrc` was pinned to `20` and
 and Astro refused to start. Updated both to 22 (local uses 25, CI
 uses 22).
 
+## 2026-04-22 — Localize legal-page URL slugs
+
+Initially shipped all locales at the EN canonical slugs (`/pl/privacy/`,
+`/es/terms/`, etc.). Blazej flagged this as inconsistent with the
+medical-tests pattern (`/pl/badania/...`). Localized slugs:
+
+| Canonical | EN | PL | ES |
+|---|---|---|---|
+| privacy | `/privacy/` | `/pl/polityka-prywatnosci/` | `/es/privacidad/` |
+| terms | `/terms/` | `/pl/regulamin/` | `/es/terminos/` |
+| medical-disclaimer | `/medical-disclaimer/` | `/pl/zastrzezenie-medyczne/` | `/es/aviso-medico/` |
+| cookies | `/cookies/` | `/pl/polityka-cookies/` | `/es/politica-cookies/` |
+
+Implementation:
+- Added `legalSlugSegments` lookup + `legalSlugFor()` + typed `LegalKey`
+  in `src/i18n/routes.ts`
+- Reworked `buildLegalURL` / `canonicalLegalURL` / `alternatesForLegal`
+  to accept `LegalKey` (compile-time safety on the 4 valid slugs)
+- Route files use `legalSlugFor(entry.data.slug, locale)` in
+  `getStaticPaths` — emits localized paths, canonicals use the same
+- BaseLayout footer now uses `buildLegalURL(locale, key)` instead of
+  hardcoded hrefs
+- Fixed in-body cross-references in PL MDX files (they were still
+  pointing to EN `/privacy/` etc. from the translation step — would
+  have bounced PL readers out of Polish)
+- ES stubs intentionally keep their `/privacy/` → EN link since they
+  point readers to the full English version
+
 ## 2026-04-22 — Legal pages pipeline: research → draft → audit → translate
 
 Surfaced during golden-path verification that 4 footer legal links 404ed.

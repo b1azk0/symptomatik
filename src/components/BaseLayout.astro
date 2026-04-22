@@ -6,6 +6,7 @@ import CookieConsent from './CookieConsent.tsx';
 import { t } from '@/i18n/ui';
 import type { Locale } from '@/i18n/locales';
 import type { Alternate } from '@/lib/seo/meta';
+import { buildLegalURL } from '@/i18n/routes';
 
 interface Props {
   title: string;
@@ -22,10 +23,10 @@ const GA4_ID = import.meta.env.PUBLIC_GA4_ID ?? '';
 const CF_ANALYTICS_TOKEN = import.meta.env.PUBLIC_CF_ANALYTICS_TOKEN ?? '';
 
 const homeHref = locale === 'en' ? '/' : `/${locale}/`;
-const privacyHref = locale === 'en' ? '/privacy/' : `/${locale}/privacy/`;
-const termsHref = locale === 'en' ? '/terms/' : `/${locale}/terms/`;
-const disclaimerHref = locale === 'en' ? '/medical-disclaimer/' : `/${locale}/medical-disclaimer/`;
-const cookiesHref = locale === 'en' ? '/cookies/' : `/${locale}/cookies/`;
+const privacyHref = buildLegalURL(locale, 'privacy');
+const termsHref = buildLegalURL(locale, 'terms');
+const disclaimerHref = buildLegalURL(locale, 'medical-disclaimer');
+const cookiesHref = buildLegalURL(locale, 'cookies');
 ---
 <!doctype html>
 <html lang={locale}>

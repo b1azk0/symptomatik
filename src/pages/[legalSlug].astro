@@ -2,13 +2,14 @@
 import { getCollection, render } from 'astro:content';
 import LegalLayout from '@/components/LegalLayout.astro';
 import { canonicalLegalURL, alternatesForLegal } from '@/lib/seo/meta';
+import { legalSlugFor } from '@/i18n/routes';
 import { t } from '@/i18n/ui';
 
 export async function getStaticPaths() {
   const all = await getCollection('legal');
   const enEntries = all.filter((e) => e.data.lang === 'en');
   return enEntries.map((entry) => ({
-    params: { legalSlug: entry.data.slug },
+    params: { legalSlug: legalSlugFor(entry.data.slug, 'en') },
     props: { entry, all },
   }));
 }

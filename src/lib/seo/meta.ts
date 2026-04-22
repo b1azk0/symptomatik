@@ -1,5 +1,5 @@
 import type { CollectionEntry } from 'astro:content';
-import { buildURL, buildLegalURL, type Collection } from '@/i18n/routes';
+import { buildURL, buildLegalURL, type Collection, type LegalKey } from '@/i18n/routes';
 import type { Locale } from '@/i18n/locales';
 
 export interface CanonicalURLArgs {
@@ -45,12 +45,12 @@ export function alternatesFor<C extends Collection>(args: AlternatesArgs<C>): Al
 }
 
 export interface LegalEntryLike {
-  data: { lang: Locale; slug: string };
+  data: { lang: Locale; slug: LegalKey };
 }
 
-export function canonicalLegalURL(site: string, lang: Locale, slug: string): string {
+export function canonicalLegalURL(site: string, lang: Locale, key: LegalKey): string {
   const s = site.replace(/\/$/, '');
-  return `${s}${buildLegalURL(lang, slug)}`;
+  return `${s}${buildLegalURL(lang, key)}`;
 }
 
 export function alternatesForLegal(entries: LegalEntryLike[], site: string): Alternate[] {

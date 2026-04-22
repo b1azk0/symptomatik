@@ -25,7 +25,20 @@ export function buildURL(args: BuildURLArgs): string {
   return `${prefix}/${segment}/${args.slug}/`;
 }
 
-export function buildLegalURL(lang: Locale, slug: string): string {
+export const legalSlugSegments = {
+  privacy: { en: 'privacy', pl: 'polityka-prywatnosci', es: 'privacidad' },
+  terms: { en: 'terms', pl: 'regulamin', es: 'terminos' },
+  'medical-disclaimer': { en: 'medical-disclaimer', pl: 'zastrzezenie-medyczne', es: 'aviso-medico' },
+  cookies: { en: 'cookies', pl: 'polityka-cookies', es: 'politica-cookies' },
+} as const;
+
+export type LegalKey = keyof typeof legalSlugSegments;
+
+export function legalSlugFor(key: LegalKey, lang: Locale): string {
+  return legalSlugSegments[key][lang];
+}
+
+export function buildLegalURL(lang: Locale, key: LegalKey): string {
   const prefix = localePrefix[lang];
-  return `${prefix}/${slug}/`;
+  return `${prefix}/${legalSlugFor(key, lang)}/`;
 }
