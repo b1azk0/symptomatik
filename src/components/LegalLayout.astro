@@ -1,0 +1,41 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import BreadcrumbNav from './BreadcrumbNav.astro';
+import { t } from '@/i18n/ui';
+import type { Locale } from '@/i18n/locales';
+import type { Alternate } from '@/lib/seo/meta';
+
+interface BreadcrumbItem {
+  label: string;
+  href?: string;
+}
+interface Props {
+  title: string;
+  description: string;
+  canonical: string;
+  alternates: Alternate[];
+  locale: Locale;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[] | undefined;
+  breadcrumbs: BreadcrumbItem[];
+  h1: string;
+  updatedAt: Date;
+}
+
+const {
+  title, description, canonical, alternates, locale, jsonLd,
+  breadcrumbs, h1, updatedAt,
+} = Astro.props as Props;
+
+const reviewedLabel = t(locale, 'lastReviewed');
+const reviewedStr = updatedAt.toISOString().slice(0, 10);
+---
+<BaseLayout {title} {description} {canonical} {alternates} {locale} {jsonLd}>
+  <BreadcrumbNav items={breadcrumbs} />
+  <article class="prose prose-neutral max-w-3xl mx-auto">
+    <h1 class="font-serif text-3xl md:text-4xl text-neutral-900 mt-2 mb-6">{h1}</h1>
+    <p class="text-xs text-neutral-500 mb-8">
+      <time datetime={reviewedStr}>{reviewedLabel}: {reviewedStr}</time>
+    </p>
+    <slot />
+  </article>
+</BaseLayout>

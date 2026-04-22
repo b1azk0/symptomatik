@@ -14,6 +14,52 @@ Astro 6 requires Node >=22.12.0. `.nvmrc` was pinned to `20` and
 and Astro refused to start. Updated both to 22 (local uses 25, CI
 uses 22).
 
+## 2026-04-22 — Legal pages pipeline: research → draft → audit → translate
+
+Surfaced during golden-path verification that 4 footer legal links 404ed.
+Built out the full content: Privacy Policy, Terms of Service, Medical
+Disclaimer, Cookie Policy — in EN (full text), PL (translated), and ES
+(stubs pointing to EN). Pipeline:
+
+1. **4 parallel research agents** — gathered legal requirements + best
+   practices for each policy type, specific to Symptomatik's context
+   (Digital Savages LLC, pre-launch, analytics-only, multilingual health
+   info site, US + EU audience)
+2. **Copywriter agent** — synthesized research into 4 production-ready
+   MDX files in EN, matching a new `LegalLayout` component
+3. **Legal audit agent** — reviewed all 4 drafts for factual accuracy,
+   regulatory coverage, and over-claims. Flagged 1 🔴 critical
+   (arbitration opt-out clock ambiguity for browsewrap), ~15 🟠 required
+   (GA4 wording, deprecated ODR link, crisis line additions, personal-
+   injury carve-out, etc.), ~10 ⚖️ attorney-review items (arbitration
+   enforceability, Texas LLC specifics, FDA posture, DPF contingency)
+4. **PL translator agent** — produced idiomatic Polish versions with
+   RODO/UODO terminology and `Regulamin`/`Polityka prywatności` naming
+
+Implementation:
+- New `legal` Astro content collection with Zod schema
+- New `LegalLayout.astro` — renders free-form MDX body (not a 5-section
+  array like medical-tests)
+- Dynamic route per locale: `[legalSlug].astro` — generates 4 URLs
+  (`/privacy/`, `/terms/`, `/medical-disclaimer/`, `/cookies/`)
+  × 3 locales = 12 static pages
+- Fixed a collection-loader bug: default `generateId` uses only filename,
+  which collided across locales (`en/privacy.mdx` + `pl/privacy.mdx` both
+  got ID "privacy" → later overwrote earlier). Custom `generateId`
+  includes locale path.
+- New URL helpers: `buildLegalURL`, `canonicalLegalURL`,
+  `alternatesForLegal` (separate from medical-tests helpers because legal
+  URLs don't use a collection segment)
+
+**Known items for human attorney review before public launch** (flagged
+by audit; not blockers for S0 pre-launch):
+- Arbitration enforceability of browsewrap in Texas
+- Mass-arbitration batching clause post *Heckman v. Live Nation*
+- EU consumer-contract analysis for PL/ES under Rome I + Brussels I
+- Texas LLC notice requirements (TDPSA cross-check)
+- FDA posture when AI features launch (Clinical Decision Support)
+- DPF contingency if CJEU strikes it down
+
 ## 2026-04-22 — T38: pin packageManager to full semver for CF Workers Build
 
 Cloudflare's corepack integration rejects loose `pnpm@9` with

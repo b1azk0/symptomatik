@@ -24,3 +24,8 @@ export function buildURL(args: BuildURLArgs): string {
   const segment = collectionSegments[args.collection][args.lang];
   return `${prefix}/${segment}/${args.slug}/`;
 }
+
+export function buildLegalURL(lang: Locale, slug: string): string {
+  const prefix = localePrefix[lang];
+  return `${prefix}/${slug}/`;
+}

@@ -26,3 +26,16 @@ export const medicalTestSchema = z.object({
 });
 
 export type MedicalTestData = z.infer<typeof medicalTestSchema>;
+
+export const legalSchema = z.object({
+  slug: z.enum(['privacy', 'terms', 'medical-disclaimer', 'cookies']),
+  lang: z.enum(['en', 'pl', 'es']),
+  title: z.string(),
+  metaTitle: z.string().max(60),
+  metaDescription: z.string().max(160),
+  h1: z.string(),
+  publishedAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+});
+
+export type LegalData = z.infer<typeof legalSchema>;

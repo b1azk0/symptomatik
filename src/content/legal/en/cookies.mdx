@@ -1,0 +1,126 @@
+---
+slug: cookies
+lang: en
+title: Cookie Policy
+metaTitle: Cookie Policy | Symptomatik
+metaDescription: The cookies and similar technologies used on Symptomatik.com, why we use them, and how to control or withdraw your consent.
+h1: Cookie Policy
+publishedAt: 2026-04-22
+updatedAt: 2026-04-22
+---
+
+## Overview
+
+This Cookie Policy explains the cookies and similar technologies we use on **symptomatik.com** (the "Service"), why we use them, how long they last, and how you can control or withdraw your consent. It complements our [Privacy Policy](/privacy/), which describes how we handle personal data more broadly.
+
+Symptomatik is operated by **Digital Savages LLC**, 701 Tillery Street, 2840, Unit 12, Austin, TX 78702, United States. For privacy questions, write to **privacy@symptomatik.com**.
+
+We are **designed to comply with** the EU/UK General Data Protection Regulation, the ePrivacy Directive / PECR, and US state privacy laws. We do not claim to be "fully compliant" — that's not a meaningful status under the law.
+
+## What are cookies and similar technologies?
+
+A **cookie** is a small text file that a website places on your device so that the site can remember something about your visit. A **similar technology** includes things like **localStorage** (a browser-provided key-value store), **beacons** (small requests used to report analytics), pixels, and SDKs.
+
+The EU regulators' current guidance (including the European Data Protection Board's *Guidelines 2/2023 on the scope of Article 5(3) of the ePrivacy Directive*) treats localStorage the same way it treats cookies for consent purposes: if it stores or reads information on your device and isn't strictly necessary, it needs consent. We take that position seriously and include localStorage in this policy.
+
+## Cookie inventory
+
+This is the complete, current list of cookies and similar storage used on Symptomatik. We update it whenever the site changes.
+
+| Name | Purpose | Provider | Type | Duration | Category |
+|---|---|---|---|---|---|
+| `symptomatik_cookie_consent` | Stores your cookie-banner choice (`accepted` or `rejected`) so the banner isn't re-shown on every page. | Symptomatik (first-party) | localStorage (not a cookie) | Persistent — until you clear site data | Strictly necessary |
+| Cloudflare beacon (not a cookie) | Aggregated, anonymized website analytics (page views, referrer, performance). Cookieless and does not identify individuals. | Cloudflare, Inc. (first-party beacon `beacon.min.js`) | Beacon request — no cookie, no localStorage | N/A (no client-side storage) | Strictly necessary / functional (no consent required) |
+| `_ga` | Distinguishes unique users for Google Analytics. | Google LLC (GA4) | First-party HTTP cookie | 14 months (configured) | Optional — Analytics (consent required) |
+| `_ga_<container-id>` | Persists session state for a specific GA4 property. | Google LLC (GA4) | First-party HTTP cookie | 14 months (configured) | Optional — Analytics (consent required) |
+
+We do **not** use advertising cookies, marketing cookies, social-media tracking pixels, session-replay tools, heat-map tools, fingerprinting scripts, or cross-site trackers. If you ever see cookies on Symptomatik that aren't in the table above, something has gone wrong — please email **privacy@symptomatik.com**.
+
+## Strictly necessary vs. optional
+
+### Strictly necessary
+
+- The **`symptomatik_cookie_consent`** localStorage entry is strictly necessary because, without it, we would re-show the consent banner on every single page view — which would itself be a worse user experience and would generate additional processing.
+- **Cloudflare Web Analytics** is provided as a cookieless, first-party, server-aggregated analytics beacon. It sets **no cookies**, writes **no localStorage**, uses **no fingerprinting**, and does not identify individual users. Under ePrivacy Art. 5(3) this does not trigger the consent requirement, and under GDPR it relies on our **legitimate interest** (Art. 6(1)(f)) in understanding aggregate traffic to run the site.
+
+### Optional — analytics (consent required)
+
+- **Google Analytics 4** (`_ga` and `_ga_<container-id>`) is loaded **only if you click Accept** on our cookie banner. The legal basis is your **consent** under GDPR Art. 6(1)(a) and the ePrivacy Directive / PECR. If you click Reject, close the banner, or ignore it, GA4 is not loaded. We have configured GA4 with **14-month** data retention, IP anonymization, and with Google Signals and cross-device advertising features disabled.
+
+## Legal bases at a glance
+
+| Technology | Legal basis |
+|---|---|
+| `symptomatik_cookie_consent` (localStorage) | PECR "strictly necessary" + GDPR Art. 6(1)(f) legitimate interest |
+| Cloudflare Web Analytics (cookieless beacon) | GDPR Art. 6(1)(f) legitimate interest — no cookies, no identifiers, no fingerprinting |
+| Google Analytics 4 (`_ga`, `_ga_<container-id>`) | GDPR Art. 6(1)(a) consent (freely given via banner) |
+
+## How to give or withdraw consent
+
+### On Symptomatik
+
+- You can give consent by clicking **Accept** on the banner; you can decline by clicking **Reject**. Both buttons are given equal visual prominence. We do not use pre-ticked boxes or "implied consent."
+- You can change your mind at any time using the **Manage cookies** link in the site footer. (This link re-opens the banner; it will be available across the site.)
+- You can also clear your browser's site data for symptomatik.com. That removes both the `symptomatik_cookie_consent` entry and any existing GA4 cookies, and the banner will reappear on your next visit.
+
+When you withdraw consent:
+
+- GA4 cookies (`_ga`, `_ga_<container-id>`) are **not loaded** on subsequent visits.
+- Any GA4 cookies already on your device do not receive new data from us, but they remain on your device until they expire or you delete them. You can delete them through your browser's settings at any time.
+
+### In your browser
+
+Every major browser lets you view, block, and delete cookies and local storage. These help pages are a good starting point:
+
+- **Google Chrome** — https://support.google.com/chrome/answer/95647
+- **Mozilla Firefox** — https://support.mozilla.org/kb/cookies-information-websites-store-on-your-computer
+- **Apple Safari (macOS/iOS)** — https://support.apple.com/guide/safari/manage-cookies-sfri11471/mac
+- **Microsoft Edge** — https://support.microsoft.com/microsoft-edge/delete-cookies-in-microsoft-edge-63947406-40ac-c3b8-57b9-2a946a29ae09
+
+Keep in mind that browser-level settings apply to every site you visit, not just Symptomatik.
+
+## Cloudflare Web Analytics — why it's outside the consent requirement
+
+Cloudflare Web Analytics is specifically designed to avoid the ePrivacy / PECR consent trigger:
+
+- It is served as a **first-party beacon** (`beacon.min.js`) from Symptomatik's own domain.
+- It **sets no cookies** and writes **no localStorage**.
+- It does not use **fingerprinting** and does not assign a persistent identifier to your device.
+- Metrics are **aggregated server-side** by Cloudflare.
+
+Cloudflare Web Analytics also meets the criteria that **CNIL** applies to exempt analytics from the consent requirement: single-site scope, no individual profiles, aggregated statistics, and limited retention.
+
+More information from Cloudflare: https://www.cloudflare.com/web-analytics/. Cloudflare, Inc. is a US-based processor that self-certifies under the **EU-US Data Privacy Framework**.
+
+## California and other US state privacy laws
+
+**California residents (CCPA/CPRA):** Digital Savages LLC **does not sell** and **does not share** your personal information as those terms are defined under the California Consumer Privacy Act, including for cross-context behavioral advertising. Because of that, we do not display a "Do Not Sell or Share My Personal Information" link — but you remain free to exercise your CCPA rights (the right to know, the right to delete, the right to correct, and the right to non-discrimination) by emailing **privacy@symptomatik.com**.
+
+**Other states:** Residents of **Colorado, Connecticut, Virginia, and Utah** — and other states with comparable laws — have analogous rights and can use the same contact address. We honor **Global Privacy Control (GPC)** signals as a valid opt-out of "sale" and "sharing" for the purposes of state law.
+
+## International transfers
+
+Cloudflare, Inc. and Google LLC are both based in the United States and both self-certify under the **EU-US Data Privacy Framework** (with UK and Swiss extensions). Where DPF coverage does not apply, we rely on the European Commission's **Standard Contractual Clauses** as a contractual safeguard. See the [Privacy Policy](/privacy/) for the full transfers section.
+
+## Supervisory authorities
+
+If you believe we are handling cookies or your personal data incorrectly, please contact us first at **privacy@symptomatik.com**. You also have the right to complain to your local data-protection authority. Common supervisory authorities for our audience include:
+
+- **UODO** (Urząd Ochrony Danych Osobowych) — Poland — https://uodo.gov.pl
+- **CNIL** — France — https://www.cnil.fr
+- **ICO** — United Kingdom — https://ico.org.uk
+- **AEPD** — Spain — https://www.aepd.es
+- **California Privacy Protection Agency (CPPA)** — California, USA — https://cppa.ca.gov
+
+Residents of other EU member states can also complain to their own national DPA.
+
+## Changes to this policy
+
+We update this Cookie Policy whenever we change the technologies on the site or our processors. The **Effective date** and **Last updated** values at the top of this page reflect the current version. Material changes will be announced via a site banner for at least 30 days.
+
+## Contact
+
+- **Privacy matters:** privacy@symptomatik.com
+- **Legal notices:** legal@symptomatik.com
+- **General:** hello@symptomatik.com
+- **Postal:** Digital Savages LLC, 701 Tillery Street, 2840, Unit 12, Austin, TX 78702, United States

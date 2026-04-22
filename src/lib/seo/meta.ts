@@ -1,5 +1,5 @@
 import type { CollectionEntry } from 'astro:content';
-import { buildURL, type Collection } from '@/i18n/routes';
+import { buildURL, buildLegalURL, type Collection } from '@/i18n/routes';
 import type { Locale } from '@/i18n/locales';
 
 export interface CanonicalURLArgs {
@@ -38,6 +38,31 @@ export function alternatesFor<C extends Collection>(args: AlternatesArgs<C>): Al
   }
 
   // x-default points to EN when EN exists; otherwise the first alternate.
+  const defaultHref = enHref ?? alts[0]?.href;
+  if (defaultHref) alts.push({ hreflang: 'x-default', href: defaultHref });
+
+  return alts;
+}
+
+export interface LegalEntryLike {
+  data: { lang: Locale; slug: string };
+}
+
+export function canonicalLegalURL(site: string, lang: Locale, slug: string): string {
+  const s = site.replace(/\/$/, '');
+  return `${s}${buildLegalURL(lang, slug)}`;
+}
+
+export function alternatesForLegal(entries: LegalEntryLike[], site: string): Alternate[] {
+  const alts: Alternate[] = [];
+  let enHref: string | null = null;
+
+  for (const e of entries) {
+    const href = canonicalLegalURL(site, e.data.lang, e.data.slug);
+    alts.push({ hreflang: e.data.lang, href });
+    if (e.data.lang === 'en') enHref = href;
+  }
+
   const defaultHref = enHref ?? alts[0]?.href;
   if (defaultHref) alts.push({ hreflang: 'x-default', href: defaultHref });
 

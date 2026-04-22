@@ -1,0 +1,41 @@
+---
+import { getCollection, render } from 'astro:content';
+import LegalLayout from '@/components/LegalLayout.astro';
+import { canonicalLegalURL, alternatesForLegal } from '@/lib/seo/meta';
+import { t } from '@/i18n/ui';
+
+export async function getStaticPaths() {
+  const all = await getCollection('legal');
+  const enEntries = all.filter((e) => e.data.lang === 'en');
+  return enEntries.map((entry) => ({
+    params: { legalSlug: entry.data.slug },
+    props: { entry, all },
+  }));
+}
+
+const { entry, all } = Astro.props;
+const site = import.meta.env.PUBLIC_SITE_URL || 'https://symptomatik.com';
+
+const canonical = canonicalLegalURL(site, 'en', entry.data.slug);
+const alternatesEntries = all.filter((e) => e.data.slug === entry.data.slug);
+const alternates = alternatesForLegal(alternatesEntries, site);
+
+const breadcrumbs = [
+  { label: t('en', 'breadcrumbs.home'), href: site + '/' },
+  { label: entry.data.title },
+];
+
+const { Content } = await render(entry);
+---
+<LegalLayout
+  title={entry.data.metaTitle}
+  description={entry.data.metaDescription}
+  canonical={canonical}
+  alternates={alternates}
+  locale="en"
+  breadcrumbs={breadcrumbs}
+  h1={entry.data.h1}
+  updatedAt={entry.data.updatedAt}
+>
+  <Content />
+</LegalLayout>
