@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-04-22 — T38: bump Node floor to 22 (Astro 6 requirement)
+
+Astro 6 requires Node >=22.12.0. `.nvmrc` was pinned to `20` and
+`engines.node` was `>=20`, so CF Workers Build picked Node 20.20.2
+and Astro refused to start. Updated both to 22 (local uses 25, CI
+uses 22).
+
 ## 2026-04-22 — T38: pin packageManager to full semver for CF Workers Build
 
 Cloudflare's corepack integration rejects loose `pnpm@9` with
