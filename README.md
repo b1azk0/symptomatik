@@ -2,10 +2,10 @@
 
 Multilingual (EN/ES/PL) health platform: lab results interpretation, symptom checker, mental health self-assessments, and health calculators. Freemium with Premium subscription.
 
-**Status:** S0 in progress — **37/40 tasks complete** on branch `s0-foundation`. Code, tests, CI config all shipped. Waiting on Cloudflare Pages dashboard setup (T38) before we can run golden-path verification (T40).
+**Status:** S0 **shipped** · v0.1.0 · Production live at https://symptomatik.com
 **Entity:** Digital Savages
 **Remote:** `github.com/b1azk0/symptomatik` (hosted under Blazej's personal GitHub; entity-owned by Digital Savages)
-**Active branch:** `s0-foundation` (will merge to `main` after S0 golden-path verification)
+**Active branch:** `main`
 
 ## Decomposition
 
@@ -13,7 +13,7 @@ The full platform is being built as 10 sub-projects (S0–S9), each with its own
 
 | # | Sub-project | Status |
 |---|---|---|
-| **S0** | **Foundation Scaffold** | **In progress, 37/40 tasks** on `s0-foundation` branch. Remaining: CF Pages dashboard setup (T38), custom domain attach (T39), golden-path verification (T40). Spec: [docs/superpowers/specs/2026-04-21-…-design.md](docs/superpowers/specs/2026-04-21-symptomatik-s0-foundation-scaffold-design.md), Plan: [docs/superpowers/plans/2026-04-21-….md](docs/superpowers/plans/2026-04-21-symptomatik-s0-foundation-scaffold.md) |
+| **S0** | **Foundation Scaffold** | ✅ **Shipped** — 40/40 tasks · tagged `v0.1.0` · golden-path verified against production. Spec: [docs/superpowers/specs/2026-04-21-…-design.md](docs/superpowers/specs/2026-04-21-symptomatik-s0-foundation-scaffold-design.md), Plan: [docs/superpowers/plans/2026-04-21-….md](docs/superpowers/plans/2026-04-21-symptomatik-s0-foundation-scaffold.md) |
 | S1 | Content platform — medical-tests pillar (102 tests × EN+PL) | Not started |
 | S2 | AI routing layer (multi-LLM router) | Not started |
 | S3 | App: Lab Results Interpreter (free tier) | Not started |
@@ -35,16 +35,21 @@ The full platform is being built as 10 sub-projects (S0–S9), each with its own
 
 Full detail in the S0 design spec.
 
-## Resume Point
+## What shipped in S0
 
-If you're picking this up fresh — here's where we are:
-
-1. **Branch:** `s0-foundation` has 27 commits; `main` has only the spec + plan
-2. **Tests:** 62 Vitest unit tests + 11 Playwright E2E tests all passing locally
-3. **Build:** `pnpm build` emits 5 prerendered pages (`/`, `/medical-tests/complete-blood-count-cbc/`, `/pl/`, `/pl/badania/morfologia-krwi-cbc/`, `/es/`) + 4 sitemap files + robots.txt
-4. **What's been built:** Astro 6 scaffold, i18n infra (EN-at-root + translated segments), Zod-validated content collections, Excel→MDX importer (CBC imported), SEO helpers (canonicalURL, alternatesFor, JSON-LD for MedicalWebPage/BreadcrumbList/WebSite), all 7 components (BaseLayout/ContentLayout/SEOHead/MedicalDisclaimer/LanguageSwitcher/BreadcrumbNav/CookieConsent), infra interfaces (RateLimiter, FileStore with in-memory + CF impls), CI pipeline (typecheck/build/unit tests/Lighthouse/axe/link check/JSON-LD validator/i18n coverage)
-5. **Remaining:** T38 = Blazej connects CF Pages to this repo via dashboard. T39 = attach `symptomatik.com` custom domain. T40 = I run the 12-point golden-path verification against the live URL. See the plan file phases 10 for step-by-step.
-6. **Known issues surfaced but out of scope for S0:** Excel has 3 genuine duplicate test names, row-misalignment between EN/PL sheets after row ~100, and some overlong metaTitle/metaDescription values (all flagged in `content-sources/` notes; S1 will address).
+1. **Production:** https://symptomatik.com (Cloudflare Workers-with-Assets, apex + www)
+2. **Pages live:**
+   - `/` + `/pl/` + `/es/` (locale homepages)
+   - `/medical-tests/complete-blood-count-cbc/` + `/pl/badania/morfologia-krwi-cbc/` (first medical content, imported from Excel source)
+   - 4 legal pages × 3 locales = 12 pages: Privacy, Terms, Medical Disclaimer, Cookies — with localized URL slugs per locale (`/pl/polityka-prywatnosci/`, `/es/privacidad/`, etc.)
+   - `/sitemap-index.xml` + per-locale sitemaps + `robots.txt`
+3. **Golden-path verified:** all 12 checks green (see CHANGELOG). Lighthouse CBC EN: perf 96 / SEO 100. PL: perf 100 / SEO 100.
+4. **Tests:** 62 Vitest unit + 11 Playwright E2E all green in CI.
+5. **Known limitations (accepted for S0):**
+   - No mobile hamburger menu — header nav hidden <768px because links are placeholders until S3+ ships real pages.
+   - ES content is stubs-only; EN + PL are the real multilingual experience.
+   - Excel source has 3 duplicate test names, row-misalignment after row ~100, overlong meta values on some rows (flagged for S1).
+6. **Legal pages flagged for human attorney review** before public marketing launch — see CHANGELOG.
 
 ## Astro + Cloudflare notes (landed during implementation)
 

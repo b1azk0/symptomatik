@@ -1,5 +1,62 @@
 # Changelog
 
+## 2026-04-22 — S0 Foundation Scaffold shipped · v0.1.0
+
+All 40 S0 tasks complete. Production live at https://symptomatik.com
+(Cloudflare Workers-with-Assets) and verified via the 12-point
+golden-path.
+
+**Golden-path verification (prod):**
+- / → 200 · CBC EN → 200 · CBC PL → 200
+- /en/... → 301 to canonical EN (no `/en/` prefix)
+- Lighthouse CBC EN: perf 96, SEO 100
+- Lighthouse CBC PL: perf 100, SEO 100
+- JSON-LD (MedicalWebPage + BreadcrumbList) valid on EN + PL
+- hreflang alternates correct (en + pl + x-default on CBC pages;
+  en + pl + es + x-default on homepages)
+- sitemap-index lists all 3 locale sitemaps; CBC indexed in sitemap-en
+- Cookie consent flow verified (Accept / Reject / re-prompt on clear)
+
+**Shipped:**
+- Astro 6 + React 18 SSG on Cloudflare Workers (`@astrojs/cloudflare@13`)
+- i18n: EN at root, PL + ES prefixed with translated URL segments
+  (e.g., /medical-tests/... ↔ /pl/badania/...)
+- 1 full content page: CBC in EN + PL, imported from the Excel source
+- 12 legal pages: Privacy / Terms / Medical Disclaimer / Cookies, in
+  EN (full text), PL (full translation), ES (stubs pointing to EN),
+  all with localized URL slugs per locale
+- SEO: canonical URLs, hreflang alternates, JSON-LD, sitemap-index
+  with per-locale sitemaps, robots.txt
+- 7 components: BaseLayout, ContentLayout, LegalLayout, SEOHead,
+  MedicalDisclaimer, LanguageSwitcher, BreadcrumbNav, CookieConsent
+- Infra interfaces: RateLimiter + FileStore (CF + in-memory impls)
+- CI: GitHub Actions with typecheck, Vitest, Playwright E2E, Lighthouse
+  (perf ≥ 85 / SEO ≥ 90 gates), axe a11y, lychee link check, JSON-LD
+  validator, i18n coverage script
+- 62 Vitest unit tests + 11 Playwright E2E tests all green
+
+**Accepted limitations for S0, to revisit in S1+:**
+- Header nav hidden on mobile (<768px). Links (Symptom Checker, Lab
+  Results, etc.) are placeholders pointing to `/` because real app
+  pages don't exist until S3+. Mobile hamburger + real targets land
+  when there is something to point at.
+- ES content is stubbed only; PL and EN are the real multilingual
+  experience for S0.
+
+**Known items for human attorney review before public marketing
+launch** (all flagged by legal audit, not blockers for pre-launch):
+- Arbitration enforceability of browsewrap acceptance in Texas
+- Mass-arbitration batching clause post Heckman v. Live Nation
+- EU consumer-contract analysis for PL / ES under Rome I + Brussels I
+- Texas LLC / TDPSA disclosure specifics
+- FDA Clinical Decision Support posture when AI features launch (S3+)
+- DPF contingency if CJEU strikes it down
+
+**Next: S1 — Content Platform**
+Scale the medical-tests pillar from 1 page (CBC) to all 102 tests in
+EN + PL, add `/medical-tests/` pillar index page, implement
+RelatedContent component.
+
 ## 2026-04-22 — T38: add wrangler as explicit devDependency
 
 `wrangler` is a peerDep of `@astrojs/cloudflare@13`, which pnpm does
