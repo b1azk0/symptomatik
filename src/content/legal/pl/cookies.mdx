@@ -1,0 +1,128 @@
+---
+slug: cookies
+lang: pl
+title: Polityka cookies
+metaTitle: Polityka cookies | Symptomatik
+metaDescription: Pliki cookie i podobne technologie wykorzystywane w Symptomatik.com, po co je stosujemy oraz jak zarządzać zgodą lub ją wycofać.
+h1: Polityka cookies
+publishedAt: 2026-04-22
+updatedAt: 2026-04-22
+---
+
+## Wprowadzenie
+
+Niniejsza Polityka cookies wyjaśnia, jakie pliki cookie i podobne technologie wykorzystujemy w serwisie **symptomatik.com** („Serwis”), po co je stosujemy, jak długo trwają oraz jak możesz nimi zarządzać lub wycofać swoją zgodę. Stanowi uzupełnienie naszej [Polityki prywatności](/pl/polityka-prywatnosci/), która w szerszym zakresie opisuje sposób przetwarzania danych osobowych.
+
+Symptomatik jest prowadzony przez **Digital Savages LLC**, 701 Tillery Street, 2840, Unit 12, Austin, TX 78702, Stany Zjednoczone. W sprawach dotyczących prywatności pisz na **privacy@symptomatik.com**.
+
+Serwis jest **zaprojektowany z myślą o zgodności** z ogólnym rozporządzeniem o ochronie danych UE/UK (RODO / UK GDPR), dyrektywą e-Privacy / PECR oraz stanowymi przepisami o ochronie prywatności w USA. Nie twierdzimy, że jesteśmy „w pełni zgodni” — taki status nie ma prawnego znaczenia.
+
+## Czym są pliki cookie i podobne technologie?
+
+**Plik cookie** to niewielki plik tekstowy, który strona internetowa umieszcza na Twoim urządzeniu, aby móc zapamiętać coś o Twojej wizycie. **Podobne technologie** obejmują m.in. **localStorage** (udostępniane przez przeglądarkę magazyn klucz-wartość), **beacony** (niewielkie żądania służące do raportowania analityki), piksele oraz SDK.
+
+Aktualne wytyczne europejskich organów nadzorczych (w tym *Wytyczne Europejskiej Rady Ochrony Danych nr 2/2023 w sprawie zakresu stosowania art. 5 ust. 3 dyrektywy e-Privacy*) traktują localStorage w tych samych kategoriach zgody co pliki cookie: jeśli przechowuje lub odczytuje informacje z Twojego urządzenia i nie jest bezwzględnie niezbędny, wymaga zgody. Poważnie traktujemy to stanowisko i uwzględniamy localStorage w niniejszej polityce.
+
+## Zestawienie plików cookie
+
+Jest to kompletna, aktualna lista plików cookie i podobnych mechanizmów przechowywania wykorzystywanych w Symptomatik. Aktualizujemy ją przy każdej zmianie w serwisie.
+
+| Nazwa | Cel | Dostawca | Typ | Czas trwania | Kategoria |
+|---|---|---|---|---|---|
+| `symptomatik_cookie_consent` | Przechowuje Twój wybór w banerze cookie (`accepted` lub `rejected`), aby baner nie był ponownie wyświetlany na każdej podstronie. | Symptomatik (pierwszoosobowe) | localStorage (nie plik cookie) | Trwałe — do czasu wyczyszczenia danych strony | Bezwzględnie niezbędne |
+| Beacon Cloudflare (nie plik cookie) | Zagregowana, zanonimizowana analityka strony (odsłony, źródło odwiedzin, wydajność). Bez plików cookie i bez identyfikacji osób. | Cloudflare, Inc. (pierwszoosobowy beacon `beacon.min.js`) | Żądanie beacon — bez cookie, bez localStorage | nd. (brak przechowywania po stronie klienta) | Bezwzględnie niezbędne / funkcjonalne (zgoda niewymagana) |
+| `_ga` | Rozróżnia unikalnych użytkowników dla Google Analytics. | Google LLC (GA4) | Pierwszoosobowy plik cookie HTTP | 14 miesięcy (skonfigurowane) | Opcjonalne — analityka (wymagana zgoda) |
+| `_ga_<container-id>` | Utrzymuje stan sesji dla konkretnej usługi GA4. | Google LLC (GA4) | Pierwszoosobowy plik cookie HTTP | 14 miesięcy (skonfigurowane) | Opcjonalne — analityka (wymagana zgoda) |
+
+**Nie** stosujemy plików cookie reklamowych, marketingowych, pikseli śledzących w mediach społecznościowych, narzędzi do nagrywania sesji, map cieplnych, skryptów fingerprintingu ani trackerów międzywitrynowych. Jeśli kiedykolwiek zauważysz w Symptomatik pliki cookie, których nie ma w powyższej tabeli, coś poszło nie tak — napisz do nas na **privacy@symptomatik.com**.
+
+## Bezwzględnie niezbędne vs. opcjonalne
+
+### Bezwzględnie niezbędne
+
+- Wpis **`symptomatik_cookie_consent`** w localStorage jest bezwzględnie niezbędny, ponieważ bez niego musielibyśmy wyświetlać baner zgody przy każdej odsłonie strony — co samo w sobie byłoby gorszym doświadczeniem użytkownika i generowałoby dodatkowe przetwarzanie.
+- **Cloudflare Web Analytics** jest udostępniany jako pierwszoosobowy, bez plików cookie, serwerowo zagregowany beacon analityczny. **Nie ustawia żadnych plików cookie**, **nie zapisuje do localStorage**, **nie wykorzystuje fingerprintingu** i nie identyfikuje pojedynczych użytkowników. Zgodnie z art. 5 ust. 3 dyrektywy e-Privacy nie wyzwala to wymogu zgody, a na gruncie RODO opieramy się na naszym **prawnie uzasadnionym interesie** (art. 6 ust. 1 lit. f) polegającym na rozumieniu zagregowanego ruchu w celu prowadzenia serwisu.
+
+### Opcjonalne — analityka (wymagana zgoda)
+
+- **Google Analytics 4** (`_ga` oraz `_ga_<container-id>`) jest ładowany **wyłącznie po kliknięciu Akceptuj** w naszym banerze cookie. Podstawą prawną jest Twoja **zgoda** na gruncie art. 6 ust. 1 lit. a) RODO oraz dyrektywy e-Privacy / PECR. Jeśli klikniesz Odrzuć, zamkniesz baner lub go zignorujesz, GA4 nie zostanie załadowany. Skonfigurowaliśmy GA4 z **14-miesięczną** retencją danych, anonimizacją IP oraz z wyłączonymi Google Signals i międzyurządzeniowymi funkcjami reklamowymi.
+
+## Podstawy prawne w skrócie
+
+| Technologia | Podstawa prawna |
+|---|---|
+| `symptomatik_cookie_consent` (localStorage) | PECR „bezwzględnie niezbędne” + art. 6 ust. 1 lit. f) RODO — prawnie uzasadniony interes |
+| Cloudflare Web Analytics (beacon bez plików cookie) | art. 6 ust. 1 lit. f) RODO — prawnie uzasadniony interes — brak plików cookie, brak identyfikatorów, brak fingerprintingu |
+| Google Analytics 4 (`_ga`, `_ga_<container-id>`) | art. 6 ust. 1 lit. a) RODO — zgoda (dobrowolnie wyrażona w banerze) |
+
+## Jak wyrazić lub wycofać zgodę
+
+### W Symptomatik
+
+- Zgodę możesz wyrazić, klikając **Akceptuj** w banerze; możesz odmówić, klikając **Odrzuć**. Obu przyciskom nadaliśmy równą wizualną widoczność. Nie stosujemy zaznaczonych z góry pól ani „zgody dorozumianej”.
+- W każdej chwili możesz zmienić zdanie, korzystając z linku **Zarządzaj plikami cookie** w stopce serwisu. (Link ten ponownie otwiera baner; będzie dostępny w całym serwisie.)
+- Możesz też wyczyścić dane strony dla symptomatik.com w swojej przeglądarce. Usunie to zarówno wpis `symptomatik_cookie_consent`, jak i istniejące pliki cookie GA4, a baner pojawi się ponownie przy kolejnej wizycie.
+
+Po wycofaniu zgody:
+
+- Pliki cookie GA4 (`_ga`, `_ga_<container-id>`) **nie są ładowane** przy kolejnych wizytach.
+- Pliki cookie GA4 znajdujące się już na Twoim urządzeniu nie otrzymują od nas nowych danych, ale pozostają na urządzeniu do czasu ich wygaśnięcia lub usunięcia. W każdej chwili możesz je usunąć w ustawieniach przeglądarki.
+
+### W Twojej przeglądarce
+
+Każda popularna przeglądarka pozwala przeglądać, blokować i usuwać pliki cookie oraz dane lokalne. Strony pomocy stanowią dobry punkt wyjścia:
+
+- **Google Chrome** — https://support.google.com/chrome/answer/95647
+- **Mozilla Firefox** — https://support.mozilla.org/kb/cookies-information-websites-store-on-your-computer
+- **Apple Safari (macOS/iOS)** — https://support.apple.com/guide/safari/manage-cookies-sfri11471/mac
+- **Microsoft Edge** — https://support.microsoft.com/microsoft-edge/delete-cookies-in-microsoft-edge-63947406-40ac-c3b8-57b9-2a946a29ae09
+
+Pamiętaj, że ustawienia na poziomie przeglądarki dotyczą wszystkich odwiedzanych witryn, nie tylko Symptomatik.
+
+## Cloudflare Web Analytics — dlaczego nie wymaga zgody
+
+Cloudflare Web Analytics został specjalnie zaprojektowany tak, aby nie wyzwalać obowiązku zgody z e-Privacy / PECR:
+
+- Jest udostępniany jako **pierwszoosobowy beacon** (`beacon.min.js`) z własnej domeny Symptomatik.
+- **Nie ustawia plików cookie** i **nie zapisuje do localStorage**.
+- Nie stosuje **fingerprintingu** i nie przypisuje Twojemu urządzeniu trwałego identyfikatora.
+- Metryki są **agregowane po stronie serwera** przez Cloudflare.
+
+Cloudflare Web Analytics spełnia także kryteria, jakie **CNIL** stosuje do zwolnienia narzędzi analitycznych z wymogu zgody: zasięg jednej witryny, brak indywidualnych profili, statystyki zagregowane oraz ograniczona retencja.
+
+Więcej informacji od Cloudflare: https://www.cloudflare.com/web-analytics/. Cloudflare, Inc. jest amerykańskim podmiotem przetwarzającym, który samodzielnie certyfikuje się w ramach **EU-US Data Privacy Framework**.
+
+## Kalifornia i inne stanowe przepisy prywatności w USA
+
+**Mieszkańcy Kalifornii (CCPA/CPRA):** Digital Savages LLC **nie sprzedaje** i **nie udostępnia** Twoich danych osobowych w rozumieniu tych pojęć zgodnie z California Consumer Privacy Act, w tym na potrzeby reklamy behawioralnej w kontekście międzyserwisowym. Z tego powodu nie wyświetlamy linku „Do Not Sell or Share My Personal Information” — ale w każdej chwili możesz skorzystać ze swoich praw z CCPA (prawa do informacji, usunięcia, sprostowania oraz braku dyskryminacji), pisząc na **privacy@symptomatik.com**.
+
+**Inne stany:** Mieszkańcy **Kolorado, Connecticut, Wirginii i Utah** — a także innych stanów z porównywalnymi przepisami — mają analogiczne prawa i mogą korzystać z tego samego adresu kontaktowego. Respektujemy sygnały **Global Privacy Control (GPC)** jako ważną rezygnację ze „sprzedaży” i „udostępniania” w rozumieniu prawa stanowego.
+
+## Transfery międzynarodowe
+
+Cloudflare, Inc. oraz Google LLC mają siedziby w Stanach Zjednoczonych i oba podmioty samodzielnie certyfikują się w ramach **EU-US Data Privacy Framework** (wraz z rozszerzeniami dla Wielkiej Brytanii i Szwajcarii). Tam, gdzie ochrona DPF nie ma zastosowania, opieramy się na **Standardowych klauzulach umownych** Komisji Europejskiej jako zabezpieczeniu kontraktowym. Pełną sekcję dotyczącą transferów zawiera [Polityka prywatności](/pl/polityka-prywatnosci/).
+
+## Organy nadzorcze
+
+Jeśli uważasz, że nieprawidłowo obsługujemy pliki cookie lub Twoje dane osobowe, skontaktuj się z nami najpierw pod adresem **privacy@symptomatik.com**. Przysługuje Ci również prawo do złożenia skargi w lokalnym organie ochrony danych. Typowe organy nadzorcze właściwe dla naszych odbiorców to:
+
+- **UODO** (Prezes Urzędu Ochrony Danych Osobowych) — Polska — https://uodo.gov.pl
+- **CNIL** — Francja — https://www.cnil.fr
+- **ICO** — Wielka Brytania — https://ico.org.uk
+- **AEPD** — Hiszpania — https://www.aepd.es
+- **California Privacy Protection Agency (CPPA)** — Kalifornia, USA — https://cppa.ca.gov
+
+Mieszkańcy innych państw członkowskich UE mogą również złożyć skargę do swojego krajowego organu nadzorczego.
+
+## Zmiany niniejszej polityki
+
+Aktualizujemy niniejszą Politykę cookies przy każdej zmianie technologii używanych w serwisie lub naszych podmiotów przetwarzających. Pola **Effective date** oraz **Last updated** u góry tej strony odzwierciedlają aktualną wersję. Istotne zmiany będą ogłaszane za pomocą banera w serwisie przez co najmniej 30 dni.
+
+## Kontakt
+
+- **Sprawy związane z prywatnością:** privacy@symptomatik.com
+- **Zawiadomienia prawne:** legal@symptomatik.com
+- **Kontakt ogólny:** hello@symptomatik.com
+- **Adres pocztowy:** Digital Savages LLC, 701 Tillery Street, 2840, Unit 12, Austin, TX 78702, Stany Zjednoczone
+
+*Wersja angielska niniejszego dokumentu ma charakter rozstrzygający w przypadku rozbieżności w tłumaczeniu, z zastrzeżeniem bezwzględnie obowiązujących przepisów prawa polskiego o ochronie konsumentów.*

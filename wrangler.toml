@@ -1,0 +1,9 @@
+name = "symptomatik"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+# pages_build_output_dir is set in Cloudflare dashboard, not needed locally;
+# including it here triggers wrangler v4 validation that ASSETS binding is
+# reserved in Pages projects (used internally by @astrojs/cloudflare adapter).
+
+[vars]
+PUBLIC_SITE_URL = "https://symptomatik.com"

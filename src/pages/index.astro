@@ -1,0 +1,30 @@
+---
+import BaseLayout from '@/components/BaseLayout.astro';
+import { webSite } from '@/lib/seo/json-ld';
+
+const site = import.meta.env.PUBLIC_SITE_URL || 'https://symptomatik.com';
+const canonical = site + '/';
+const alternates = [
+  { hreflang: 'en', href: canonical },
+  { hreflang: 'pl', href: site + '/pl/' },
+  { hreflang: 'es', href: site + '/es/' },
+  { hreflang: 'x-default', href: canonical },
+];
+
+const jsonLd = webSite({ site, name: 'Symptomatik', inLanguage: 'en' });
+---
+<BaseLayout
+  title="Symptomatik — Multilingual Health Information"
+  description="Free and premium health platform: lab results interpretation, symptom checker, mental health tests, and health calculators."
+  canonical={canonical}
+  alternates={alternates}
+  locale="en"
+  jsonLd={jsonLd}
+>
+  <h1 class="font-serif text-4xl mb-4">Symptomatik</h1>
+  <p class="text-lg text-neutral-700 max-w-2xl">
+    Free, trustworthy health guidance. Lab results interpretation, symptom checking,
+    mental health self-screening, and practical calculators.
+  </p>
+  <p class="mt-4 text-sm text-neutral-500">Scaffold live. Apps and content landing in future sub-projects.</p>
+</BaseLayout>

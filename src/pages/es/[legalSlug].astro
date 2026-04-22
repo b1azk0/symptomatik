@@ -1,0 +1,42 @@
+---
+import { getCollection, render } from 'astro:content';
+import LegalLayout from '@/components/LegalLayout.astro';
+import { canonicalLegalURL, alternatesForLegal } from '@/lib/seo/meta';
+import { legalSlugFor } from '@/i18n/routes';
+import { t } from '@/i18n/ui';
+
+export async function getStaticPaths() {
+  const all = await getCollection('legal');
+  const esEntries = all.filter((e) => e.data.lang === 'es');
+  return esEntries.map((entry) => ({
+    params: { legalSlug: legalSlugFor(entry.data.slug, 'es') },
+    props: { entry, all },
+  }));
+}
+
+const { entry, all } = Astro.props;
+const site = import.meta.env.PUBLIC_SITE_URL || 'https://symptomatik.com';
+
+const canonical = canonicalLegalURL(site, 'es', entry.data.slug);
+const alternatesEntries = all.filter((e) => e.data.slug === entry.data.slug);
+const alternates = alternatesForLegal(alternatesEntries, site);
+
+const breadcrumbs = [
+  { label: t('es', 'breadcrumbs.home'), href: site + '/es/' },
+  { label: entry.data.title },
+];
+
+const { Content } = await render(entry);
+---
+<LegalLayout
+  title={entry.data.metaTitle}
+  description={entry.data.metaDescription}
+  canonical={canonical}
+  alternates={alternates}
+  locale="es"
+  breadcrumbs={breadcrumbs}
+  h1={entry.data.h1}
+  updatedAt={entry.data.updatedAt}
+>
+  <Content />
+</LegalLayout>

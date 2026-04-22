@@ -1,0 +1,45 @@
+---
+import type { Alternate } from '@/lib/seo/meta';
+
+interface Props {
+  title: string;
+  description: string;
+  canonical: string;
+  alternates: Alternate[];
+  ogImage?: string | undefined;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[] | undefined;
+  locale: string;
+}
+
+const { title, description, canonical, alternates, ogImage, jsonLd, locale } = Astro.props as Props;
+const ogImageAbsolute = ogImage ?? new URL('/og-default.png', Astro.site ?? 'https://symptomatik.com').toString();
+const jsonLdArray = Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [];
+---
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{title}</title>
+<meta name="description" content={description} />
+
+<link rel="canonical" href={canonical} />
+
+{alternates.map((a) => (
+  <link rel="alternate" hreflang={a.hreflang} href={a.href} />
+))}
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:locale" content={locale} />
+<meta property="og:image" content={ogImageAbsolute} />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImageAbsolute} />
+
+{jsonLdArray.map((ld) => (
+  <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+))}
+
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />

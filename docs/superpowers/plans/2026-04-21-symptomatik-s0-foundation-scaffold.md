@@ -2,11 +2,18 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Ship a production-ready Astro 5 scaffold on Cloudflare Pages with i18n (EN at root, PL/ES prefixed, translated URL segments), SEO infrastructure, CI quality gates, and one validated content page (CBC) imported end-to-end from the in-repo Excel source. Everything out of scope lives in later sub-projects (S1–S9).
+**Goal:** Ship a production-ready Astro 6 scaffold on Cloudflare Pages with i18n (EN at root, PL/ES prefixed, translated URL segments), SEO infrastructure, CI quality gates, and one validated content page (CBC) imported end-to-end from the in-repo Excel source. Everything out of scope lives in later sub-projects (S1–S9).
+
+> **Implementation note (landed in T3):** The plan was originally drafted for Astro 5. During T3 execution, `@astrojs/cloudflare@13` and `@astrojs/mdx@5` forced an upgrade to Astro 6. The canonical substitution:
+> - `output: 'hybrid'` → `output: 'static'` (Astro 6 removed the `'hybrid'` literal). API routes opt out with `export const prerender = false`.
+> - `global.css` requires `@config '../../tailwind.config.ts';` directive for Tailwind 4 to pick up `tailwind.config.ts` custom fonts/colors.
+> - `wrangler.toml` does NOT include `pages_build_output_dir` (wrangler v4 rejects the `ASSETS` binding when that flag is set; it's configured in the CF dashboard instead).
+>
+> Later tasks (T24–T27) inherit the `output: 'static'` default — no `prerender = true` directive is needed per page.
 
 **Architecture:** Astro 5 in hybrid mode (`@astrojs/cloudflare` adapter) with React 18 islands, Tailwind 4, shadcn/ui (neutral preset). Content lives in Astro Content Collections with Zod-validated frontmatter generated from `content-sources/medical-tests.xlsx`. i18n routing uses a segment mapping table + `buildURL` pure function + middleware for `/en/` 301s and locale detection. Cloudflare-specific primitives (KV, R2) are committed behind `lib/infra/` interfaces so app code stays portable. CI enforces Lighthouse ≥ 90 SEO / ≥ 85 Perf, axe a11y, link check, JSON-LD shape, i18n coverage.
 
-**Tech Stack:** Astro 5 · React 18 · TypeScript strict · Tailwind 4 · shadcn/ui · MDX · Zod · exceljs · Cloudflare Pages/Workers · Vitest · Playwright · axe-core · lychee · Lighthouse CI · pnpm.
+**Tech Stack:** Astro 6 · React 18 · TypeScript strict · Tailwind 4 · shadcn/ui · MDX · Zod · exceljs · Cloudflare Pages/Workers · Vitest · Playwright · axe-core · lychee · Lighthouse CI · pnpm.
 
 **Source spec:** `docs/superpowers/specs/2026-04-21-symptomatik-s0-foundation-scaffold-design.md`
 

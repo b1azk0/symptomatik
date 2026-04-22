@@ -1,0 +1,23 @@
+{
+  "ci": {
+    "collect": {
+      "startServerCommand": "pnpm preview --host 127.0.0.1 --port 4321",
+      "url": [
+        "http://127.0.0.1:4321/",
+        "http://127.0.0.1:4321/medical-tests/complete-blood-count-cbc/",
+        "http://127.0.0.1:4321/pl/badania/morfologia-krwi-cbc/"
+      ],
+      "numberOfRuns": 1,
+      "settings": { "preset": "desktop" }
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": ["error", { "minScore": 0.85 }],
+        "categories:accessibility": ["error", { "minScore": 0.9 }],
+        "categories:seo": ["error", { "minScore": 0.9 }],
+        "categories:best-practices": ["warn", { "minScore": 0.9 }]
+      }
+    },
+    "upload": { "target": "temporary-public-storage" }
+  }
+}

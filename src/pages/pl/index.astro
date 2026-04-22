@@ -1,0 +1,28 @@
+---
+import BaseLayout from '@/components/BaseLayout.astro';
+import { webSite } from '@/lib/seo/json-ld';
+
+const site = import.meta.env.PUBLIC_SITE_URL || 'https://symptomatik.com';
+const canonical = site + '/pl/';
+const alternates = [
+  { hreflang: 'en', href: site + '/' },
+  { hreflang: 'pl', href: canonical },
+  { hreflang: 'es', href: site + '/es/' },
+  { hreflang: 'x-default', href: site + '/' },
+];
+const jsonLd = webSite({ site, name: 'Symptomatik', inLanguage: 'pl' });
+---
+<BaseLayout
+  title="Symptomatik — Wielojęzyczne Informacje Zdrowotne"
+  description="Bezpłatne i premium informacje zdrowotne: interpretacja wyników badań, sprawdzanie objawów, testy zdrowia psychicznego, kalkulatory."
+  canonical={canonical}
+  alternates={alternates}
+  locale="pl"
+  jsonLd={jsonLd}
+>
+  <h1 class="font-serif text-4xl mb-4">Symptomatik</h1>
+  <p class="text-lg text-neutral-700 max-w-2xl">
+    Bezpłatne, wiarygodne informacje zdrowotne. Interpretacja wyników badań, sprawdzanie objawów,
+    testy zdrowia psychicznego i praktyczne kalkulatory.
+  </p>
+</BaseLayout>

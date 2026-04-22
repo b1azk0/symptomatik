@@ -1,0 +1,76 @@
+---
+import '../styles/global.css';
+import SEOHead from './SEOHead.astro';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import CookieConsent from './CookieConsent.tsx';
+import { t } from '@/i18n/ui';
+import type { Locale } from '@/i18n/locales';
+import type { Alternate } from '@/lib/seo/meta';
+import { buildLegalURL } from '@/i18n/routes';
+
+interface Props {
+  title: string;
+  description: string;
+  canonical: string;
+  alternates: Alternate[];
+  locale: Locale;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[] | undefined;
+  ogImage?: string | undefined;
+}
+
+const { title, description, canonical, alternates, locale, jsonLd, ogImage } = Astro.props as Props;
+const GA4_ID = import.meta.env.PUBLIC_GA4_ID ?? '';
+const CF_ANALYTICS_TOKEN = import.meta.env.PUBLIC_CF_ANALYTICS_TOKEN ?? '';
+
+const homeHref = locale === 'en' ? '/' : `/${locale}/`;
+const privacyHref = buildLegalURL(locale, 'privacy');
+const termsHref = buildLegalURL(locale, 'terms');
+const disclaimerHref = buildLegalURL(locale, 'medical-disclaimer');
+const cookiesHref = buildLegalURL(locale, 'cookies');
+---
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <SEOHead {title} {description} {canonical} {alternates} {jsonLd} {locale} {ogImage} />
+
+    {CF_ANALYTICS_TOKEN && (
+      <script
+        defer
+        src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon={`{"token": "${CF_ANALYTICS_TOKEN}"}`}
+      />
+    )}
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <header class="border-b border-neutral-200 bg-white">
+      <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+        <a href={homeHref} class="font-serif text-xl font-semibold">Symptomatik</a>
+        <nav aria-label="Main" class="hidden md:flex gap-4 text-sm">
+          <a href={homeHref}>{t(locale, 'nav.symptomChecker')}</a>
+          <a href={homeHref}>{t(locale, 'nav.labResults')}</a>
+          <a href={homeHref}>{t(locale, 'nav.mentalHealth')}</a>
+          <a href={homeHref}>{t(locale, 'nav.calculators')}</a>
+        </nav>
+        <LanguageSwitcher currentLocale={locale} alternates={alternates} />
+      </div>
+    </header>
+
+    <main class="flex-1 max-w-5xl mx-auto px-4 py-8 w-full">
+      <slot />
+    </main>
+
+    <footer class="border-t border-neutral-200 mt-12 py-6 text-xs text-neutral-600">
+      <div class="max-w-5xl mx-auto px-4 flex flex-wrap gap-4 justify-between">
+        <span>© {new Date().getFullYear()} Symptomatik</span>
+        <span class="flex gap-3">
+          <a href={privacyHref}>{t(locale, 'footer.legal.privacy')}</a>
+          <a href={termsHref}>{t(locale, 'footer.legal.terms')}</a>
+          <a href={disclaimerHref}>{t(locale, 'footer.legal.medicalDisclaimer')}</a>
+          <a href={cookiesHref}>{t(locale, 'footer.legal.cookiePolicy')}</a>
+        </span>
+      </div>
+    </footer>
+
+    <CookieConsent client:idle locale={locale} ga4Id={GA4_ID} />
+  </body>
+</html>

@@ -1,0 +1,53 @@
+---
+import { getCollection } from 'astro:content';
+import ContentLayout from '@/components/ContentLayout.astro';
+import { canonicalURL, alternatesFor } from '@/lib/seo/meta';
+import { findAlternatesByCanonicalSlug } from '@/lib/content/loaders';
+import { medicalWebPage, breadcrumbList } from '@/lib/seo/json-ld';
+import { t } from '@/i18n/ui';
+
+export async function getStaticPaths() {
+  const all = await getCollection('medical-tests');
+  const esEntries = all.filter((e) => e.data.lang === 'es');
+  return esEntries.map((entry) => ({
+    params: { slug: `pruebas/${entry.data.slug}` },
+    props: { entry, all },
+  }));
+}
+
+const { entry, all } = Astro.props;
+const site = import.meta.env.PUBLIC_SITE_URL || 'https://symptomatik.com';
+const canonical = canonicalURL({ site, lang: 'es', collection: 'medical-tests', slug: entry.data.slug });
+const alternatesEntries = findAlternatesByCanonicalSlug(all, entry.data.canonicalSlug);
+const alternates = alternatesFor({ entries: alternatesEntries, site, collection: 'medical-tests' });
+
+const breadcrumbs = [
+  { label: t('es', 'breadcrumbs.home'), href: site + '/es/' },
+  { label: t('es', 'breadcrumbs.medicalTests'), href: site + '/es/pruebas/' },
+  { label: entry.data.title },
+];
+const jsonLd = [
+  medicalWebPage({
+    url: canonical,
+    title: entry.data.h1,
+    description: entry.data.metaDescription,
+    lastReviewed: entry.data.updatedAt,
+    datePublished: entry.data.publishedAt,
+    inLanguage: 'es',
+  }),
+  breadcrumbList(breadcrumbs),
+];
+---
+<ContentLayout
+  title={entry.data.metaTitle}
+  description={entry.data.metaDescription}
+  canonical={canonical}
+  alternates={alternates}
+  locale="es"
+  jsonLd={jsonLd}
+  breadcrumbs={breadcrumbs}
+  h1={entry.data.h1}
+  h1Text={entry.data.h1Text}
+  sections={entry.data.sections}
+  updatedAt={entry.data.updatedAt}
+/>

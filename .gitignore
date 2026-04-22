@@ -34,6 +34,8 @@ pnpm-debug.log*
 .cache/
 .turbo/
 coverage/
+test-results/
+playwright-report/
 
 # Claude Code (local session state; cross-repo convention)
 .claude/

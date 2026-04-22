@@ -1,0 +1,34 @@
+---
+import { t } from '@/i18n/ui';
+import type { Locale } from '@/i18n/locales';
+import type { Alternate } from '@/lib/seo/meta';
+
+interface Props {
+  currentLocale: Locale;
+  alternates: Alternate[];
+}
+
+const { currentLocale, alternates } = Astro.props as Props;
+
+const LABELS: Record<Locale, string> = { en: 'English', pl: 'Polski', es: 'Español' };
+
+// Only show alternates where a real translation exists (not x-default).
+const switchables = alternates.filter((a) => a.hreflang !== 'x-default');
+---
+<nav aria-label={t(currentLocale, 'language.switcher.label')} class="flex gap-2 items-center text-sm">
+  <span class="sr-only">{t(currentLocale, 'language.switcher.label')}:</span>
+  {switchables.map((a) => {
+    const isCurrent = a.hreflang === currentLocale;
+    const label = LABELS[a.hreflang as Locale] ?? a.hreflang;
+    return (
+      <a
+        href={a.href}
+        lang={a.hreflang}
+        aria-current={isCurrent ? 'page' : undefined}
+        class={`px-2 py-1 rounded ${isCurrent ? 'bg-neutral-200 font-medium' : 'hover:bg-neutral-100'}`}
+      >
+        {label}
+      </a>
+    );
+  })}
+</nav>

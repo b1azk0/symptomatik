@@ -1,0 +1,22 @@
+---
+import { t } from '@/i18n/ui';
+import type { Locale } from '@/i18n/locales';
+
+interface Props {
+  locale: Locale;
+  variant?: 'content' | 'ai-result';
+}
+
+const { locale, variant = 'content' } = Astro.props as Props;
+const text = variant === 'ai-result' ? t(locale, 'disclaimer.aiResult') : t(locale, 'disclaimer.content');
+const heading = locale === 'pl' ? 'Zastrzeżenie medyczne' : locale === 'es' ? 'Aviso médico' : 'Medical disclaimer';
+---
+<aside
+  class="border-l-4 bg-amber-50 text-amber-900 px-4 py-3 my-6 text-sm rounded-r"
+  style="border-color: var(--color-brand-disclaimer-border); background: var(--color-brand-disclaimer-bg);"
+  role="note"
+  aria-label={heading}
+>
+  <strong class="block mb-1">⚕︎ {heading}</strong>
+  <p class="m-0">{text}</p>
+</aside>
