@@ -1,0 +1,60 @@
+---
+import { getCollection } from 'astro:content';
+import TestCard from './TestCard.astro';
+import { selectRelated } from './related-content-logic';
+import { buildURL } from '@/i18n/routes';
+import { categoryMeta, type CategoryKey } from '@/i18n/categories';
+import type { Locale } from '@/i18n/locales';
+import { t } from '@/i18n/ui';
+
+interface Props {
+  currentSlug: string;
+  categoryKey: CategoryKey;
+  lang: Locale;
+  curated?: string[];
+}
+
+const { currentSlug, categoryKey, lang, curated = [] } = Astro.props;
+const all = await getCollection('medical-tests');
+const picks = selectRelated({ currentSlug, categoryKey, lang, curated, all });
+// categoryMeta only has en/pl locale entries; ES falls back to EN labels.
+const metaLang = lang === 'pl' ? 'pl' : 'en';
+---
+{picks.length >= 3 && (
+  <section class="related">
+    <h2 class="related__heading">{t(lang, 'relatedContent.heading')}</h2>
+    <div class="related__grid">
+      {picks.map((e) => (
+        <TestCard
+          href={buildURL({ lang, collection: 'medical-tests', slug: e.data.slug })}
+          title={e.data.title}
+          aiUseCase={e.data.aiUseCase}
+          categoryLabel={categoryMeta[e.data.categorySlug as CategoryKey][metaLang].label}
+          paletteAccent={categoryMeta[e.data.categorySlug as CategoryKey].paletteAccent}
+        />
+      ))}
+    </div>
+  </section>
+)}
+
+<style>
+  .related {
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid #F0E0D0;
+  }
+
+  .related__heading {
+    font-family: 'Geist', ui-sans-serif, system-ui, sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: #2B2626;
+    margin: 0 0 20px 0;
+  }
+
+  .related__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 12px;
+  }
+</style>

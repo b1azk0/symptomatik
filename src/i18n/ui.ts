@@ -20,6 +20,7 @@ export const ui = {
     'breadcrumbs.home': 'Home',
     'breadcrumbs.medicalTests': 'Medical Tests',
     'lastReviewed': 'Last reviewed',
+    'relatedContent.heading': 'Related tests',
   },
   pl: {
     'nav.symptomChecker': 'Sprawdź objawy',
@@ -39,6 +40,7 @@ export const ui = {
     'breadcrumbs.home': 'Strona główna',
     'breadcrumbs.medicalTests': 'Badania',
     'lastReviewed': 'Ostatnia weryfikacja',
+    'relatedContent.heading': 'Powiązane badania',
   },
   es: {
     'nav.symptomChecker': 'Verificador de síntomas',
@@ -58,6 +60,7 @@ export const ui = {
     'breadcrumbs.home': 'Inicio',
     'breadcrumbs.medicalTests': 'Pruebas',
     'lastReviewed': 'Última revisión',
+    'relatedContent.heading': 'Pruebas relacionadas',
   },
 } as const;
 
