@@ -39,3 +39,6 @@ playwright-report/
 
 # Claude Code (local session state; cross-repo convention)
 .claude/
+
+# Git worktrees (feature-branch checkouts; superpowers convention)
+.worktrees/
