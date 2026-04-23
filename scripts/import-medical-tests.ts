@@ -50,7 +50,10 @@ export function slugify(input: string): string {
 
 type Row = Record<string, string>;
 
+// IssueType members. `MISALIGNED` is reserved for Plan Task 2, where the
+// name-similarity heuristic lands; no code path returns it in Task 1.
 export type IssueType =
+  | 'EMPTY'
   | 'OK'
   | 'DUPLICATE'
   | 'MISALIGNED'
@@ -62,8 +65,6 @@ export type IssueFlag = 'META_TOO_LONG_EN' | 'META_TOO_LONG_PL';
 export interface ClassifyArgs {
   enRow: Row;
   plRow: Row;
-  enRowIndex: number;
-  plRowIndex: number;
   seenEnSlugs: Set<string>;
 }
 
@@ -80,7 +81,7 @@ export function classifyRowPair(args: ClassifyArgs): ClassifyResult {
   const enName = (enRow['test name'] ?? '').trim();
   const plName = (plRow['nazwa testu'] ?? '').trim();
 
-  if (!enName && !plName) return { issue: 'OK', flags: [], canonicalSlug: null };
+  if (!enName && !plName) return { issue: 'EMPTY', flags: [], canonicalSlug: null };
   if (!enName) return { issue: 'MISSING_EN', flags: [], canonicalSlug: null };
   if (!plName) return { issue: 'MISSING_PL', flags: [], canonicalSlug: slugify(enName) };
 

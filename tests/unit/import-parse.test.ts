@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { rowToFrontmatter, renderMdx } from '../../scripts/import-medical-tests';
+import { rowToFrontmatter, renderMdx, classifyRowPair } from '../../scripts/import-medical-tests';
+import type { IssueType } from '../../scripts/import-medical-tests';
 
 const enRow = {
   'test name': 'Complete Blood Count (CBC)',
@@ -71,15 +72,11 @@ describe('renderMdx', () => {
   });
 });
 
-import { classifyRowPair, IssueType } from '../../scripts/import-medical-tests';
-
 describe('classifyRowPair', () => {
   it('returns OK when EN + PL both present and names align', () => {
     const res = classifyRowPair({
       enRow: { 'test name': 'Complete Blood Count (CBC)', 'category': 'Hematology' },
       plRow: { 'nazwa testu': 'Morfologia krwi (CBC)', 'kategoria': 'Hematologia' },
-      enRowIndex: 2,
-      plRowIndex: 2,
       seenEnSlugs: new Set(),
     });
     expect(res.issue).toBe<IssueType>('OK');
@@ -89,8 +86,6 @@ describe('classifyRowPair', () => {
     const res = classifyRowPair({
       enRow: { 'test name': 'Ferritin', 'category': 'Iron' },
       plRow: {},
-      enRowIndex: 5,
-      plRowIndex: 5,
       seenEnSlugs: new Set(),
     });
     expect(res.issue).toBe<IssueType>('MISSING_PL');
@@ -101,8 +96,6 @@ describe('classifyRowPair', () => {
     const res = classifyRowPair({
       enRow: { 'test name': 'Homocysteine', 'category': 'Cardio' },
       plRow: { 'nazwa testu': 'Homocysteina', 'kategoria': 'Kardio' },
-      enRowIndex: 50,
-      plRowIndex: 50,
       seenEnSlugs: seen,
     });
     expect(res.issue).toBe<IssueType>('DUPLICATE');
@@ -113,11 +106,39 @@ describe('classifyRowPair', () => {
     const res = classifyRowPair({
       enRow: { 'test name': 'Test', 'category': 'Cat', 'meta description': longMeta },
       plRow: { 'nazwa testu': 'Test PL', 'kategoria': 'Kat', 'meta description': 'short' },
-      enRowIndex: 7,
-      plRowIndex: 7,
       seenEnSlugs: new Set(),
     });
     expect(res.issue).toBe<IssueType>('OK');
+    expect(res.flags).toContain('META_TOO_LONG_EN');
+  });
+
+  it('returns EMPTY when both EN and PL rows have no test name', () => {
+    const res = classifyRowPair({
+      enRow: {},
+      plRow: {},
+      seenEnSlugs: new Set(),
+    });
+    expect(res.issue).toBe<IssueType>('EMPTY');
+    expect(res.canonicalSlug).toBeNull();
+  });
+
+  it('does NOT flag META_TOO_LONG_EN for exactly 160-char meta', () => {
+    const meta160 = 'x'.repeat(160);
+    const res = classifyRowPair({
+      enRow: { 'test name': 'Test', 'meta description': meta160 },
+      plRow: { 'nazwa testu': 'Test PL' },
+      seenEnSlugs: new Set(),
+    });
+    expect(res.flags).not.toContain('META_TOO_LONG_EN');
+  });
+
+  it('flags META_TOO_LONG_EN at 161 chars (first over-limit)', () => {
+    const meta161 = 'x'.repeat(161);
+    const res = classifyRowPair({
+      enRow: { 'test name': 'Test', 'meta description': meta161 },
+      plRow: { 'nazwa testu': 'Test PL' },
+      seenEnSlugs: new Set(),
+    });
     expect(res.flags).toContain('META_TOO_LONG_EN');
   });
 });
