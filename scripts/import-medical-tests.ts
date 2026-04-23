@@ -50,6 +50,52 @@ export function slugify(input: string): string {
 
 type Row = Record<string, string>;
 
+export type IssueType =
+  | 'OK'
+  | 'DUPLICATE'
+  | 'MISALIGNED'
+  | 'MISSING_EN'
+  | 'MISSING_PL';
+
+export type IssueFlag = 'META_TOO_LONG_EN' | 'META_TOO_LONG_PL';
+
+export interface ClassifyArgs {
+  enRow: Row;
+  plRow: Row;
+  enRowIndex: number;
+  plRowIndex: number;
+  seenEnSlugs: Set<string>;
+}
+
+export interface ClassifyResult {
+  issue: IssueType;
+  flags: IssueFlag[];
+  canonicalSlug: string | null;
+}
+
+const META_MAX = 160;
+
+export function classifyRowPair(args: ClassifyArgs): ClassifyResult {
+  const { enRow, plRow, seenEnSlugs } = args;
+  const enName = (enRow['test name'] ?? '').trim();
+  const plName = (plRow['nazwa testu'] ?? '').trim();
+
+  if (!enName && !plName) return { issue: 'OK', flags: [], canonicalSlug: null };
+  if (!enName) return { issue: 'MISSING_EN', flags: [], canonicalSlug: null };
+  if (!plName) return { issue: 'MISSING_PL', flags: [], canonicalSlug: slugify(enName) };
+
+  const slug = slugify(enName);
+  if (seenEnSlugs.has(slug)) {
+    return { issue: 'DUPLICATE', flags: [], canonicalSlug: slug };
+  }
+
+  const flags: IssueFlag[] = [];
+  if ((enRow['meta description'] ?? '').length > META_MAX) flags.push('META_TOO_LONG_EN');
+  if ((plRow['meta description'] ?? '').length > META_MAX) flags.push('META_TOO_LONG_PL');
+
+  return { issue: 'OK', flags, canonicalSlug: slug };
+}
+
 export interface Frontmatter {
   slug: string;
   canonicalSlug: string;

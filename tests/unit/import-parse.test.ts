@@ -70,3 +70,54 @@ describe('renderMdx', () => {
     expect(mdx).toContain('auto-generated from frontmatter');
   });
 });
+
+import { classifyRowPair, IssueType } from '../../scripts/import-medical-tests';
+
+describe('classifyRowPair', () => {
+  it('returns OK when EN + PL both present and names align', () => {
+    const res = classifyRowPair({
+      enRow: { 'test name': 'Complete Blood Count (CBC)', 'category': 'Hematology' },
+      plRow: { 'nazwa testu': 'Morfologia krwi (CBC)', 'kategoria': 'Hematologia' },
+      enRowIndex: 2,
+      plRowIndex: 2,
+      seenEnSlugs: new Set(),
+    });
+    expect(res.issue).toBe<IssueType>('OK');
+  });
+
+  it('returns MISSING_PL when PL row is empty', () => {
+    const res = classifyRowPair({
+      enRow: { 'test name': 'Ferritin', 'category': 'Iron' },
+      plRow: {},
+      enRowIndex: 5,
+      plRowIndex: 5,
+      seenEnSlugs: new Set(),
+    });
+    expect(res.issue).toBe<IssueType>('MISSING_PL');
+  });
+
+  it('returns DUPLICATE when EN name collides with an already-seen slug', () => {
+    const seen = new Set<string>(['homocysteine']);
+    const res = classifyRowPair({
+      enRow: { 'test name': 'Homocysteine', 'category': 'Cardio' },
+      plRow: { 'nazwa testu': 'Homocysteina', 'kategoria': 'Kardio' },
+      enRowIndex: 50,
+      plRowIndex: 50,
+      seenEnSlugs: seen,
+    });
+    expect(res.issue).toBe<IssueType>('DUPLICATE');
+  });
+
+  it('flags META_TOO_LONG but still returns OK', () => {
+    const longMeta = 'x'.repeat(200);
+    const res = classifyRowPair({
+      enRow: { 'test name': 'Test', 'category': 'Cat', 'meta description': longMeta },
+      plRow: { 'nazwa testu': 'Test PL', 'kategoria': 'Kat', 'meta description': 'short' },
+      enRowIndex: 7,
+      plRowIndex: 7,
+      seenEnSlugs: new Set(),
+    });
+    expect(res.issue).toBe<IssueType>('OK');
+    expect(res.flags).toContain('META_TOO_LONG_EN');
+  });
+});
