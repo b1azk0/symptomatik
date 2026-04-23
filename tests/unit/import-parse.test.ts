@@ -141,4 +141,22 @@ describe('classifyRowPair', () => {
     });
     expect(res.flags).toContain('META_TOO_LONG_EN');
   });
+
+  it('returns MISALIGNED when EN and PL names refer to different tests', () => {
+    const res = classifyRowPair({
+      enRow: { 'test name': 'Thyroid Stimulating Hormone' },
+      plRow: { 'nazwa testu': 'Morfologia krwi' }, // clearly unrelated
+      seenEnSlugs: new Set(),
+    });
+    expect(res.issue).toBe<IssueType>('MISALIGNED');
+  });
+
+  it('does NOT flag MISALIGNED when names share detectable root tokens', () => {
+    const res = classifyRowPair({
+      enRow: { 'test name': 'Ferritin' },
+      plRow: { 'nazwa testu': 'Ferrytyna' }, // transliteration / cognate
+      seenEnSlugs: new Set(),
+    });
+    expect(res.issue).toBe<IssueType>('OK');
+  });
 });

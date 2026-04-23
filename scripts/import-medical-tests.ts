@@ -76,6 +76,36 @@ export interface ClassifyResult {
 
 const META_MAX = 160;
 
+function namesLikelyAligned(enName: string, plName: string): boolean {
+  const normalize = (s: string) =>
+    slugify(s).replace(/-/g, '').replace(/[0-9]/g, '');
+  const a = normalize(enName);
+  const b = normalize(plName);
+  if (!a || !b) return true;
+  // Cheap shared-prefix heuristic: at least 3 chars in common at start.
+  const shared = Math.min(a.length, b.length);
+  let prefix = 0;
+  for (let i = 0; i < shared; i++) {
+    if (a[i] === b[i]) prefix++;
+    else break;
+  }
+  if (prefix >= 3) return true;
+  // Fallback: any 3-char substring of one appears in the other (bidirectional).
+  // 3-char threshold (vs 4) ensures shared abbreviations like "CBC" are caught.
+  const SUB = 3;
+  if (a.length >= SUB) {
+    for (let i = 0; i <= a.length - SUB; i++) {
+      if (b.includes(a.slice(i, i + SUB))) return true;
+    }
+  }
+  if (b.length >= SUB) {
+    for (let i = 0; i <= b.length - SUB; i++) {
+      if (a.includes(b.slice(i, i + SUB))) return true;
+    }
+  }
+  return false;
+}
+
 export function classifyRowPair(args: ClassifyArgs): ClassifyResult {
   const { enRow, plRow, seenEnSlugs } = args;
   const enName = (enRow['test name'] ?? '').trim();
@@ -93,6 +123,10 @@ export function classifyRowPair(args: ClassifyArgs): ClassifyResult {
   const flags: IssueFlag[] = [];
   if ((enRow['meta description'] ?? '').length > META_MAX) flags.push('META_TOO_LONG_EN');
   if ((plRow['meta description'] ?? '').length > META_MAX) flags.push('META_TOO_LONG_PL');
+
+  if (!namesLikelyAligned(enName, plName)) {
+    return { issue: 'MISALIGNED', flags, canonicalSlug: slug };
+  }
 
   return { issue: 'OK', flags, canonicalSlug: slug };
 }
