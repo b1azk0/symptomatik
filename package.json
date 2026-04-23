@@ -34,6 +34,7 @@
     "exceljs": "^4",
     "happy-dom": "^20.9.0",
     "lighthouse": "^12",
+    "pagefind": "^1.5.2",
     "tailwindcss": "^4",
     "tsx": "^4",
     "typescript": "^5",

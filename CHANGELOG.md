@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-04-23 — S1 Content Platform: Task 14 — Pagefind postbuild indexing
+
+- `package.json`: added `pagefind@1.5.2` to `devDependencies`.
+- `astro.config.mjs`: added `pagefindIntegration` — a custom Astro integration
+  whose `astro:build:done` hook runs `pnpm pagefind` against `dist/client/`
+  after Astro's static build completes.
+  - Scoped to medical-tests content only via `--glob "{medical-tests/**/*.html,pl/badania/**/*.html}"`.
+  - Legal pages (privacy, terms, cookies, medical-disclaimer) and homepages excluded.
+  - Integration placed last in the `integrations` array; the hook fires after sitemap.
+- Build produces `dist/client/pagefind/` with `pagefind.js`, `pagefind-ui.js`,
+  `pagefind-ui.css`, plus fragment/index shards for EN + PL languages.
+  102 pages indexed (all EN medical-tests + all PL badania pages).
+- `pnpm test`: 109/109 pass. `pnpm check`: 0 errors.
+
 ## 2026-04-23 — S1 Content Platform: Task 11 — TestCard component
 
 - `src/components/TestCard.astro`: new shared card component for test summaries.
