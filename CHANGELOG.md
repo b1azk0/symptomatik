@@ -1,5 +1,26 @@
 # Changelog
 
+## 2026-04-23 — S1 Content Platform: Task 11 — TestCard component
+
+- `src/components/TestCard.astro`: new shared card component for test summaries.
+  Flat white card with 1px Warm Linen border (`#F0E0D0`), 8px radius, 20px padding.
+  Eyebrow in category accent color (Geist Mono, 10px, uppercase, letter-spacing 1.2),
+  title in primary text (Geist, 16px, semibold), aiUseCase excerpt in secondary
+  (`#7A6A5E`, 13px). Props: `href`, `title`, `aiUseCase`, `categoryLabel`,
+  `paletteAccent`. No illustration — text-forward card per spec.
+- `tests/unit/test-card.test.ts`: 3 Vitest tests via `AstroContainer` (renders
+  title/aiUseCase/link, paletteAccent in markup, categoryLabel in content).
+- `vitest.config.ts`: migrated from `defineConfig` to `getViteConfig` (Astro)
+  so `.astro` files can be compiled in the test runner. Uses `astro.config.test.mjs`
+  (no CF adapter) to avoid the CF Vite plugin's incompatibility with vitest's
+  `resolve.external`. Tests run with `// @vitest-environment node` to get SSR
+  compilation of `.astro` files (not browser stubs).
+- `astro.config.test.mjs`: minimal Astro config for test runner (no CF adapter,
+  no integrations — just enough for `.astro` compilation).
+- `tests/stubs/astro-components.d.ts`: ambient `*.astro` module declaration so
+  `tsc --noEmit` resolves `.astro` imports in test files.
+- Test count: 94 → 97 (3 new).
+
 ## 2026-04-23 — S1 Content Platform: Task 5 — categories.ts.tmpl generation
 
 - `scripts/import-medical-tests.ts`: added exported `renderCategoriesTmpl()` that sorts categories, slugifies PL labels, and emits a typed TS template file ready for human review.
