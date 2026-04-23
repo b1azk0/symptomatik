@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-04-23 — S1 Content Platform: Task 5 — categories.ts.tmpl generation
+
+- `scripts/import-medical-tests.ts`: added exported `renderCategoriesTmpl()` that sorts categories, slugifies PL labels, and emits a typed TS template file ready for human review.
+- `scripts/import-medical-tests.ts`: added `extractCategoryKeys()` helper that parses `categoryMeta` keys from an existing `categories.ts` via regex.
+- `scripts/import-medical-tests.ts`: wired categories handling into `runImport` non-dryRun path — emits `src/i18n/categories.ts.tmpl` on first run (when `categories.ts` is absent); on subsequent runs validates all seen category keys against `categoryMeta` and throws a clear actionable error on drift.
+- `tests/unit/import-parse.test.ts`: added `renderCategoriesTmpl` test suite (1 new test; total 15 pass).
+
 ## 2026-04-22 — S0 Foundation Scaffold shipped · v0.1.0
 
 All 40 S0 tasks complete. Production live at https://symptomatik.com
