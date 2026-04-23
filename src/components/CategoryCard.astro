@@ -1,0 +1,103 @@
+---
+interface Props {
+  href: string;
+  label: string;
+  testCount: number;
+  testPreview?: string;
+  illustration?: string;
+  illustrationBg?: string;
+  paletteAccent: string;
+}
+
+const {
+  href,
+  label,
+  testCount,
+  testPreview,
+  illustration,
+  illustrationBg = '#F5F0EC',
+  paletteAccent,
+} = Astro.props;
+
+const countLabel = `${testCount} ${testCount === 1 ? 'test' : 'tests'}`;
+const rosterLine = testPreview ? `${countLabel} — ${testPreview}` : countLabel;
+---
+<a
+  href={href}
+  class="category-card"
+  data-palette-accent={paletteAccent}
+>
+  <div
+    class="category-card__illustration"
+    style={`background-color: ${illustrationBg}`}
+  >
+    {illustration && (
+      <img
+        src={illustration}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        class="category-card__img"
+      />
+    )}
+  </div>
+  <div class="category-card__meta">
+    <div class="category-card__label">{label}</div>
+    <div class="category-card__roster">{rosterLine}</div>
+  </div>
+</a>
+
+<style>
+  .category-card {
+    display: flex;
+    flex-direction: column;
+    background: #FFFFFF;
+    border: 1px solid #F0E0D0;
+    border-radius: 16px;
+    overflow: hidden;
+    text-decoration: none;
+    transition: border-color 0.15s ease;
+  }
+
+  .category-card:hover {
+    border-color: #D4BAC8;
+  }
+
+  .category-card__illustration {
+    width: 100%;
+    aspect-ratio: 2 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .category-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .category-card__meta {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .category-card__label {
+    font-family: 'Geist', ui-sans-serif, system-ui, sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: #2B2626;
+    line-height: 1.25;
+  }
+
+  .category-card__roster {
+    font-family: 'Geist', ui-sans-serif, system-ui, sans-serif;
+    font-size: 13px;
+    color: #7A6A5E;
+    line-height: 1.4;
+  }
+</style>
