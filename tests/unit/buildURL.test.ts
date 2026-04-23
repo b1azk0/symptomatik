@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildURL, localePrefix, collectionSegments } from '@/i18n/routes';
+import { buildURL, localePrefix, collectionSegments, buildCategoryURL, buildPillarURL } from '@/i18n/routes';
 
 describe('localePrefix', () => {
   it('EN has empty prefix', () => {
@@ -44,5 +44,32 @@ describe('buildURL', () => {
   it('always produces trailing slash', () => {
     const result = buildURL({ lang: 'en', collection: 'medical-tests', slug: 'x' });
     expect(result.endsWith('/')).toBe(true);
+  });
+});
+
+describe('buildPillarURL', () => {
+  it('EN → /medical-tests/', () => {
+    expect(buildPillarURL('en', 'medical-tests')).toBe('/medical-tests/');
+  });
+  it('PL → /pl/badania/', () => {
+    expect(buildPillarURL('pl', 'medical-tests')).toBe('/pl/badania/');
+  });
+  it('ES → /es/pruebas/', () => {
+    expect(buildPillarURL('es', 'medical-tests')).toBe('/es/pruebas/');
+  });
+});
+
+describe('buildCategoryURL', () => {
+  it('EN + hematology → /medical-tests/hematology/', () => {
+    expect(buildCategoryURL('en', 'hematology')).toBe('/medical-tests/hematology/');
+  });
+  it('PL + hematology → /pl/badania/hematologia/', () => {
+    expect(buildCategoryURL('pl', 'hematology')).toBe('/pl/badania/hematologia/');
+  });
+  it('EN + liver → /medical-tests/liver-function-tests/', () => {
+    expect(buildCategoryURL('en', 'liver')).toBe('/medical-tests/liver-function-tests/');
+  });
+  it('PL + gastro → /pl/badania/uklad-pokarmowy/', () => {
+    expect(buildCategoryURL('pl', 'gastro')).toBe('/pl/badania/uklad-pokarmowy/');
   });
 });

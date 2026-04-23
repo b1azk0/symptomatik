@@ -1,4 +1,5 @@
 import type { Locale } from './locales';
+import { categoryMeta, type CategoryKey } from './categories';
 
 export const localePrefix: Record<Locale, string> = {
   en: '',
@@ -41,4 +42,17 @@ export function legalSlugFor(key: LegalKey, lang: Locale): string {
 export function buildLegalURL(lang: Locale, key: LegalKey): string {
   const prefix = localePrefix[lang];
   return `${prefix}/${legalSlugFor(key, lang)}/`;
+}
+
+export function buildPillarURL(lang: Locale, collection: Collection): string {
+  const prefix = localePrefix[lang];
+  const segment = collectionSegments[collection][lang];
+  return `${prefix}/${segment}/`;
+}
+
+export function buildCategoryURL(lang: 'en' | 'pl', key: CategoryKey): string {
+  const prefix = localePrefix[lang];
+  const collectionSeg = collectionSegments['medical-tests'][lang];
+  const categorySeg = categoryMeta[key][lang].slug;
+  return `${prefix}/${collectionSeg}/${categorySeg}/`;
 }
