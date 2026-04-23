@@ -3,7 +3,14 @@ import { glob } from 'astro/loaders';
 import { medicalTestSchema, legalSchema } from '@/content/schemas';
 
 const medicalTests = defineCollection({
-  loader: glob({ pattern: '**/*.mdx', base: './src/content/medical-tests' }),
+  loader: glob({
+    pattern: '**/*.mdx',
+    base: './src/content/medical-tests',
+    // IDs must include the locale path since many tests share the same slug stem
+    // across locales (e.g., en/crp.mdx + pl/crp.mdx); default behavior uses only
+    // the filename and later entries silently overwrite earlier ones.
+    generateId: ({ entry }) => entry.replace(/\.mdx$/, ''),
+  }),
   schema: medicalTestSchema,
 });
 
