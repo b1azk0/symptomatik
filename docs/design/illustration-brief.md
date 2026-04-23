@@ -70,24 +70,25 @@ All three constraints must be active simultaneously. Dropping any one causes a r
 
 Suggested generator: **Flux Pro 1.1** or **Recraft v3** for vector-leaning output. Midjourney v6 works but requires heavier prompt guardrails against its default maximalism. Avoid DALL-E for this style (tendency toward illustrated-icon aesthetic that breaks register).
 
-## Subject library (12 S1 category heroes)
+## Subject library — locked after 2026-04-23 Pencil iteration
 
-Each subject paired with exact prompt — run once per category, pick best generation from 4 candidates:
+Each subject paired with exact prompt — these subjects are what shipped after iteration against Blazej. When regenerating or adding new pillar categories, use a concrete recognizable anatomical/lab subject, not a pure abstraction.
 
-| Key | Subject prompt fragment |
-|---|---|
-| `hematology` | "stylized red blood cells and platelets in a gentle microscopic composition" |
-| `cardiometabolic` | "stylized heart silhouette intersecting soft energy flow lines suggesting circulation and metabolism" |
-| `gastro` | "stylized digestive tract silhouette with soft flowing curves" |
-| `heart` | "stylized anatomical heart silhouette with gentle pulse wave motif" |
-| `hematology` | (see above — don't duplicate) |
-| `hormonal` | "stylized endocrine balance motif with gently interconnected organic shapes suggesting hormonal harmony" |
-| `inflammatory` | "stylized abstract inflammation motif with soft radial warmth glow" |
-| `liver` | "stylized anatomical liver silhouette with soft circulation flow lines" |
-| `mental-health` | "abstract stylized human mind profile with calm flowing thought waves" |
-| `metabolism` | "stylized metabolic energy flow with interconnected organic shapes suggesting cellular energy" |
-| `oncology` | "stylized abstract cellular clusters suggesting biological growth markers" |
-| `urine` | "stylized water droplet with gentle organic ripples and a clean laboratory feel" |
+| Key | Subject | Why this subject |
+|---|---|---|
+| `hematology` | stylized red blood cells and platelets in a microscopic field | Archetypal "what's in your blood" visual |
+| `hormonal` | stylized endocrine balance motif with interconnected organic shapes | Abstract-but-readable as "harmony/balance" |
+| `inflammatory` | stylized abstract inflammation motif with soft radial warmth glow | "Warmth" visual directly encodes inflammation |
+| `liver` | stylized anatomical liver silhouette with soft circulation flow lines | Recognizable organ silhouette |
+| `mental-health` | clear human head silhouette in profile with a soft simplified brain shape visible inside | Iteration learning: "abstract thought waves" (first attempt) wasn't recognizable as the category; profile + brain is immediately readable |
+| `metabolism` | pair of stylized anatomical kidney silhouettes | Iteration learning: "metabolic energy flow" was too abstract; metabolic panel is heavily kidney-focused (BUN, creatinine, eGFR) so paired kidneys is semantically correct and anatomically recognizable |
+| `oncology` | stylized magnifying lens hovering over a small cluster of pastel cells, with one cell underneath the lens highlighted in a darker tone | Iteration learning: plain "marked cell cluster" overlapped visually with Hematology; the magnifying lens adds the "detection/screening" narrative that distinguishes tumor markers as a test category |
+| `urine` | single laboratory specimen collection cup filled with soft pale yellow liquid | Iteration learning: "water droplet with ripples" was too abstract; specimen cup unambiguously signals urinalysis as a test |
+| **Not yet generated for S1** | | |
+| `cardiometabolic` | stylized heart silhouette intersecting soft energy flow lines | Reserve for when cardiometabolic category has live tests to render |
+| `gastro` | stylized digestive tract silhouette with soft flowing curves | Reserve |
+| `heart` | stylized anatomical heart silhouette with gentle pulse wave motif | Reserve |
+| `autoimmunology` | stylized abstract shield or protective cluster motif | Reserve |
 
 ## Pillar hero (1 per pillar)
 
