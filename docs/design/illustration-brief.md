@@ -46,11 +46,14 @@ Text + pill accents within each palette derive from the dark-accent shade at 80%
 ## Master prompt template (AI generation)
 
 ```
-Editorial medical illustration of [SUBJECT], organic rounded shapes,
-flat vector style, [PALETTE DESCRIPTION] with cream highlights,
-minimalist composition, generous white space, no text, no human faces,
-patient.info meets Stripe Press aesthetic.
+Minimal flat vector editorial illustration of [SUBJECT],
+SOLID FLAT COLOR FIELDS ONLY, no texture, no shading, no gradient,
+no realistic rendering, [PALETTE DESCRIPTION], organic rounded shapes,
+cream white background, generous empty space,
+matches the flat pastel style of red blood cells and liver silhouette illustrations.
 ```
+
+**Why the shouting:** first-pass generation (2026-04-23) produced flat/pastel results for straightforward subjects (blood cells, liver silhouette) but drifted into **textured/painterly rendering** for more abstract subjects (metabolic leaves looked botanical-realistic, mental health looked misty/ethereal, tumor markers looked crystalline). The capital-letters `SOLID FLAT COLOR FIELDS ONLY` + explicit no-texture / no-shading / no-realistic list is required to hold the style across abstract subjects. Reference-anchoring to a pair of known-good outputs ("matches the flat pastel style of...") further corrects drift.
 
 Suggested generator: **Flux Pro 1.1** or **Recraft v3** for vector-leaning output. Midjourney v6 works but requires heavier prompt guardrails against its default maximalism. Avoid DALL-E for this style (tendency toward illustrated-icon aesthetic that breaks register).
 
