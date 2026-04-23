@@ -364,104 +364,156 @@ function extractExistingPublishedAt(filePath: string): string | undefined {
   return m?.[1];
 }
 
+// ────────────────────────────────────────────────────────────────────────────
+// runImport — exported core logic, callable from tests and from main()
+// ────────────────────────────────────────────────────────────────────────────
+
+export interface RunImportArgs {
+  enRows?: Row[];
+  plRows?: Row[];
+  excel?: string;
+  outputDir?: string;
+  dryRun?: boolean;
+  today?: Date;
+  onlySlug?: string | null;
+}
+
+export interface SkippedEntry {
+  issue: IssueType;
+  flags: IssueFlag[];
+  enRowIndex: number;
+  plRowIndex: number;
+  enName: string;
+  plName: string;
+  canonicalSlug: string | null;
+}
+
+export interface RunImportResult {
+  written: { en: string[]; pl: string[] };
+  skipped: SkippedEntry[];
+  categoriesSeen: Array<{ key: string; labelEn: string; labelPl: string }>;
+}
+
+async function writeTestMdx(fm: Frontmatter, outputDir: string): Promise<void> {
+  const outDir = path.join(outputDir, fm.lang);
+  const outFile = path.join(outDir, `${fm.slug}.mdx`);
+  const existingPublishedAt = extractExistingPublishedAt(outFile);
+  const fmWithPreserved = existingPublishedAt ? { ...fm, publishedAt: existingPublishedAt } : fm;
+  await mkdir(outDir, { recursive: true });
+  await writeFile(outFile, renderMdx(fmWithPreserved), 'utf8');
+}
+
+export async function runImport(args: RunImportArgs): Promise<RunImportResult> {
+  const enRows =
+    args.enRows ?? (args.excel ? await readSheet(args.excel, SHEET_BY_LANG['en'] ?? 'EN - SEO optimized') : []);
+  const plRows =
+    args.plRows ?? (args.excel ? await readSheet(args.excel, SHEET_BY_LANG['pl'] ?? 'PL - original') : []);
+  const today = args.today ?? new Date();
+  const outputDir = args.outputDir ?? path.join(repoRoot, 'src/content/medical-tests');
+
+  const written = { en: [] as string[], pl: [] as string[] };
+  const skipped: SkippedEntry[] = [];
+  const categoriesSeen = new Map<string, { labelEn: string; labelPl: string }>();
+  const seenEnSlugs = new Set<string>();
+
+  const rowLimit = Math.max(enRows.length, plRows.length);
+  for (let i = 0; i < rowLimit; i++) {
+    const enRow = enRows[i] ?? {};
+    const plRow = plRows[i] ?? {};
+    const cls = classifyRowPair({ enRow, plRow, seenEnSlugs });
+
+    if (cls.issue === 'EMPTY') continue; // silently skip trailing blanks
+
+    if (cls.issue === 'OK' && cls.canonicalSlug) {
+      seenEnSlugs.add(cls.canonicalSlug);
+      if (args.onlySlug && cls.canonicalSlug !== args.onlySlug) continue;
+
+      // Track category from the OK row (EN side is the source of truth for category key).
+      const categoryEn = (enRow['category'] ?? '').trim();
+      const categoryPl = (plRow['kategoria'] ?? '').trim();
+      if (categoryEn) {
+        const key = slugify(categoryEn);
+        if (!categoriesSeen.has(key))
+          categoriesSeen.set(key, { labelEn: categoryEn, labelPl: categoryPl });
+      }
+
+      // Build frontmatter per locale, write MDX (or skip in dryRun).
+      try {
+        const enFm = rowToFrontmatter(enRow, { lang: 'en', canonicalSlug: cls.canonicalSlug, today });
+        const plFm = rowToFrontmatter(plRow, { lang: 'pl', canonicalSlug: cls.canonicalSlug, today });
+        if (!args.dryRun) {
+          await writeTestMdx(enFm, outputDir);
+          await writeTestMdx(plFm, outputDir);
+        }
+        written.en.push(cls.canonicalSlug);
+        written.pl.push(cls.canonicalSlug);
+      } catch (err) {
+        console.warn(`[WARN] Row ${i + 2}: ${(err as Error).message} — skipping`);
+      }
+      continue;
+    }
+
+    // Non-OK (and non-EMPTY): route to reconciliation.
+    skipped.push({
+      issue: cls.issue,
+      flags: cls.flags,
+      enRowIndex: i + 2,
+      plRowIndex: i + 2,
+      enName: (enRow['test name'] ?? '').trim(),
+      plName: (plRow['nazwa testu'] ?? '').trim(),
+      canonicalSlug: cls.canonicalSlug,
+    });
+  }
+
+  return {
+    written,
+    skipped,
+    categoriesSeen: Array.from(categoriesSeen, ([key, v]) => ({ key, ...v })),
+  };
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// main — CLI entry point
+// ────────────────────────────────────────────────────────────────────────────
+
 async function main() {
   const opts = parseArgs(process.argv.slice(2));
-  const today = new Date();
-  let planned = 0;
-
-  // Pre-read EN sheet to build the row-index → canonicalSlug map.
-  // All locale sheets are assumed to be row-aligned with the EN sheet.
-  const enRows = await readSheet(opts.excel, SHEET_BY_LANG['en'] ?? 'EN - SEO optimized');
-  const canonicalByIndex = new Map<number, string>();
-  const seen = new Map<string, string>();
-
-  enRows.forEach((row, idx) => {
-    const name = row['test name']?.trim() ?? '';
-    if (!name) return;
-    const baseSlug = slugify(name);
-    let slug = baseSlug;
-    let suffix = 2;
-    while (seen.has(slug)) {
-      // Warn on first collision only; then append numeric suffix to disambiguate
-      if (suffix === 2) {
-        const collider = seen.get(baseSlug) ?? seen.get(slug);
-        console.warn(
-          `[WARN] Slug collision in EN sheet: "${collider}" and "${name}" both → "${baseSlug}". ` +
-            `Disambiguating "${name}" as "${baseSlug}-${suffix}".`,
-        );
-      }
-      slug = `${baseSlug}-${suffix++}`;
-    }
-    seen.set(slug, name);
-    canonicalByIndex.set(idx, slug);
-  });
 
   for (const lang of opts.locales) {
     if (lang !== 'en' && lang !== 'pl' && lang !== 'es') {
       throw new Error(`Unsupported locale: ${lang}`);
     }
-    const sheetName = SHEET_BY_LANG[lang];
-    if (!sheetName) throw new Error(`No sheet mapping for locale "${lang}"`);
+  }
 
-    const rows = lang === 'en' ? enRows : await readSheet(opts.excel, sheetName);
+  const result = await runImport({
+    excel: opts.excel,
+    outputDir: opts.out,
+    dryRun: opts.dryRun,
+    onlySlug: opts.onlySlug,
+  });
 
-    if (rows.length !== enRows.length) {
-      console.warn(
-        `[WARN] Row count mismatch: ${lang} sheet has ${rows.length} rows but EN sheet has ${enRows.length}. ` +
-          `Will process only the first ${Math.min(rows.length, enRows.length)} rows. ` +
-          `Fix the Excel if full alignment is needed.`,
+  const totalWritten = result.written.en.length;
+  const totalSkipped = result.skipped.length;
+
+  if (opts.dryRun) {
+    console.log(`\n[dry-run] would write ${totalWritten * 2} file(s) (${totalWritten} tests × 2 locales).`);
+  } else {
+    console.log(`\nwrote ${totalWritten * 2} file(s) (${totalWritten} tests × 2 locales).`);
+  }
+
+  if (totalSkipped > 0) {
+    console.log(`skipped ${totalSkipped} row(s):`);
+    for (const s of result.skipped) {
+      console.log(
+        `  [${s.issue}] row ${s.enRowIndex}: EN="${s.enName}" PL="${s.plName}"` +
+          (s.flags.length ? ` flags=${s.flags.join(',')}` : ''),
       );
-    }
-
-    const rowLimit = Math.min(rows.length, enRows.length);
-    for (let i = 0; i < rowLimit; i++) {
-      const row = rows[i];
-      if (!row) continue;
-      const m = colMap(lang);
-      const testName = row[m['testName'] ?? '']?.trim() ?? '';
-      if (!testName) continue;
-
-      const canonicalSlug = canonicalByIndex.get(i);
-      if (!canonicalSlug) {
-        throw new Error(
-          `Row ${i + 2} has no canonicalSlug (EN row empty at same index). Fix the EN sheet.`,
-        );
-      }
-
-      if (opts.onlySlug && canonicalSlug !== opts.onlySlug) continue;
-
-      const outDir = path.join(opts.out, lang);
-      const slug = lang === 'en' ? canonicalSlug : slugify(testName);
-      const outFile = path.join(outDir, `${slug}.mdx`);
-      const existingPublishedAt = extractExistingPublishedAt(outFile);
-
-      let fm;
-      try {
-        fm = rowToFrontmatter(row, {
-          lang,
-          canonicalSlug,
-          today,
-          ...(existingPublishedAt !== undefined ? { preservePublishedAt: existingPublishedAt } : {}),
-        });
-      } catch (err) {
-        console.warn(`[WARN] Row ${i + 2} (${lang}): ${(err as Error).message} — skipping`);
-        continue;
-      }
-
-      const mdx = renderMdx(fm);
-
-      if (opts.dryRun) {
-        console.log(`[dry-run] would write ${outFile} (${mdx.length} bytes)`);
-      } else {
-        await mkdir(outDir, { recursive: true });
-        await writeFile(outFile, mdx, 'utf8');
-        console.log(`wrote ${outFile}`);
-      }
-      planned++;
     }
   }
 
-  console.log(`\n${opts.dryRun ? 'planned' : 'wrote'} ${planned} file(s).`);
+  if (result.categoriesSeen.length > 0) {
+    console.log(`\ncategories seen: ${result.categoriesSeen.map((c) => c.key).join(', ')}`);
+  }
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

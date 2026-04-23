@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { rowToFrontmatter, renderMdx, classifyRowPair } from '../../scripts/import-medical-tests';
+import { rowToFrontmatter, renderMdx, classifyRowPair, runImport } from '../../scripts/import-medical-tests';
 import type { IssueType } from '../../scripts/import-medical-tests';
 
 const enRow = {
@@ -158,5 +158,42 @@ describe('classifyRowPair', () => {
       seenEnSlugs: new Set(),
     });
     expect(res.issue).toBe<IssueType>('OK');
+  });
+});
+
+describe('runImport (integration, in-memory)', () => {
+  // Common filled-out row helper so fixtures stay short.
+  const fullEn = (name: string, category = 'Hematology'): Record<string, string> => ({
+    'test name': name, 'category': category,
+    'meta title': 'X', 'meta description': 'Y', 'h1 title': 'H', 'h1_text': 'T',
+    'h2_1': 'a', 'h2_1_text': 'b', 'h2_2': 'c', 'h2_2_text': 'd',
+    'h2_3': 'e', 'h2_3_text': 'f', 'h2_4': 'g', 'h2_4_text': 'h',
+    'h2_5': 'i', 'h2_5_text': 'j', 'ai use-case': 'u',
+  });
+  const fullPl = (name: string, category = 'Hematologia'): Record<string, string> => ({
+    'nazwa testu': name, 'kategoria': category,
+    'meta title': 'X', 'meta description': 'Y', 'h1 title': 'H', 'h1_text': 'T',
+    'h2_1': 'a', 'h2_1_text': 'b', 'h2_2': 'c', 'h2_2_text': 'd',
+    'h2_3': 'e', 'h2_3_text': 'f', 'h2_4': 'g', 'h2_4_text': 'h',
+    'h2_5': 'i', 'h2_5_text': 'j', 'ai use-case': 'u',
+  });
+
+  it('writes MDX only for OK rows; skips DUPLICATE / MISSING_PL', async () => {
+    const result = await runImport({
+      enRows: [
+        fullEn('Complete Blood Count (CBC)'),     // row 0: OK (paired with CBC PL)
+        fullEn('Complete Blood Count (CBC)'),     // row 1: DUPLICATE (same EN slug)
+        fullEn('OrphanEn'),                        // row 2: MISSING_PL
+      ],
+      plRows: [
+        fullPl('Morfologia krwi (CBC)'),           // row 0: pairs with EN row 0 → OK
+        fullPl('Morfologia2 (CBC)'),               // row 1: pairs with EN row 1 → but EN row 1 is DUPLICATE
+        {},                                         // row 2: empty → EN row 2 becomes MISSING_PL
+      ],
+      dryRun: true,
+    });
+    expect(result.written.en).toHaveLength(1);
+    expect(result.written.pl).toHaveLength(1);
+    expect(result.skipped.map((s) => s.issue).sort()).toEqual(['DUPLICATE', 'MISSING_PL']);
   });
 });
