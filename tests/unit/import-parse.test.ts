@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { rowToFrontmatter, renderMdx, classifyRowPair, runImport, buildReconcileRows } from '../../scripts/import-medical-tests';
+import { rowToFrontmatter, renderMdx, classifyRowPair, runImport, buildReconcileRows, renderCategoriesTmpl } from '../../scripts/import-medical-tests';
 import type { IssueType } from '../../scripts/import-medical-tests';
 
 const enRow = {
@@ -228,5 +228,19 @@ describe('runImport (integration, in-memory)', () => {
     expect(result.written.en).toHaveLength(1);
     expect(result.written.pl).toHaveLength(1);
     expect(result.skipped.map((s) => s.issue).sort()).toEqual(['DUPLICATE', 'MISSING_PL']);
+  });
+});
+
+describe('renderCategoriesTmpl', () => {
+  it('produces valid TS with inferred slugs from labels', () => {
+    const ts = renderCategoriesTmpl([
+      { key: 'hematology', labelEn: 'Hematology', labelPl: 'Hematologia' },
+      { key: 'thyroid', labelEn: 'Thyroid', labelPl: 'Tarczyca' },
+    ]);
+    expect(ts).toContain("hematology:");
+    expect(ts).toContain("slug: 'hematologia'");
+    expect(ts).toContain("label: 'Hematology'");
+    expect(ts).toContain("export const categoryMeta");
+    expect(ts).toContain("satisfies Record");
   });
 });
