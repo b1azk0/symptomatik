@@ -152,6 +152,9 @@ export interface Frontmatter {
 export interface RowToFrontmatterOpts {
   lang: 'en' | 'pl' | 'es';
   canonicalSlug: string;
+  /** Canonical EN category key (e.g. 'hematology'). Overrides slugify(category) so that
+   *  PL frontmatter always writes the EN key, not a Polish slug. */
+  canonicalCategoryKey?: string;
   today: Date;
   preservePublishedAt?: string;
 }
@@ -242,7 +245,7 @@ export function rowToFrontmatter(row: Row, opts: RowToFrontmatterOpts): Frontmat
     title: testName,
     ...(titleAlt !== undefined ? { titleAlt } : {}),
     category,
-    categorySlug: slugify(category),
+    categorySlug: opts.canonicalCategoryKey ?? slugify(category),
     aiUseCase: (row[m['aiUseCase'] ?? ''] ?? '').trim(),
     metaTitle,
     metaDescription,
@@ -549,9 +552,12 @@ export async function runImport(args: RunImportArgs): Promise<RunImportResult> {
       if (args.onlySlug && cls.canonicalSlug !== args.onlySlug) continue;
 
       // Build frontmatter per locale, write MDX (or skip in dryRun).
+      // canonicalCategoryKey is the EN-slugified category key (source of truth for both
+      // EN and PL MDX), ensuring PL files never write a Polish slug into categorySlug.
+      const canonicalCategoryKey = slugify(categoryEn);
       try {
-        const enFm = rowToFrontmatter(enRow, { lang: 'en', canonicalSlug: cls.canonicalSlug, today });
-        const plFm = rowToFrontmatter(plRow, { lang: 'pl', canonicalSlug: cls.canonicalSlug, today });
+        const enFm = rowToFrontmatter(enRow, { lang: 'en', canonicalSlug: cls.canonicalSlug, canonicalCategoryKey, today });
+        const plFm = rowToFrontmatter(plRow, { lang: 'pl', canonicalSlug: cls.canonicalSlug, canonicalCategoryKey, today });
         if (!args.dryRun) {
           await writeTestMdx(enFm, outputDir);
           await writeTestMdx(plFm, outputDir);
