@@ -46,14 +46,27 @@ Text + pill accents within each palette derive from the dark-accent shade at 80%
 ## Master prompt template (AI generation)
 
 ```
-Minimal flat vector editorial illustration of [SUBJECT],
-SOLID FLAT COLOR FIELDS ONLY, no texture, no shading, no gradient,
-no realistic rendering, [PALETTE DESCRIPTION], organic rounded shapes,
-cream white background, generous empty space,
-matches the flat pastel style of red blood cells and liver silhouette illustrations.
+Flat pastel editorial illustration with a composed field of overlapping
+organic shapes, featuring [RECOGNIZABLE SUBJECT] as the clear focal element,
+embedded within ambient secondary organic forms in complementary pastel tones
+filling the entire composition, flat solid color fields only,
+no texture, no shading, no gradient, no isolated icon feel,
+[PALETTE DESCRIPTION], organic rounded shapes with editorial density,
+cream white background, matches the compositional fullness of the
+red blood cells and liver silhouette illustrations.
 ```
 
-**Why the shouting:** first-pass generation (2026-04-23) produced flat/pastel results for straightforward subjects (blood cells, liver silhouette) but drifted into **textured/painterly rendering** for more abstract subjects (metabolic leaves looked botanical-realistic, mental health looked misty/ethereal, tumor markers looked crystalline). The capital-letters `SOLID FLAT COLOR FIELDS ONLY` + explicit no-texture / no-shading / no-realistic list is required to hold the style across abstract subjects. Reference-anchoring to a pair of known-good outputs ("matches the flat pastel style of...") further corrects drift.
+**Three tensions this template holds against AI drift (2026-04-23 learnings):**
+
+1. **Flat, not textured.** `SOLID FLAT COLOR FIELDS ONLY, no texture, no shading, no gradient, no realistic rendering` — without this, abstract subjects (metabolic leaves, mental-health mist, tumor-marker crystals) drift into painterly or botanical-realistic rendering.
+
+2. **Recognizable subject, not abstract.** `RECOGNIZABLE [subject] as the clear focal element` — a card illustration that can't be identified as its category defeats the card's navigation purpose. Use concrete anatomical or lab-adjacent subjects (kidneys for metabolic panel, specimen cup for urinalysis, marked cell cluster for tumor markers, profile + brain for mental health). Avoid pure abstractions.
+
+3. **Compositional density, not iconic isolation.** `composed field of overlapping organic shapes... ambient secondary organic forms filling the entire composition... no isolated icon feel... editorial density` — without this, the generator produces "icon on white background" compositions that read as app icons, not editorial illustrations. The winners (Hematology, Liver, Inflammatory) have multiple organic shapes in the same palette filling the frame, with the subject embedded in an ambient field.
+
+All three constraints must be active simultaneously. Dropping any one causes a recognizable failure mode.
+
+**Reference-anchoring to known-good outputs** ("matches the compositional fullness of the red blood cells and liver silhouette illustrations") further corrects drift and is especially load-bearing for regenerations after prompt tuning.
 
 Suggested generator: **Flux Pro 1.1** or **Recraft v3** for vector-leaning output. Midjourney v6 works but requires heavier prompt guardrails against its default maximalism. Avoid DALL-E for this style (tendency toward illustrated-icon aesthetic that breaks register).
 
