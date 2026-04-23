@@ -354,7 +354,7 @@ export function renderCategoriesTmpl(
   const sorted = [...categories].sort((a, b) => a.key.localeCompare(b.key));
   const body = sorted.map((c) => {
     const plSlug = slugify(c.labelPl || c.labelEn);
-    return `  ${c.key}: {
+    return `  '${c.key}': {
     en: { slug: '${c.key}', label: '${escapeSingle(c.labelEn)}' },
     pl: { slug: '${plSlug}', label: '${escapeSingle(c.labelPl || c.labelEn)}' },
   },`;
@@ -393,7 +393,7 @@ export function extractCategoryKeys(source: string): Set<string> {
   if (!match) return new Set();
   const body = match[1] ?? '';
   const keys = new Set<string>();
-  for (const m of body.matchAll(/^  ([a-zA-Z_][a-zA-Z0-9_-]*):\s*\{$/gm)) {
+  for (const m of body.matchAll(/^  '?([a-zA-Z_][a-zA-Z0-9_-]*)'?:\s*\{$/gm)) {
     if (m[1]) keys.add(m[1]);
   }
   return keys;

@@ -237,11 +237,20 @@ describe('renderCategoriesTmpl', () => {
       { key: 'hematology', labelEn: 'Hematology', labelPl: 'Hematologia' },
       { key: 'thyroid', labelEn: 'Thyroid', labelPl: 'Tarczyca' },
     ]);
-    expect(ts).toContain("hematology:");
+    expect(ts).toContain("'hematology':");
     expect(ts).toContain("slug: 'hematologia'");
     expect(ts).toContain("label: 'Hematology'");
     expect(ts).toContain("export const categoryMeta");
     expect(ts).toContain("satisfies Record");
+  });
+
+  it('quotes hyphenated keys (e.g. mental-health)', () => {
+    const ts = renderCategoriesTmpl([
+      { key: 'mental-health', labelEn: 'Mental Health', labelPl: 'Zdrowie Psychiczne' },
+    ]);
+    expect(ts).toContain("'mental-health':");
+    // Verify it doesn't emit the invalid bare form.
+    expect(ts).not.toMatch(/^\s+mental-health:/m);
   });
 });
 
@@ -266,5 +275,21 @@ describe('extractCategoryKeys', () => {
   it('returns an empty set when categoryMeta block not found', () => {
     const src = `// nothing here`;
     expect(extractCategoryKeys(src).size).toBe(0);
+  });
+
+  it('handles quoted keys with hyphens (e.g. mental-health)', () => {
+    const src = `export const categoryMeta = {
+  hematology: {
+    en: { slug: 'hematology', label: 'Hematology' },
+    pl: { slug: 'hematologia', label: 'Hematologia' },
+  },
+  'mental-health': {
+    en: { slug: 'mental-health', label: 'Mental Health' },
+    pl: { slug: 'zdrowie-psychiczne', label: 'Zdrowie Psychiczne' },
+  },
+} as const satisfies Record<string, Record<'en' | 'pl', { slug: string; label: string }>>;`;
+    const keys = extractCategoryKeys(src);
+    expect(keys.has('hematology')).toBe(true);
+    expect(keys.has('mental-health')).toBe(true);
   });
 });
