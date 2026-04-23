@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { rowToFrontmatter, renderMdx, classifyRowPair, runImport, buildReconcileRows, renderCategoriesTmpl } from '../../scripts/import-medical-tests';
+import { rowToFrontmatter, renderMdx, classifyRowPair, runImport, buildReconcileRows, renderCategoriesTmpl, extractCategoryKeys } from '../../scripts/import-medical-tests';
 import type { IssueType } from '../../scripts/import-medical-tests';
 
 const enRow = {
@@ -242,5 +242,29 @@ describe('renderCategoriesTmpl', () => {
     expect(ts).toContain("label: 'Hematology'");
     expect(ts).toContain("export const categoryMeta");
     expect(ts).toContain("satisfies Record");
+  });
+});
+
+describe('extractCategoryKeys', () => {
+  it('returns only top-level category keys, not nested en/pl', () => {
+    const src = `export const categoryMeta = {
+  hematology: {
+    en: { slug: 'hematology', label: 'Hematology' },
+    pl: { slug: 'hematologia', label: 'Hematologia' },
+  },
+  thyroid: {
+    en: { slug: 'thyroid', label: 'Thyroid' },
+    pl: { slug: 'tarczyca', label: 'Tarczyca' },
+  },
+} as const satisfies Record<string, Record<'en' | 'pl', { slug: string; label: string }>>;`;
+    const keys = extractCategoryKeys(src);
+    expect(Array.from(keys).sort()).toEqual(['hematology', 'thyroid']);
+    expect(keys.has('en')).toBe(false);
+    expect(keys.has('pl')).toBe(false);
+  });
+
+  it('returns an empty set when categoryMeta block not found', () => {
+    const src = `// nothing here`;
+    expect(extractCategoryKeys(src).size).toBe(0);
   });
 });

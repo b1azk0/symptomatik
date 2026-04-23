@@ -384,14 +384,16 @@ function escapeSingle(s: string): string {
   return s.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 }
 
-function extractCategoryKeys(source: string): Set<string> {
+export function extractCategoryKeys(source: string): Set<string> {
   // Find the categoryMeta object literal and extract keys via a simple regex.
-  // Matches lines like `  hematology: {` or `  some_key: {`.
+  // Matches only top-level keys: exactly 2-space indent, `key: {` with `{` at end of line.
+  // This excludes nested lines like `    en: { slug: '...', label: '...' },`
+  // which have 4-space indent and more content after `{`.
   const match = source.match(/export const categoryMeta\s*=\s*{([\s\S]*?)}\s*as const/);
   if (!match) return new Set();
   const body = match[1] ?? '';
   const keys = new Set<string>();
-  for (const m of body.matchAll(/^\s*([a-zA-Z_][a-zA-Z0-9_-]*):\s*{/gm)) {
+  for (const m of body.matchAll(/^  ([a-zA-Z_][a-zA-Z0-9_-]*):\s*\{$/gm)) {
     if (m[1]) keys.add(m[1]);
   }
   return keys;
