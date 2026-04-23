@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { rowToFrontmatter, renderMdx, classifyRowPair, runImport } from '../../scripts/import-medical-tests';
+import { rowToFrontmatter, renderMdx, classifyRowPair, runImport, buildReconcileRows } from '../../scripts/import-medical-tests';
 import type { IssueType } from '../../scripts/import-medical-tests';
 
 const enRow = {
@@ -158,6 +158,39 @@ describe('classifyRowPair', () => {
       seenEnSlugs: new Set(),
     });
     expect(res.issue).toBe<IssueType>('OK');
+  });
+});
+
+describe('buildReconcileRows', () => {
+  it('produces one row per skipped item with expected columns', () => {
+    const rows = buildReconcileRows([
+      {
+        issue: 'DUPLICATE',
+        flags: [],
+        enRowIndex: 50,
+        plRowIndex: 50,
+        enName: 'Homocysteine',
+        plName: 'Homocysteina',
+        canonicalSlug: 'homocysteine',
+      },
+      {
+        issue: 'MISSING_PL',
+        flags: [],
+        enRowIndex: 90,
+        plRowIndex: 90,
+        enName: 'Orphan',
+        plName: '',
+        canonicalSlug: 'orphan',
+      },
+    ]);
+    expect(rows).toHaveLength(2);
+    expect(Object.keys(rows[0])).toEqual([
+      'issue_type', 'en_row', 'pl_row', 'en_name', 'pl_name',
+      'suggested_action', 'your_fix',
+    ]);
+    expect(rows[0].issue_type).toBe('DUPLICATE');
+    expect(rows[0].suggested_action).toMatch(/rename/i);
+    expect(rows[1].suggested_action).toMatch(/add PL translation/i);
   });
 });
 

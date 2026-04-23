@@ -292,6 +292,59 @@ export function renderMdx(fm: Frontmatter): string {
 }
 
 // ────────────────────────────────────────────────────────────────────────────
+// Reconciliation workbook
+// ────────────────────────────────────────────────────────────────────────────
+
+export interface ReconcileRow {
+  issue_type: IssueType | IssueFlag;
+  en_row: number;
+  pl_row: number;
+  en_name: string;
+  pl_name: string;
+  suggested_action: string;
+  your_fix: string;
+}
+
+const SUGGESTIONS: Record<IssueType | IssueFlag, string> = {
+  EMPTY: '',
+  OK: '',
+  DUPLICATE: 'Rename one occurrence in the EN sheet to disambiguate (affects URL slug).',
+  MISALIGNED: 'Reorder the PL sheet to align with the EN sheet at this row.',
+  MISSING_EN: 'Add EN translation, or remove the PL row if intentionally PL-only.',
+  MISSING_PL: 'Add PL translation, or remove the EN row if intentionally EN-only.',
+  META_TOO_LONG_EN: 'Shorten EN meta description to ≤ 160 chars (currently truncated with ellipsis).',
+  META_TOO_LONG_PL: 'Shorten PL meta description to ≤ 160 chars (currently truncated with ellipsis).',
+};
+
+export function buildReconcileRows(skipped: SkippedEntry[]): ReconcileRow[] {
+  return skipped.map((s) => ({
+    issue_type: s.issue,
+    en_row: s.enRowIndex,
+    pl_row: s.plRowIndex,
+    en_name: s.enName,
+    pl_name: s.plName,
+    suggested_action: SUGGESTIONS[s.issue] ?? '',
+    your_fix: '',
+  }));
+}
+
+export async function writeReconcileWorkbook(rows: ReconcileRow[], outPath: string): Promise<void> {
+  const wb = new ExcelJS.Workbook();
+  const ws = wb.addWorksheet('reconcile');
+  ws.columns = [
+    { header: 'issue_type', key: 'issue_type', width: 18 },
+    { header: 'en_row', key: 'en_row', width: 8 },
+    { header: 'pl_row', key: 'pl_row', width: 8 },
+    { header: 'en_name', key: 'en_name', width: 40 },
+    { header: 'pl_name', key: 'pl_name', width: 40 },
+    { header: 'suggested_action', key: 'suggested_action', width: 60 },
+    { header: 'your_fix', key: 'your_fix', width: 40 },
+  ];
+  for (const r of rows) ws.addRow(r);
+  await wb.xlsx.writeFile(outPath);
+}
+
+// ────────────────────────────────────────────────────────────────────────────
 // Workbook reading
 // ────────────────────────────────────────────────────────────────────────────
 
@@ -466,6 +519,12 @@ export async function runImport(args: RunImportArgs): Promise<RunImportResult> {
       plName: (plRow['nazwa testu'] ?? '').trim(),
       canonicalSlug: cls.canonicalSlug,
     });
+  }
+
+  if (!args.dryRun) {
+    const reconcilePath = path.join(repoRoot, 'content-sources', 'medical-tests-reconcile.xlsx');
+    await writeReconcileWorkbook(buildReconcileRows(skipped), reconcilePath);
+    console.log(`wrote reconciliation workbook (${skipped.length} rows) to ${reconcilePath}`);
   }
 
   return {
