@@ -1,0 +1,1149 @@
+{
+  "version": "2.11",
+  "children": [
+    {
+      "type": "frame",
+      "id": "F7Ug4",
+      "x": 1488,
+      "y": 0,
+      "name": "Pillar Page / Option C × patient.info",
+      "width": 1440,
+      "fill": "#FEF7F2",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "1CADt",
+          "name": "Header",
+          "width": "fill_container",
+          "height": 72,
+          "fill": "#FEF7F2",
+          "padding": [
+            20,
+            48
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "okI0b",
+              "name": "logoC",
+              "fill": "#2B2626",
+              "content": "Symptomatik",
+              "fontFamily": "Geist",
+              "fontSize": 18,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "Hqyys",
+              "name": "navC",
+              "gap": 32,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "E2SrP",
+                  "name": "nav1C",
+                  "fill": "#2B2626",
+                  "content": "Medical Tests",
+                  "fontFamily": "Geist",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "text",
+                  "id": "oU1Nn",
+                  "name": "nav2C",
+                  "fill": "#A59482",
+                  "content": "Symptoms",
+                  "fontFamily": "Geist",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "GEWr7",
+                  "name": "nav3C",
+                  "fill": "#A59482",
+                  "content": "Calculators",
+                  "fontFamily": "Geist",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "mrBbb",
+                  "name": "nav4C",
+                  "fill": "#7A6A5E",
+                  "content": "EN / PL",
+                  "fontFamily": "Geist Mono",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Bm8IK",
+          "name": "Hero Section",
+          "width": "fill_container",
+          "gap": 64,
+          "padding": [
+            64,
+            96,
+            80,
+            96
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "Lutde",
+              "name": "Hero Text",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 24,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "ZHt9t",
+                  "name": "heroBreadcrumb",
+                  "fill": "#A59482",
+                  "content": "Home  /  Medical Tests",
+                  "fontFamily": "Geist",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "obton",
+                  "name": "heroH1",
+                  "fill": "#2B2626",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Medical Tests",
+                  "lineHeight": 1,
+                  "fontFamily": "Geist",
+                  "fontSize": 72,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "1en4b",
+                  "name": "heroIntro",
+                  "fill": "#7A6A5E",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Understand your lab results. Over 50 tests explained — what the numbers mean, when to retest, and what to do next.",
+                  "lineHeight": 1.5,
+                  "fontFamily": "Geist",
+                  "fontSize": 18,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "pbI9r",
+                  "name": "Search",
+                  "width": "fill_container",
+                  "height": 60,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 12,
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "#F0E0D0"
+                  },
+                  "gap": 14,
+                  "padding": [
+                    0,
+                    24
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "mQD8U",
+                      "name": "heroSearchIcon",
+                      "width": 20,
+                      "height": 20,
+                      "iconFontName": "search",
+                      "iconFontFamily": "lucide",
+                      "fill": "#A59482"
+                    },
+                    {
+                      "type": "text",
+                      "id": "M4bs4",
+                      "name": "heroSearchInput",
+                      "fill": "#A59482",
+                      "content": "Search tests (e.g. \"cortisol\", \"morfologia\", \"liver\")",
+                      "fontFamily": "Geist",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "YgPZK",
+              "name": "Hero Illustration",
+              "width": 440,
+              "height": 440,
+              "fill": {
+                "type": "image",
+                "enabled": true,
+                "url": "./images/generated-1776961360143.png",
+                "mode": "fill"
+              },
+              "cornerRadius": 220,
+              "layout": "none"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Z4163",
+          "name": "Featured Section",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 28,
+          "padding": [
+            0,
+            96,
+            56,
+            96
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "FYOid",
+              "name": "featHead",
+              "fill": "#2B2626",
+              "content": "Start here",
+              "fontFamily": "Geist",
+              "fontSize": 28,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "0XnmX",
+              "name": "featRow",
+              "width": "fill_container",
+              "gap": 20,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "kxqNI",
+                  "name": "CBC feature",
+                  "width": "fill_container",
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 16,
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "#F0E0D0"
+                  },
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "N7MhT",
+                      "name": "featC1Img",
+                      "width": "fill_container",
+                      "height": 200,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "./images/generated-1776961263141.png",
+                        "mode": "fill"
+                      },
+                      "cornerRadius": [
+                        16,
+                        16,
+                        0,
+                        0
+                      ],
+                      "layout": "none"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "gpRr6",
+                      "name": "featC1Meta",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 12,
+                      "padding": 24,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "Gpig6",
+                          "name": "featC1Pill",
+                          "fill": "#FDE7D6",
+                          "cornerRadius": 9999,
+                          "padding": [
+                            4,
+                            12
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Syqx0",
+                              "name": "featC1PillText",
+                              "fill": "#8B3A20",
+                              "content": "Hematology",
+                              "fontFamily": "Geist",
+                              "fontSize": 11,
+                              "fontWeight": "600",
+                              "letterSpacing": 0.3
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "Gm9c2",
+                          "name": "featC1Title",
+                          "fill": "#2B2626",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Complete Blood Count (CBC)",
+                          "lineHeight": 1.2,
+                          "fontFamily": "Geist",
+                          "fontSize": 20,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "v3s1r",
+                          "name": "featC1Excerpt",
+                          "fill": "#7A6A5E",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Red cells, white cells, platelets. The most-ordered blood test — covers anemia, infection, and inflammation in one panel.",
+                          "lineHeight": 1.5,
+                          "fontFamily": "Geist",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "DYGSg",
+                  "name": "PHQ-9 feature",
+                  "width": "fill_container",
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 16,
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "#F0E0D0"
+                  },
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "o1Bqt",
+                      "name": "featC2Img",
+                      "width": "fill_container",
+                      "height": 200,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "./images/generated-1776962058522.png",
+                        "mode": "fill"
+                      },
+                      "cornerRadius": [
+                        16,
+                        16,
+                        0,
+                        0
+                      ],
+                      "layout": "none"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Bbwzj",
+                      "name": "featC2Meta",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 12,
+                      "padding": 24,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "rxgt5",
+                          "name": "featC2Pill",
+                          "fill": "#F0E4D8",
+                          "cornerRadius": 9999,
+                          "padding": [
+                            4,
+                            12
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "sTmAh",
+                              "name": "featC2PillText",
+                              "fill": "#6B5A47",
+                              "content": "Mental Health",
+                              "fontFamily": "Geist",
+                              "fontSize": 11,
+                              "fontWeight": "600",
+                              "letterSpacing": 0.3
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "LkCPi",
+                          "name": "featC2Title",
+                          "fill": "#2B2626",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "PHQ-9 Depression Screen",
+                          "lineHeight": 1.2,
+                          "fontFamily": "Geist",
+                          "fontSize": 20,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "drxnj",
+                          "name": "featC2Excerpt",
+                          "fill": "#7A6A5E",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Validated 9-item questionnaire. Takes 3 minutes. Score gives a calibrated severity band — not a diagnosis, but a clear signal.",
+                          "lineHeight": 1.5,
+                          "fontFamily": "Geist",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "nyI0l",
+                  "name": "Liver feature",
+                  "width": "fill_container",
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 16,
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "#F0E0D0"
+                  },
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "IFj6u",
+                      "name": "featC3Img",
+                      "width": "fill_container",
+                      "height": 200,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "./images/generated-1776961345487.png",
+                        "mode": "fill"
+                      },
+                      "cornerRadius": [
+                        16,
+                        16,
+                        0,
+                        0
+                      ],
+                      "layout": "none"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "dYRFr",
+                      "name": "featC3Meta",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 12,
+                      "padding": 24,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "WdUrq",
+                          "name": "featC3Pill",
+                          "fill": "#F5EDE0",
+                          "cornerRadius": 9999,
+                          "padding": [
+                            4,
+                            12
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Ez1Su",
+                              "name": "featC3PillText",
+                              "fill": "#6B4F20",
+                              "content": "Liver Function Tests",
+                              "fontFamily": "Geist",
+                              "fontSize": 11,
+                              "fontWeight": "600",
+                              "letterSpacing": 0.3
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "vOq8y",
+                          "name": "featC3Title",
+                          "fill": "#2B2626",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "ALT & AST Liver Enzymes",
+                          "lineHeight": 1.2,
+                          "fontFamily": "Geist",
+                          "fontSize": 20,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "qNVvd",
+                          "name": "featC3Excerpt",
+                          "fill": "#7A6A5E",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "The two enzymes that go up when liver cells are damaged. Together they tell you whether you're looking at inflammation, fatty liver, or something else.",
+                          "lineHeight": 1.5,
+                          "fontFamily": "Geist",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "6RtRH",
+          "name": "Browse Categories",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 28,
+          "padding": [
+            24,
+            96,
+            80,
+            96
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "n17CK",
+              "name": "catsHeadC",
+              "fill": "#2B2626",
+              "content": "Browse by category",
+              "fontFamily": "Geist",
+              "fontSize": 28,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "Js7SU",
+              "name": "catsSubC",
+              "fill": "#7A6A5E",
+              "content": "Every test grouped by the body system or mechanism it measures.",
+              "fontFamily": "Geist",
+              "fontSize": 15,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "tkWEM",
+              "name": "catsGridC",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 20,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "PO3Xh",
+                  "name": "catsRowC1",
+                  "width": "fill_container",
+                  "gap": 20,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "RSaVT",
+                      "name": "Hematology cat",
+                      "width": "fill_container",
+                      "fill": "#FFFFFF",
+                      "cornerRadius": 16,
+                      "stroke": {
+                        "thickness": 1,
+                        "fill": "#F0E0D0"
+                      },
+                      "layout": "vertical",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "DUD8j",
+                          "name": "cardC1Img",
+                          "width": "fill_container",
+                          "height": 160,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "./images/generated-1776961339775.png",
+                            "mode": "fill"
+                          },
+                          "cornerRadius": [
+                            16,
+                            16,
+                            0,
+                            0
+                          ],
+                          "layout": "none"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "PluAf",
+                          "name": "cardC1Meta",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 6,
+                          "padding": 20,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "7xs2b",
+                              "name": "cardC1Label",
+                              "fill": "#2B2626",
+                              "content": "Hematology",
+                              "fontFamily": "Geist",
+                              "fontSize": 18,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "0JIjA",
+                              "name": "cardC1Count",
+                              "fill": "#7A6A5E",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "12 tests — CBC, iron panel, clotting factors",
+                              "lineHeight": 1.4,
+                              "fontFamily": "Geist",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "zp0qv",
+                      "name": "Liver cat",
+                      "width": "fill_container",
+                      "fill": "#FFFFFF",
+                      "cornerRadius": 16,
+                      "stroke": {
+                        "thickness": 1,
+                        "fill": "#F0E0D0"
+                      },
+                      "layout": "vertical",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "JmLkQ",
+                          "name": "cardC2Img",
+                          "width": "fill_container",
+                          "height": 160,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "./images/generated-1776961351282.png",
+                            "mode": "fill"
+                          },
+                          "cornerRadius": [
+                            16,
+                            16,
+                            0,
+                            0
+                          ],
+                          "layout": "none"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "l4Ur9",
+                          "name": "cardC2Meta",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 6,
+                          "padding": 20,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "LXzoe",
+                              "name": "cardC2Label",
+                              "fill": "#2B2626",
+                              "content": "Liver Function Tests",
+                              "fontFamily": "Geist",
+                              "fontSize": 18,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "EpJA4",
+                              "name": "cardC2Count",
+                              "fill": "#7A6A5E",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "5 tests — ALT, AST, bilirubin, ALP",
+                              "lineHeight": 1.4,
+                              "fontFamily": "Geist",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "7smMZ",
+                      "name": "Mental Health cat",
+                      "width": "fill_container",
+                      "fill": "#FFFFFF",
+                      "cornerRadius": 16,
+                      "stroke": {
+                        "thickness": 1,
+                        "fill": "#F0E0D0"
+                      },
+                      "layout": "vertical",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "QhwY9",
+                          "name": "cardC3Img",
+                          "width": "fill_container",
+                          "height": 160,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "./images/generated-1776962057240.png",
+                            "mode": "fill"
+                          },
+                          "cornerRadius": [
+                            16,
+                            16,
+                            0,
+                            0
+                          ],
+                          "layout": "none"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Zh0Qg",
+                          "name": "cardC3Meta",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 6,
+                          "padding": 20,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "83mZN",
+                              "name": "cardC3Label",
+                              "fill": "#2B2626",
+                              "content": "Mental Health",
+                              "fontFamily": "Geist",
+                              "fontSize": 18,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "cd5yy",
+                              "name": "cardC3Count",
+                              "fill": "#7A6A5E",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "4 assessments — PHQ-9, GAD-7, PSS-10",
+                              "lineHeight": 1.4,
+                              "fontFamily": "Geist",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "WtlR9",
+                      "name": "Hormones cat",
+                      "width": "fill_container",
+                      "fill": "#FFFFFF",
+                      "cornerRadius": 16,
+                      "stroke": {
+                        "thickness": 1,
+                        "fill": "#F0E0D0"
+                      },
+                      "layout": "vertical",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "SuACy",
+                          "name": "cardC4Img",
+                          "width": "fill_container",
+                          "height": 160,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "./images/generated-1776961354355.png",
+                            "mode": "fill"
+                          },
+                          "cornerRadius": [
+                            16,
+                            16,
+                            0,
+                            0
+                          ],
+                          "layout": "none"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "DoiYz",
+                          "name": "cardC4Meta",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 6,
+                          "padding": 20,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Jco1M",
+                              "name": "cardC4Label",
+                              "fill": "#2B2626",
+                              "content": "Hormones",
+                              "fontFamily": "Geist",
+                              "fontSize": 18,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "RY56u",
+                              "name": "cardC4Count",
+                              "fill": "#7A6A5E",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "7 tests — TSH, cortisol, testosterone",
+                              "lineHeight": 1.4,
+                              "fontFamily": "Geist",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "z2LA8",
+                  "name": "catsRowC2",
+                  "width": "fill_container",
+                  "gap": 20,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "EcM5G",
+                      "name": "Inflammatory cat",
+                      "width": "fill_container",
+                      "fill": "#FFFFFF",
+                      "cornerRadius": 16,
+                      "stroke": {
+                        "thickness": 1,
+                        "fill": "#F0E0D0"
+                      },
+                      "layout": "vertical",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "MbXuH",
+                          "name": "cardC5Img",
+                          "width": "fill_container",
+                          "height": 160,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "./images/generated-1776961349855.png",
+                            "mode": "fill"
+                          },
+                          "cornerRadius": [
+                            16,
+                            16,
+                            0,
+                            0
+                          ],
+                          "layout": "none"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "mIlWY",
+                          "name": "cardC5Meta",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 6,
+                          "padding": 20,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "bwPwB",
+                              "name": "cardC5Label",
+                              "fill": "#2B2626",
+                              "content": "Inflammatory Markers",
+                              "fontFamily": "Geist",
+                              "fontSize": 18,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "3bxkD",
+                              "name": "cardC5Count",
+                              "fill": "#7A6A5E",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "4 tests — CRP, ESR, ferritin, calprotectin",
+                              "lineHeight": 1.4,
+                              "fontFamily": "Geist",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "FIDYb",
+                      "name": "Metabolic Panel cat",
+                      "width": "fill_container",
+                      "fill": "#FFFFFF",
+                      "cornerRadius": 16,
+                      "stroke": {
+                        "thickness": 1,
+                        "fill": "#F0E0D0"
+                      },
+                      "layout": "vertical",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "tX0Ff",
+                          "name": "cardC6Img",
+                          "width": "fill_container",
+                          "height": 160,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "./images/generated-1776962067492.png",
+                            "mode": "fill"
+                          },
+                          "cornerRadius": [
+                            16,
+                            16,
+                            0,
+                            0
+                          ],
+                          "layout": "none"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "EUXHt",
+                          "name": "cardC6Meta",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 6,
+                          "padding": 20,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "D90ZB",
+                              "name": "cardC6Label",
+                              "fill": "#2B2626",
+                              "content": "Metabolic Panel",
+                              "fontFamily": "Geist",
+                              "fontSize": 18,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "Np5KF",
+                              "name": "cardC6Count",
+                              "fill": "#7A6A5E",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "8 tests — BMP, CMP, glucose, HbA1c",
+                              "lineHeight": 1.4,
+                              "fontFamily": "Geist",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "3pRV2",
+                      "name": "Urinalysis cat",
+                      "width": "fill_container",
+                      "fill": "#FFFFFF",
+                      "cornerRadius": 16,
+                      "stroke": {
+                        "thickness": 1,
+                        "fill": "#F0E0D0"
+                      },
+                      "layout": "vertical",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "4Wf6v",
+                          "name": "cardC7Img",
+                          "width": "fill_container",
+                          "height": 160,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "./images/generated-1776962072833.png",
+                            "mode": "fill"
+                          },
+                          "cornerRadius": [
+                            16,
+                            16,
+                            0,
+                            0
+                          ],
+                          "layout": "none"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "AZv1O",
+                          "name": "cardC7Meta",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 6,
+                          "padding": 20,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "oyxHv",
+                              "name": "cardC7Label",
+                              "fill": "#2B2626",
+                              "content": "Urinalysis",
+                              "fontFamily": "Geist",
+                              "fontSize": 18,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "JWG2e",
+                              "name": "cardC7Count",
+                              "fill": "#7A6A5E",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "2 tests — basic urine, urine culture",
+                              "lineHeight": 1.4,
+                              "fontFamily": "Geist",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "H9AOD",
+                      "name": "Tumor Markers cat",
+                      "width": "fill_container",
+                      "fill": "#FFFFFF",
+                      "cornerRadius": 16,
+                      "stroke": {
+                        "thickness": 1,
+                        "fill": "#F0E0D0"
+                      },
+                      "layout": "vertical",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "GLNab",
+                          "name": "cardC8Img",
+                          "width": "fill_container",
+                          "height": 160,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "./images/generated-1776962145622.png",
+                            "mode": "fill"
+                          },
+                          "cornerRadius": [
+                            16,
+                            16,
+                            0,
+                            0
+                          ],
+                          "layout": "none"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "2nM8B",
+                          "name": "cardC8Meta",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 6,
+                          "padding": 20,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "XhxN1",
+                              "name": "cardC8Label",
+                              "fill": "#2B2626",
+                              "content": "Tumor Markers",
+                              "fontFamily": "Geist",
+                              "fontSize": 18,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "rv1a2",
+                              "name": "cardC8Count",
+                              "fill": "#7A6A5E",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "3 tests — CA-125, CEA, PSA",
+                              "lineHeight": 1.4,
+                              "fontFamily": "Geist",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
