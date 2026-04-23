@@ -332,7 +332,6 @@ const SHEET_BY_LANG: Record<string, string> = {
 
 interface CLIOpts {
   excel: string;
-  locales: string[];
   out: string;
   dryRun: boolean;
   onlySlug: string | null;
@@ -341,7 +340,6 @@ interface CLIOpts {
 function parseArgs(argv: string[]): CLIOpts {
   const opts: CLIOpts = {
     excel: path.join(repoRoot, 'content-sources/medical-tests.xlsx'),
-    locales: ['en', 'pl'],
     out: path.join(repoRoot, 'src/content/medical-tests'),
     dryRun: false,
     onlySlug: null,
@@ -349,7 +347,10 @@ function parseArgs(argv: string[]): CLIOpts {
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--excel') opts.excel = argv[++i] ?? opts.excel;
-    else if (a === '--locales') opts.locales = (argv[++i] ?? 'en,pl').split(',');
+    else if (a === '--locales') {
+      console.warn('[WARN] --locales is no longer supported; runImport always processes EN + PL together. Ignoring.');
+      i++; // skip the value argument
+    }
     else if (a === '--out') opts.out = argv[++i] ?? opts.out;
     else if (a === '--dry-run') opts.dryRun = true;
     else if (a === '--only') opts.onlySlug = argv[++i] ?? null;
@@ -426,9 +427,9 @@ export async function runImport(args: RunImportArgs): Promise<RunImportResult> {
 
     if (cls.issue === 'OK' && cls.canonicalSlug) {
       seenEnSlugs.add(cls.canonicalSlug);
-      if (args.onlySlug && cls.canonicalSlug !== args.onlySlug) continue;
 
       // Track category from the OK row (EN side is the source of truth for category key).
+      // Done before the onlySlug guard so categoriesSeen reflects the full dataset.
       const categoryEn = (enRow['category'] ?? '').trim();
       const categoryPl = (plRow['kategoria'] ?? '').trim();
       if (categoryEn) {
@@ -436,6 +437,8 @@ export async function runImport(args: RunImportArgs): Promise<RunImportResult> {
         if (!categoriesSeen.has(key))
           categoriesSeen.set(key, { labelEn: categoryEn, labelPl: categoryPl });
       }
+
+      if (args.onlySlug && cls.canonicalSlug !== args.onlySlug) continue;
 
       // Build frontmatter per locale, write MDX (or skip in dryRun).
       try {
@@ -478,12 +481,6 @@ export async function runImport(args: RunImportArgs): Promise<RunImportResult> {
 
 async function main() {
   const opts = parseArgs(process.argv.slice(2));
-
-  for (const lang of opts.locales) {
-    if (lang !== 'en' && lang !== 'pl' && lang !== 'es') {
-      throw new Error(`Unsupported locale: ${lang}`);
-    }
-  }
 
   const result = await runImport({
     excel: opts.excel,
