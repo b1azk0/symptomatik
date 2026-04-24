@@ -65,7 +65,7 @@ const rosterLine = testPreview ? `${countLabel} — ${testPreview}` : countLabel
 
   .category-card__illustration {
     width: 100%;
-    aspect-ratio: 2 / 1;
+    height: 140px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -92,6 +92,11 @@ const rosterLine = testPreview ? `${countLabel} — ${testPreview}` : countLabel
     font-weight: 600;
     color: #2B2626;
     line-height: 1.25;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .category-card__roster {
@@ -99,5 +104,10 @@ const rosterLine = testPreview ? `${countLabel} — ${testPreview}` : countLabel
     font-size: 13px;
     color: #7A6A5E;
     line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 </style>
