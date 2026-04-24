@@ -60,3 +60,40 @@ export function webSite(args: WebSiteArgs): Record<string, unknown> {
     inLanguage: args.inLanguage,
   };
 }
+
+export interface CollectionPageArgs {
+  url: string;
+  title: string;
+  description: string;
+  inLanguage: 'en' | 'pl' | 'es';
+}
+
+export function collectionPage(args: CollectionPageArgs) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage' as const,
+    url: args.url,
+    name: args.title,
+    description: args.description,
+    inLanguage: args.inLanguage,
+  };
+}
+
+export interface ItemListEntry {
+  position: number;
+  name: string;
+  url: string;
+}
+
+export function itemList(entries: ItemListEntry[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList' as const,
+    itemListElement: entries.map((e) => ({
+      '@type': 'ListItem' as const,
+      position: e.position,
+      name: e.name,
+      url: e.url,
+    })),
+  };
+}

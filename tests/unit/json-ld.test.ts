@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { medicalWebPage, breadcrumbList, webSite } from '@/lib/seo/json-ld';
+import { medicalWebPage, breadcrumbList, webSite, collectionPage, itemList } from '@/lib/seo/json-ld';
 
 describe('medicalWebPage', () => {
   it('emits @type=MedicalWebPage with core fields', () => {
@@ -69,5 +69,32 @@ describe('webSite', () => {
     expect(ld['url']).toBe('https://symptomatik.com');
     expect(ld['name']).toBe('Symptomatik');
     expect(ld['inLanguage']).toBe('en');
+  });
+});
+
+describe('collectionPage', () => {
+  it('builds a valid schema.org CollectionPage object', () => {
+    const obj = collectionPage({
+      url: 'https://symptomatik.com/medical-tests/',
+      title: 'Medical Tests',
+      description: 'All the medical tests we interpret.',
+      inLanguage: 'en',
+    });
+    expect(obj['@type']).toBe('CollectionPage');
+    expect(obj.url).toBe('https://symptomatik.com/medical-tests/');
+    expect(obj.inLanguage).toBe('en');
+  });
+});
+
+describe('itemList', () => {
+  it('builds a valid schema.org ItemList with positional entries', () => {
+    const obj = itemList([
+      { position: 1, name: 'CBC', url: 'https://s.com/cbc/' },
+      { position: 2, name: 'TSH', url: 'https://s.com/tsh/' },
+    ]);
+    expect(obj['@type']).toBe('ItemList');
+    expect(obj.itemListElement).toHaveLength(2);
+    expect(obj.itemListElement[0]!['@type']).toBe('ListItem');
+    expect(obj.itemListElement[0]!.position).toBe(1);
   });
 });
