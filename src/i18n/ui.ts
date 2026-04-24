@@ -29,6 +29,7 @@ export const ui = {
     'pillar.startHereHeading': 'Start here',
     'pillar.categoriesHeading': 'Browse by category',
     'pillar.categoriesSubhead': 'Every test grouped by the body system or mechanism it measures.',
+    'category.relatedHeading': 'Related categories',
   },
   pl: {
     'nav.symptomChecker': 'Sprawdź objawy',
@@ -57,6 +58,7 @@ export const ui = {
     'pillar.startHereHeading': 'Zacznij tutaj',
     'pillar.categoriesHeading': 'Przeglądaj kategoriami',
     'pillar.categoriesSubhead': 'Każde badanie pogrupowane według układu lub mechanizmu, który bada.',
+    'category.relatedHeading': 'Powiązane kategorie',
   },
   es: {
     'nav.symptomChecker': 'Verificador de síntomas',
@@ -85,6 +87,7 @@ export const ui = {
     'pillar.startHereHeading': 'Empieza aquí',
     'pillar.categoriesHeading': 'Explorar por categoría',
     'pillar.categoriesSubhead': 'Cada prueba agrupada por sistema o mecanismo que mide.',
+    'category.relatedHeading': 'Categorías relacionadas',
   },
 } as const;
 
