@@ -1,6 +1,7 @@
 ---
 import { t } from '@/i18n/ui';
 import type { Locale } from '@/i18n/locales';
+import { locales } from '@/i18n/locales';
 import type { Alternate } from '@/lib/seo/meta';
 
 interface Props {
@@ -10,25 +11,37 @@ interface Props {
 
 const { currentLocale, alternates } = Astro.props as Props;
 
-const LABELS: Record<Locale, string> = { en: 'English', pl: 'Polski', es: 'Español' };
+const DISPLAY_ORDER: readonly Locale[] = ['en', 'es', 'pl'] as const;
+const CODE: Record<Locale, string> = { en: 'EN', es: 'ES', pl: 'PL' };
+const LOCALE_HOME: Record<Locale, string> = { en: '/', es: '/es/', pl: '/pl/' };
 
-// Only show alternates where a real translation exists (not x-default).
-const switchables = alternates.filter((a) => a.hreflang !== 'x-default');
+const items = DISPLAY_ORDER.filter((l): l is Locale => (locales as readonly string[]).includes(l)).map((loc) => {
+  const match = alternates.find((a) => a.hreflang === loc);
+  return {
+    loc,
+    href: match?.href ?? LOCALE_HOME[loc],
+    isCurrent: loc === currentLocale,
+  };
+});
 ---
-<nav aria-label={t(currentLocale, 'language.switcher.label')} class="flex gap-2 items-center text-sm">
+<nav aria-label={t(currentLocale, 'language.switcher.label')} class="flex items-center gap-1.5 font-mono text-xs">
   <span class="sr-only">{t(currentLocale, 'language.switcher.label')}:</span>
-  {switchables.map((a) => {
-    const isCurrent = a.hreflang === currentLocale;
-    const label = LABELS[a.hreflang as Locale] ?? a.hreflang;
-    return (
-      <a
-        href={a.href}
-        lang={a.hreflang}
-        aria-current={isCurrent ? 'page' : undefined}
-        class={`px-2 py-1 rounded ${isCurrent ? 'bg-neutral-200 font-medium' : 'hover:bg-neutral-100'}`}
-      >
-        {label}
-      </a>
-    );
-  })}
+  {items.map((item, i) => (
+    <>
+      {i > 0 && <span class="text-neutral-300" aria-hidden="true">/</span>}
+      {item.isCurrent ? (
+        <span
+          lang={item.loc}
+          aria-current="page"
+          class="font-semibold text-neutral-900"
+        >{CODE[item.loc]}</span>
+      ) : (
+        <a
+          href={item.href}
+          lang={item.loc}
+          class="text-neutral-400 hover:text-neutral-700 transition-colors"
+        >{CODE[item.loc]}</a>
+      )}
+    </>
+  ))}
 </nav>

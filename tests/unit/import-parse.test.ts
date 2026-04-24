@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { rowToFrontmatter, renderMdx } from '../../scripts/import-medical-tests';
+import { rowToFrontmatter, renderMdx, classifyRowPair, runImport, buildReconcileRows, renderCategoriesTmpl, extractCategoryKeys } from '../../scripts/import-medical-tests';
+import type { IssueType } from '../../scripts/import-medical-tests';
 
 const enRow = {
   'test name': 'Complete Blood Count (CBC)',
@@ -68,5 +69,227 @@ describe('renderMdx', () => {
     expect(mdx).toContain('lang: en');
     // Body is auto-generated placeholder
     expect(mdx).toContain('auto-generated from frontmatter');
+  });
+});
+
+describe('classifyRowPair', () => {
+  it('returns OK when EN + PL both present and names align', () => {
+    const res = classifyRowPair({
+      enRow: { 'test name': 'Complete Blood Count (CBC)', 'category': 'Hematology' },
+      plRow: { 'nazwa testu': 'Morfologia krwi (CBC)', 'kategoria': 'Hematologia' },
+      seenEnSlugs: new Set(),
+    });
+    expect(res.issue).toBe<IssueType>('OK');
+  });
+
+  it('returns MISSING_PL when PL row is empty', () => {
+    const res = classifyRowPair({
+      enRow: { 'test name': 'Ferritin', 'category': 'Iron' },
+      plRow: {},
+      seenEnSlugs: new Set(),
+    });
+    expect(res.issue).toBe<IssueType>('MISSING_PL');
+  });
+
+  it('returns DUPLICATE when EN name collides with an already-seen slug', () => {
+    const seen = new Set<string>(['homocysteine']);
+    const res = classifyRowPair({
+      enRow: { 'test name': 'Homocysteine', 'category': 'Cardio' },
+      plRow: { 'nazwa testu': 'Homocysteina', 'kategoria': 'Kardio' },
+      seenEnSlugs: seen,
+    });
+    expect(res.issue).toBe<IssueType>('DUPLICATE');
+  });
+
+  it('flags META_TOO_LONG but still returns OK', () => {
+    const longMeta = 'x'.repeat(200);
+    const res = classifyRowPair({
+      enRow: { 'test name': 'Test', 'category': 'Cat', 'meta description': longMeta },
+      plRow: { 'nazwa testu': 'Test PL', 'kategoria': 'Kat', 'meta description': 'short' },
+      seenEnSlugs: new Set(),
+    });
+    expect(res.issue).toBe<IssueType>('OK');
+    expect(res.flags).toContain('META_TOO_LONG_EN');
+  });
+
+  it('returns EMPTY when both EN and PL rows have no test name', () => {
+    const res = classifyRowPair({
+      enRow: {},
+      plRow: {},
+      seenEnSlugs: new Set(),
+    });
+    expect(res.issue).toBe<IssueType>('EMPTY');
+    expect(res.canonicalSlug).toBeNull();
+  });
+
+  it('does NOT flag META_TOO_LONG_EN for exactly 160-char meta', () => {
+    const meta160 = 'x'.repeat(160);
+    const res = classifyRowPair({
+      enRow: { 'test name': 'Test', 'meta description': meta160 },
+      plRow: { 'nazwa testu': 'Test PL' },
+      seenEnSlugs: new Set(),
+    });
+    expect(res.flags).not.toContain('META_TOO_LONG_EN');
+  });
+
+  it('flags META_TOO_LONG_EN at 161 chars (first over-limit)', () => {
+    const meta161 = 'x'.repeat(161);
+    const res = classifyRowPair({
+      enRow: { 'test name': 'Test', 'meta description': meta161 },
+      plRow: { 'nazwa testu': 'Test PL' },
+      seenEnSlugs: new Set(),
+    });
+    expect(res.flags).toContain('META_TOO_LONG_EN');
+  });
+
+  it('returns MISALIGNED when EN and PL names refer to different tests', () => {
+    const res = classifyRowPair({
+      enRow: { 'test name': 'Thyroid Stimulating Hormone' },
+      plRow: { 'nazwa testu': 'Morfologia krwi' }, // clearly unrelated
+      seenEnSlugs: new Set(),
+    });
+    expect(res.issue).toBe<IssueType>('MISALIGNED');
+  });
+
+  it('does NOT flag MISALIGNED when names share detectable root tokens', () => {
+    const res = classifyRowPair({
+      enRow: { 'test name': 'Ferritin' },
+      plRow: { 'nazwa testu': 'Ferrytyna' }, // transliteration / cognate
+      seenEnSlugs: new Set(),
+    });
+    expect(res.issue).toBe<IssueType>('OK');
+  });
+});
+
+describe('buildReconcileRows', () => {
+  it('produces one row per skipped item with expected columns', () => {
+    const rows = buildReconcileRows([
+      {
+        issue: 'DUPLICATE',
+        flags: [],
+        enRowIndex: 50,
+        plRowIndex: 50,
+        enName: 'Homocysteine',
+        plName: 'Homocysteina',
+        canonicalSlug: 'homocysteine',
+      },
+      {
+        issue: 'MISSING_PL',
+        flags: [],
+        enRowIndex: 90,
+        plRowIndex: 90,
+        enName: 'Orphan',
+        plName: '',
+        canonicalSlug: 'orphan',
+      },
+    ]);
+    expect(rows).toHaveLength(2);
+    expect(Object.keys(rows[0])).toEqual([
+      'issue_type', 'en_row', 'pl_row', 'en_name', 'pl_name',
+      'suggested_action', 'your_fix',
+    ]);
+    expect(rows[0].issue_type).toBe('DUPLICATE');
+    expect(rows[0].suggested_action).toMatch(/rename/i);
+    expect(rows[1].suggested_action).toMatch(/add PL translation/i);
+  });
+});
+
+describe('runImport (integration, in-memory)', () => {
+  // Common filled-out row helper so fixtures stay short.
+  const fullEn = (name: string, category = 'Hematology'): Record<string, string> => ({
+    'test name': name, 'category': category,
+    'meta title': 'X', 'meta description': 'Y', 'h1 title': 'H', 'h1_text': 'T',
+    'h2_1': 'a', 'h2_1_text': 'b', 'h2_2': 'c', 'h2_2_text': 'd',
+    'h2_3': 'e', 'h2_3_text': 'f', 'h2_4': 'g', 'h2_4_text': 'h',
+    'h2_5': 'i', 'h2_5_text': 'j', 'ai use-case': 'u',
+  });
+  const fullPl = (name: string, category = 'Hematologia'): Record<string, string> => ({
+    'nazwa testu': name, 'kategoria': category,
+    'meta title': 'X', 'meta description': 'Y', 'h1 title': 'H', 'h1_text': 'T',
+    'h2_1': 'a', 'h2_1_text': 'b', 'h2_2': 'c', 'h2_2_text': 'd',
+    'h2_3': 'e', 'h2_3_text': 'f', 'h2_4': 'g', 'h2_4_text': 'h',
+    'h2_5': 'i', 'h2_5_text': 'j', 'ai use-case': 'u',
+  });
+
+  it('writes MDX only for OK rows; skips DUPLICATE / MISSING_PL', async () => {
+    const result = await runImport({
+      enRows: [
+        fullEn('Complete Blood Count (CBC)'),     // row 0: OK (paired with CBC PL)
+        fullEn('Complete Blood Count (CBC)'),     // row 1: DUPLICATE (same EN slug)
+        fullEn('OrphanEn'),                        // row 2: MISSING_PL
+      ],
+      plRows: [
+        fullPl('Morfologia krwi (CBC)'),           // row 0: pairs with EN row 0 → OK
+        fullPl('Morfologia2 (CBC)'),               // row 1: pairs with EN row 1 → but EN row 1 is DUPLICATE
+        {},                                         // row 2: empty → EN row 2 becomes MISSING_PL
+      ],
+      dryRun: true,
+    });
+    expect(result.written.en).toHaveLength(1);
+    expect(result.written.pl).toHaveLength(1);
+    expect(result.skipped.map((s) => s.issue).sort()).toEqual(['DUPLICATE', 'MISSING_PL']);
+  });
+});
+
+describe('renderCategoriesTmpl', () => {
+  it('produces valid TS with inferred slugs from labels', () => {
+    const ts = renderCategoriesTmpl([
+      { key: 'hematology', labelEn: 'Hematology', labelPl: 'Hematologia' },
+      { key: 'thyroid', labelEn: 'Thyroid', labelPl: 'Tarczyca' },
+    ]);
+    expect(ts).toContain("'hematology':");
+    expect(ts).toContain("slug: 'hematologia'");
+    expect(ts).toContain("label: 'Hematology'");
+    expect(ts).toContain("export const categoryMeta");
+    expect(ts).toContain("satisfies Record");
+  });
+
+  it('quotes hyphenated keys (e.g. mental-health)', () => {
+    const ts = renderCategoriesTmpl([
+      { key: 'mental-health', labelEn: 'Mental Health', labelPl: 'Zdrowie Psychiczne' },
+    ]);
+    expect(ts).toContain("'mental-health':");
+    // Verify it doesn't emit the invalid bare form.
+    expect(ts).not.toMatch(/^\s+mental-health:/m);
+  });
+});
+
+describe('extractCategoryKeys', () => {
+  it('returns only top-level category keys, not nested en/pl', () => {
+    const src = `export const categoryMeta = {
+  hematology: {
+    en: { slug: 'hematology', label: 'Hematology' },
+    pl: { slug: 'hematologia', label: 'Hematologia' },
+  },
+  thyroid: {
+    en: { slug: 'thyroid', label: 'Thyroid' },
+    pl: { slug: 'tarczyca', label: 'Tarczyca' },
+  },
+} as const satisfies Record<string, Record<'en' | 'pl', { slug: string; label: string }>>;`;
+    const keys = extractCategoryKeys(src);
+    expect(Array.from(keys).sort()).toEqual(['hematology', 'thyroid']);
+    expect(keys.has('en')).toBe(false);
+    expect(keys.has('pl')).toBe(false);
+  });
+
+  it('returns an empty set when categoryMeta block not found', () => {
+    const src = `// nothing here`;
+    expect(extractCategoryKeys(src).size).toBe(0);
+  });
+
+  it('handles quoted keys with hyphens (e.g. mental-health)', () => {
+    const src = `export const categoryMeta = {
+  hematology: {
+    en: { slug: 'hematology', label: 'Hematology' },
+    pl: { slug: 'hematologia', label: 'Hematologia' },
+  },
+  'mental-health': {
+    en: { slug: 'mental-health', label: 'Mental Health' },
+    pl: { slug: 'zdrowie-psychiczne', label: 'Zdrowie Psychiczne' },
+  },
+} as const satisfies Record<string, Record<'en' | 'pl', { slug: string; label: string }>>;`;
+    const keys = extractCategoryKeys(src);
+    expect(keys.has('hematology')).toBe(true);
+    expect(keys.has('mental-health')).toBe(true);
   });
 });

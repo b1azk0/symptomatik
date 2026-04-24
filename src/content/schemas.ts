@@ -1,4 +1,7 @@
 import { z } from 'zod';
+import { categoryMeta } from '@/i18n/categories';
+
+const categoryKeys = Object.keys(categoryMeta) as [string, ...string[]];
 
 export const medicalTestSchema = z.object({
   slug: z.string(),
@@ -7,7 +10,7 @@ export const medicalTestSchema = z.object({
   title: z.string(),
   titleAlt: z.string().optional(),
   category: z.string(),
-  categorySlug: z.string(),
+  categorySlug: z.enum(categoryKeys),
   aiUseCase: z.string(),
   metaTitle: z.string().max(60),
   metaDescription: z.string().max(160),

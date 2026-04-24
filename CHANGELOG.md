@@ -1,5 +1,47 @@
 # Changelog
 
+## 2026-04-23 — S1 Content Platform: Task 14 — Pagefind postbuild indexing
+
+- `package.json`: added `pagefind@1.5.2` to `devDependencies`.
+- `astro.config.mjs`: added `pagefindIntegration` — a custom Astro integration
+  whose `astro:build:done` hook runs `pnpm pagefind` against `dist/client/`
+  after Astro's static build completes.
+  - Scoped to medical-tests content only via `--glob "{medical-tests/**/*.html,pl/badania/**/*.html}"`.
+  - Legal pages (privacy, terms, cookies, medical-disclaimer) and homepages excluded.
+  - Integration placed last in the `integrations` array; the hook fires after sitemap.
+- Build produces `dist/client/pagefind/` with `pagefind.js`, `pagefind-ui.js`,
+  `pagefind-ui.css`, plus fragment/index shards for EN + PL languages.
+  102 pages indexed (all EN medical-tests + all PL badania pages).
+- `pnpm test`: 109/109 pass. `pnpm check`: 0 errors.
+
+## 2026-04-23 — S1 Content Platform: Task 11 — TestCard component
+
+- `src/components/TestCard.astro`: new shared card component for test summaries.
+  Flat white card with 1px Warm Linen border (`#F0E0D0`), 8px radius, 20px padding.
+  Eyebrow in category accent color (Geist Mono, 10px, uppercase, letter-spacing 1.2),
+  title in primary text (Geist, 16px, semibold), aiUseCase excerpt in secondary
+  (`#7A6A5E`, 13px). Props: `href`, `title`, `aiUseCase`, `categoryLabel`,
+  `paletteAccent`. No illustration — text-forward card per spec.
+- `tests/unit/test-card.test.ts`: 3 Vitest tests via `AstroContainer` (renders
+  title/aiUseCase/link, paletteAccent in markup, categoryLabel in content).
+- `vitest.config.ts`: migrated from `defineConfig` to `getViteConfig` (Astro)
+  so `.astro` files can be compiled in the test runner. Uses `astro.config.test.mjs`
+  (no CF adapter) to avoid the CF Vite plugin's incompatibility with vitest's
+  `resolve.external`. Tests run with `// @vitest-environment node` to get SSR
+  compilation of `.astro` files (not browser stubs).
+- `astro.config.test.mjs`: minimal Astro config for test runner (no CF adapter,
+  no integrations — just enough for `.astro` compilation).
+- `tests/stubs/astro-components.d.ts`: ambient `*.astro` module declaration so
+  `tsc --noEmit` resolves `.astro` imports in test files.
+- Test count: 94 → 97 (3 new).
+
+## 2026-04-23 — S1 Content Platform: Task 5 — categories.ts.tmpl generation
+
+- `scripts/import-medical-tests.ts`: added exported `renderCategoriesTmpl()` that sorts categories, slugifies PL labels, and emits a typed TS template file ready for human review.
+- `scripts/import-medical-tests.ts`: added `extractCategoryKeys()` helper that parses `categoryMeta` keys from an existing `categories.ts` via regex.
+- `scripts/import-medical-tests.ts`: wired categories handling into `runImport` non-dryRun path — emits `src/i18n/categories.ts.tmpl` on first run (when `categories.ts` is absent); on subsequent runs validates all seen category keys against `categoryMeta` and throws a clear actionable error on drift.
+- `tests/unit/import-parse.test.ts`: added `renderCategoriesTmpl` test suite (1 new test; total 15 pass).
+
 ## 2026-04-22 — S0 Foundation Scaffold shipped · v0.1.0
 
 All 40 S0 tasks complete. Production live at https://symptomatik.com
