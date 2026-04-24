@@ -21,6 +21,7 @@ export const ui = {
     'breadcrumbs.medicalTests': 'Medical Tests',
     'lastReviewed': 'Last reviewed',
     'relatedContent.heading': 'Related tests',
+    'search.placeholder': 'Search tests…',
   },
   pl: {
     'nav.symptomChecker': 'Sprawdź objawy',
@@ -41,6 +42,7 @@ export const ui = {
     'breadcrumbs.medicalTests': 'Badania',
     'lastReviewed': 'Ostatnia weryfikacja',
     'relatedContent.heading': 'Powiązane badania',
+    'search.placeholder': 'Szukaj badań…',
   },
   es: {
     'nav.symptomChecker': 'Verificador de síntomas',
@@ -61,6 +63,7 @@ export const ui = {
     'breadcrumbs.medicalTests': 'Pruebas',
     'lastReviewed': 'Última revisión',
     'relatedContent.heading': 'Pruebas relacionadas',
+    'search.placeholder': 'Buscar pruebas…',
   },
 } as const;
 

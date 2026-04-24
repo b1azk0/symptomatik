@@ -1,0 +1,14 @@
+---
+import PillarSearchIsland from './PillarSearch.tsx';
+import '@/components/pillar-search.css';
+import { t } from '@/i18n/ui';
+import type { Locale } from '@/i18n/locales';
+
+interface Props { lang: Locale; }
+const { lang } = Astro.props;
+---
+<div class="my-6">
+  <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+  <div id="pillar-search" class="pillar-search"></div>
+  <PillarSearchIsland client:load lang={lang as 'en' | 'pl'} placeholder={t(lang, 'search.placeholder')} />
+</div>
