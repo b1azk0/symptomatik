@@ -1,0 +1,171 @@
+---
+import BaseLayout from '@/components/BaseLayout.astro';
+import PillarSearch from '@/components/PillarSearch.astro';
+import CategoryCard from '@/components/CategoryCard.astro';
+import TestCard from '@/components/TestCard.astro';
+import { getTestsByCategory, getTestBySlug } from '@/lib/medical-tests/queries';
+import { categoryMeta, type CategoryKey, pillarIllustration } from '@/i18n/categories';
+import { buildCategoryURL, buildURL, buildPillarURL } from '@/i18n/routes';
+import { collectionPage, itemList, breadcrumbList } from '@/lib/seo/json-ld';
+import { getFeaturedSlugs } from '@/i18n/featured';
+import { t } from '@/i18n/ui';
+
+const lang = 'en' as const;
+const site = (import.meta.env.PUBLIC_SITE_URL || 'https://symptomatik.com').replace(/\/$/, '');
+const canonical = site + buildPillarURL(lang, 'medical-tests');
+
+const byCategory = await getTestsByCategory(lang);
+const keys = (Object.keys(categoryMeta) as CategoryKey[])
+  .filter((k) => byCategory.has(k))
+  .sort((a, b) => categoryMeta[a][lang].label.localeCompare(categoryMeta[b][lang].label));
+
+const featuredResolved = await Promise.all(
+  getFeaturedSlugs(lang).map(async (slug) => {
+    const entry = await getTestBySlug(lang, slug);
+    if (!entry) {
+      // eslint-disable-next-line no-console
+      console.warn(`[pillar/${lang}] featured slug not found: ${slug}`);
+    }
+    return entry;
+  })
+);
+const featured = featuredResolved.filter((e): e is NonNullable<typeof e> => e !== null);
+
+const alternates = [
+  { hreflang: 'en', href: site + buildPillarURL('en', 'medical-tests') },
+  { hreflang: 'pl', href: site + buildPillarURL('pl', 'medical-tests') },
+  { hreflang: 'x-default', href: site + buildPillarURL('en', 'medical-tests') },
+];
+
+const breadcrumbs = [
+  { label: t(lang, 'breadcrumbs.home'), href: site + '/' },
+  { label: t(lang, 'breadcrumbs.medicalTests') },
+];
+
+const jsonLd = [
+  collectionPage({
+    url: canonical,
+    title: t(lang, 'pillar.title'),
+    description: t(lang, 'pillar.description'),
+    inLanguage: lang,
+  }),
+  itemList(
+    keys.map((k, i) => ({
+      position: i + 1,
+      name: categoryMeta[k][lang].label,
+      url: site + buildCategoryURL(lang, k),
+    }))
+  ),
+  breadcrumbList(breadcrumbs),
+];
+---
+<BaseLayout
+  title={t(lang, 'pillar.metaTitle')}
+  description={t(lang, 'pillar.metaDescription')}
+  canonical={canonical}
+  alternates={alternates}
+  locale={lang}
+  jsonLd={jsonLd}
+>
+  <div class="max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-20">
+    <section class="grid gap-10 md:grid-cols-2 md:items-center">
+      <div>
+        <nav aria-label="Breadcrumb" class="text-xs text-neutral-500 mb-4">
+          <a href="/" class="hover:underline">{t(lang, 'breadcrumbs.home')}</a>
+          <span class="mx-2">/</span>
+          <span>{t(lang, 'breadcrumbs.medicalTests')}</span>
+        </nav>
+        <h1 class="font-serif text-5xl md:text-6xl font-semibold text-neutral-900 leading-tight">
+          {t(lang, 'pillar.title')}
+        </h1>
+        <p class="mt-6 text-lg text-neutral-600 max-w-xl">
+          {t(lang, 'pillar.description')}
+        </p>
+        <PillarSearch lang={lang} />
+      </div>
+      <div class="hero-illustration">
+        <img
+          src={pillarIllustration}
+          alt=""
+          loading="eager"
+          decoding="async"
+          class="hero-illustration__img"
+        />
+      </div>
+    </section>
+
+    {featured.length > 0 && (
+      <section class="mt-16 md:mt-24">
+        <h2 class="font-serif text-3xl md:text-4xl font-semibold text-neutral-900 mb-8">
+          {t(lang, 'pillar.startHereHeading')}
+        </h2>
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {featured.map((entry) => {
+            const key = entry.data.categorySlug as CategoryKey;
+            const meta = categoryMeta[key];
+            const illustration = 'illustration' in meta ? meta.illustration : undefined;
+            const baseProps = {
+              href: buildURL({ lang, collection: 'medical-tests', slug: entry.data.slug }),
+              title: entry.data.title,
+              aiUseCase: entry.data.aiUseCase,
+              categoryLabel: meta[lang].label,
+              paletteAccent: meta.paletteAccent,
+              illustrationBg: '#F5F0EC',
+            };
+            return illustration
+              ? <TestCard {...baseProps} illustration={illustration} />
+              : <TestCard {...baseProps} />;
+          })}
+        </div>
+      </section>
+    )}
+
+    <section class="mt-16 md:mt-24">
+      <h2 class="font-serif text-3xl md:text-4xl font-semibold text-neutral-900 mb-3">
+        {t(lang, 'pillar.categoriesHeading')}
+      </h2>
+      <p class="text-neutral-600 max-w-2xl mb-8">
+        {t(lang, 'pillar.categoriesSubhead')}
+      </p>
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {keys.map((k) => {
+          const meta = categoryMeta[k];
+          const tests = byCategory.get(k) ?? [];
+          const illustration = 'illustration' in meta ? meta.illustration : undefined;
+          const baseProps = {
+            href: buildCategoryURL(lang, k),
+            label: meta[lang].label,
+            testCount: tests.length,
+            illustrationBg: '#F5F0EC',
+            paletteAccent: meta.paletteAccent,
+          };
+          return illustration
+            ? <CategoryCard {...baseProps} illustration={illustration} />
+            : <CategoryCard {...baseProps} />;
+        })}
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .hero-illustration {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    aspect-ratio: 1 / 1;
+    max-width: 440px;
+    width: 100%;
+    margin-left: auto;
+    background: #F5F0EC;
+    border-radius: 50%;
+    overflow: hidden;
+  }
+
+  .hero-illustration__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+</style>
