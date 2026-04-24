@@ -12,6 +12,9 @@ const REQUIRED_BY_TYPE: Record<string, string[]> = {
   MedicalWebPage: ['@context', '@type', 'url', 'name', 'description', 'inLanguage', 'lastReviewed'],
   BreadcrumbList: ['@context', '@type', 'itemListElement'],
   WebSite: ['@context', '@type', 'url', 'name', 'inLanguage'],
+  // S1 pillar + category pages emit CollectionPage + ItemList (see src/lib/seo/json-ld.ts).
+  CollectionPage: ['@context', '@type', 'url', 'name', 'description', 'inLanguage'],
+  ItemList: ['@context', '@type', 'itemListElement'],
 };
 
 async function* walk(dir: string): AsyncGenerator<string> {

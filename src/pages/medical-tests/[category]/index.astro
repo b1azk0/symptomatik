@@ -24,7 +24,8 @@ const illustration = 'illustration' in meta ? meta.illustration : undefined;
 const site = (import.meta.env.PUBLIC_SITE_URL || 'https://symptomatik.com').replace(/\/$/, '');
 const canonical = site + buildCategoryURL(lang, key);
 
-const descriptionText = `Guide to ${label} tests — what they measure, normal ranges, and how to interpret your results.`;
+const descriptionText = t(lang, 'category.description', { label });
+const metaDescriptionText = t(lang, 'category.metaDescription', { label });
 
 const tests = await getTestsInCategory(lang, key);
 
@@ -65,7 +66,7 @@ const jsonLd = [
 ---
 <BaseLayout
   title={`${label} — Medical Tests | Symptomatik`}
-  description={descriptionText}
+  description={metaDescriptionText}
   canonical={canonical}
   alternates={alternates}
   locale={lang}

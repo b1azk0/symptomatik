@@ -5,6 +5,7 @@ import { canonicalURL, alternatesFor } from '@/lib/seo/meta';
 import { findAlternatesByCanonicalSlug } from '@/lib/content/loaders';
 import { medicalWebPage, breadcrumbList } from '@/lib/seo/json-ld';
 import { t } from '@/i18n/ui';
+import type { CategoryKey } from '@/i18n/categories';
 
 export async function getStaticPaths() {
   const all = await getCollection('medical-tests');
@@ -54,4 +55,7 @@ const jsonLd = [
   h1Text={entry.data.h1Text}
   sections={entry.data.sections}
   updatedAt={entry.data.updatedAt}
+  slug={entry.data.slug}
+  categoryKey={entry.data.categorySlug as CategoryKey}
+  relatedTests={entry.data.relatedTests ?? []}
 />

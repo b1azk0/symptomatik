@@ -6,7 +6,7 @@ import CookieConsent from './CookieConsent.tsx';
 import { t } from '@/i18n/ui';
 import type { Locale } from '@/i18n/locales';
 import type { Alternate } from '@/lib/seo/meta';
-import { buildLegalURL } from '@/i18n/routes';
+import { buildLegalURL, buildPillarURL } from '@/i18n/routes';
 
 interface Props {
   title: string;
@@ -47,7 +47,9 @@ const cookiesHref = buildLegalURL(locale, 'cookies');
         <a href={homeHref} class="font-serif text-xl font-semibold">Symptomatik</a>
         <nav aria-label="Main" class="hidden md:flex gap-4 text-sm">
           <a href={homeHref}>{t(locale, 'nav.symptomChecker')}</a>
-          <a href={homeHref}>{t(locale, 'nav.labResults')}</a>
+          {locale !== 'es' && (
+            <a href={buildPillarURL(locale, 'medical-tests')}>{t(locale, 'nav.labResults')}</a>
+          )}
           <a href={homeHref}>{t(locale, 'nav.mentalHealth')}</a>
           <a href={homeHref}>{t(locale, 'nav.calculators')}</a>
         </nav>

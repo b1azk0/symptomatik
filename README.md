@@ -2,7 +2,7 @@
 
 Multilingual (EN/ES/PL) health platform: lab results interpretation, symptom checker, mental health self-assessments, and health calculators. Freemium with Premium subscription.
 
-**Status:** S0 **shipped** · v0.1.0 · Production live at https://symptomatik.com
+**Status:** S0 + S1 **shipped** · v0.2.0 · Production live at https://symptomatik.com
 **Entity:** Digital Savages
 **Remote:** `github.com/b1azk0/symptomatik` (hosted under Blazej's personal GitHub; entity-owned by Digital Savages)
 **Active branch:** `main`
@@ -14,7 +14,7 @@ The full platform is being built as 10 sub-projects (S0–S9), each with its own
 | # | Sub-project | Status |
 |---|---|---|
 | **S0** | **Foundation Scaffold** | ✅ **Shipped** — 40/40 tasks · tagged `v0.1.0` · golden-path verified against production. Spec: [docs/superpowers/specs/2026-04-21-…-design.md](docs/superpowers/specs/2026-04-21-symptomatik-s0-foundation-scaffold-design.md), Plan: [docs/superpowers/plans/2026-04-21-….md](docs/superpowers/plans/2026-04-21-symptomatik-s0-foundation-scaffold.md) |
-| S1 | Content platform — medical-tests pillar (102 tests × EN+PL) | Not started |
+| **S1** | **Content platform — medical-tests pillar** | ✅ **Shipped** — 51/51 tests × EN+PL · 12 categories × EN+PL · pillar pages EN+PL · Pagefind search · tagged `v0.2.0` · golden-path verified. Spec: [docs/superpowers/specs/2026-04-23-…-design.md](docs/superpowers/specs/2026-04-23-symptomatik-s1-content-platform-design.md), Plan: [docs/superpowers/plans/2026-04-23-….md](docs/superpowers/plans/2026-04-23-symptomatik-s1-content-platform.md) |
 | S2 | AI routing layer (multi-LLM router) | Not started |
 | S3 | App: Lab Results Interpreter (free tier) | Not started |
 | S4 | App: Symptom Checker (free tier) | Not started |
@@ -34,6 +34,27 @@ The full platform is being built as 10 sub-projects (S0–S9), each with its own
 - CI: GitHub Actions (typecheck, build, Lighthouse ≥ 90 SEO, axe a11y, link check, JSON-LD validation, i18n coverage)
 
 Full detail in the S0 design spec.
+
+## What shipped in S1
+
+1. **Content scale:** 51 medical-tests imported from Excel source × EN + PL = 102 test detail pages (up from the single CBC page in S0).
+2. **Pillar pages live:**
+   - `/medical-tests/` (EN) · `/pl/badania/` (PL) — warm anatomical hero illustration, "Start here" 3-card featured section, 12-category browse grid
+3. **Category index pages live:** 12 EN + 12 PL = 24 pages. Each with category-specific illustration, per-category test listing, and a "Related categories" / "Powiązane kategorie" section linking to 3 sibling categories.
+4. **Pillar search:** Pagefind 1.5.2 indexes 102 medical-tests pages at build time (postbuild hook in `astro.config.mjs`). Search UI loads lazily on the pillar page via React island. Scoped to medical-tests only; not site-wide.
+5. **Illustration set v1:** 13 custom illustrations (12 category + 1 pillar hero) generated via Pencil MCP per the locked style brief (`docs/design/illustration-brief.md`) — flat pastel editorial, per-category palette, WebP-optimized 13–23 KB each.
+6. **RelatedContent component** embedded on every test detail page via `ContentLayout`. Curated-then-siblings algorithm (up to 5), gracefully hidden when fewer than 3 candidates sourceable.
+7. **JSON-LD extensions:** `CollectionPage` + `ItemList` helpers added for pillar + category pages. Every new route validates via `pnpm validate:jsonld` (285 blocks, 0 failures).
+8. **LanguageSwitcher refactor:** discreet `EN / ES / PL` mono-font treatment, always renders all three codes, falls back to locale home when a specific translation doesn't exist.
+9. **i18n expansion:** `t()` now supports `{name}` token interpolation. 29 new keys across EN/PL/ES including `pillar.*` + `category.*` strings. Locale-aware plural formatting (`formatTestCount` via `Intl.PluralRules` — 3-form Slavic paradigm for PL).
+10. **Tests:** 149 Vitest unit + 21 Playwright E2E all green in CI (up from 62 + 11 at S0). New coverage: pillar + search + navigation + hreflang specs, plurals, t-interpolation, category card localization, plus the existing a11y / links / cookie-consent suites.
+11. **CI gates extended:** Lighthouse now covers pillar + category routes (7 total); JSON-LD validator covers CollectionPage + ItemList; i18n coverage verifies 13 EN↔PL route pairs; new `validate-reconcile-drift` soft gate surfaces when Excel importer would produce different output than committed.
+12. **Sitemap:** per-locale sitemaps now include pillar + all 12 category routes in addition to test-detail pages (65 EN, 64 PL, 1 ES entry).
+
+**Known limitations (accepted for S1, revisit in S2+):**
+- Excel source has reconcile drift — `pnpm validate:reconcile-drift` warns that ~30+ PL MDX files would change on re-import. Soft-gate only, doesn't fail CI. Blazej to correct source Excel using the reconciliation workbook and rerun import in a follow-up.
+- ES pillar + category pages intentionally not built; ES content stubs from S0 remain the only Spanish surface. Same language switcher falls back to `/es/` home when a PL/EN alternate doesn't have an ES counterpart.
+- 4 categories don't have MDX content in PL (heart has 1 test in EN only). The affected pillar/category page shows 11 cards in PL vs. 12 in EN; fixed when PL content lands.
 
 ## What shipped in S0
 
