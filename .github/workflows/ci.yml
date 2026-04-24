@@ -28,6 +28,9 @@ jobs:
       - run: pnpm build
       - run: pnpm validate:jsonld
       - run: pnpm validate:i18n
+      - name: Check reconcile drift (soft gate)
+        run: pnpm validate:reconcile-drift
+        continue-on-error: true
       - uses: actions/upload-artifact@v4
         with:
           name: dist

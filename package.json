@@ -17,7 +17,8 @@
     "lint": "echo 'no linter configured yet'",
     "import:tests": "tsx scripts/import-medical-tests.ts",
     "validate:jsonld": "tsx scripts/validate-jsonld.ts",
-    "validate:i18n": "tsx scripts/validate-i18n-coverage.ts"
+    "validate:i18n": "tsx scripts/validate-i18n-coverage.ts",
+    "validate:reconcile-drift": "tsx scripts/validate-reconcile-drift.ts"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.8",
