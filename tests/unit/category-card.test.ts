@@ -11,6 +11,7 @@ describe('CategoryCard', () => {
         href: '/medical-tests/hematology/',
         label: 'Hematology',
         testCount: 12,
+        locale: 'en',
         testPreview: 'CBC, iron panel, clotting factors',
         illustration: '/assets/illustrations/category/hematology.webp',
         illustrationBg: '#FDE7D6',
@@ -31,6 +32,7 @@ describe('CategoryCard', () => {
         href: '/medical-tests/heart-tests/',
         label: 'Heart Tests',
         testCount: 0,
+        locale: 'en',
         paletteAccent: '#A0404A',
       },
     });
@@ -45,11 +47,30 @@ describe('CategoryCard', () => {
         href: '/medical-tests/urinalysis/',
         label: 'Urinalysis',
         testCount: 1,
+        locale: 'en',
         paletteAccent: '#4A6F5C',
       },
     });
     expect(html).toContain('1 test');
     expect(html).not.toMatch(/1 tests/);
+  });
+
+  it('uses PL pluralization when locale=pl', async () => {
+    const container = await AstroContainer.create();
+    const ht1 = await container.renderToString(CategoryCard, {
+      props: { href: '/pl/', label: 'Hematologia', testCount: 1, locale: 'pl', paletteAccent: '#D4654A' },
+    });
+    expect(ht1).toContain('1 badanie');
+
+    const ht3 = await container.renderToString(CategoryCard, {
+      props: { href: '/pl/', label: 'Hematologia', testCount: 3, locale: 'pl', paletteAccent: '#D4654A' },
+    });
+    expect(ht3).toContain('3 badania');
+
+    const ht9 = await container.renderToString(CategoryCard, {
+      props: { href: '/pl/', label: 'Hematologia', testCount: 9, locale: 'pl', paletteAccent: '#D4654A' },
+    });
+    expect(ht9).toContain('9 badań');
   });
 
   it('applies illustrationBg as the illustration zone background', async () => {
@@ -59,6 +80,7 @@ describe('CategoryCard', () => {
         href: '/medical-tests/hematology/',
         label: 'Hematology',
         testCount: 12,
+        locale: 'en',
         illustrationBg: '#FDE7D6',
         paletteAccent: '#D4654A',
       },

@@ -1,8 +1,12 @@
 ---
+import { formatTestCount } from '@/i18n/plurals';
+import type { Locale } from '@/i18n/locales';
+
 interface Props {
   href: string;
   label: string;
   testCount: number;
+  locale: Locale;
   testPreview?: string;
   illustration?: string;
   illustrationBg?: string;
@@ -13,13 +17,14 @@ const {
   href,
   label,
   testCount,
+  locale,
   testPreview,
   illustration,
   illustrationBg = '#F5F0EC',
   paletteAccent,
 } = Astro.props;
 
-const countLabel = `${testCount} ${testCount === 1 ? 'test' : 'tests'}`;
+const countLabel = formatTestCount(locale, testCount);
 const rosterLine = testPreview ? `${countLabel} — ${testPreview}` : countLabel;
 ---
 <a
