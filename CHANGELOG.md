@@ -1,5 +1,75 @@
 # Changelog
 
+## 2026-04-24 — S1 Content Platform shipped · v0.2.0
+
+All 32 S1 tasks complete. Production at https://symptomatik.com now
+includes the full medical-tests pillar: 51 tests × EN+PL imported from
+Excel, 2 pillar index pages, 24 category index pages, Pagefind search,
+RelatedContent on every detail page, 13 custom illustrations.
+
+**Golden-path verification (prod):**
+- `/medical-tests/` + `/pl/badania/` → 200, Lighthouse SEO ≥ 90 / Perf ≥ 85
+- 12 × category routes per locale → 200
+- 51 × test-detail routes per locale → 200 (spot-check on 5 random non-CBC)
+- Pillar search returns results for "blood" (EN) and "morfologia" (PL)
+- JSON-LD (`CollectionPage` + `ItemList` + `BreadcrumbList`) valid on pillar
+  + category + test pages in both locales
+- hreflang bidirectional on pillar + category + test pages
+- Sitemaps include all new URLs (65 EN, 64 PL, 1 ES)
+- CI green on `main`
+
+**Shipped in S1:**
+- 51 medical-test detail pages × EN+PL = 102 total content pages
+- 2 pillar pages (`/medical-tests/`, `/pl/badania/`) with hero, featured
+  "Start here" 3-card section, 4-col category grid
+- 24 category index pages (12 × EN+PL) with category illustration, test
+  listing, and "Related categories" 3-card section
+- Pagefind 1.5.2 postbuild indexing, scoped to medical-tests content only
+- `PillarSearch` React island — lazy-loads Pagefind UI on pillar page
+- `RelatedContent` component embedded in `ContentLayout` — curated-then-
+  siblings algorithm, graceful hide when fewer than 3 candidates
+- `TestCard` + `CategoryCard` components with optional illustration zones,
+  line-clamped titles, locale-aware pluralization
+- 13 custom illustrations: 12 category (`autoimmunology`, `cardiometabolic`,
+  `gastro`, `heart`, `hematology`, `hormonal`, `inflammatory`, `liver`,
+  `mental-health`, `metabolism`, `oncology`, `urine`) + 1 pillar hero.
+  Flat pastel editorial style, locked in `docs/design/illustration-brief.md`.
+- JSON-LD helpers: `collectionPage()`, `itemList()` — validated on pillar +
+  category routes
+- `LanguageSwitcher` refactor — discreet `EN / ES / PL` mono-font treatment,
+  always renders all three codes, falls back to locale home (`/`, `/es/`,
+  `/pl/`) when a page has no specific alternate
+- `t()` interpolation — accepts optional `vars?: Record<string, string>`,
+  substitutes `{name}` tokens. Backward compatible.
+- `formatTestCount(locale, count)` — `Intl.PluralRules`-based, covers
+  EN/PL/ES. PL 3-form Slavic paradigm (`badanie` / `badania` / `badań`).
+- 29 new i18n keys across EN/PL/ES: `pillar.*`, `category.*`,
+  `search.placeholder`, `category.relatedHeading`, and more
+- Sitemap integration extended to enumerate pillar + category routes
+  dynamically from `categoryMeta`
+- CI extensions: Lighthouse config now covers 7 routes (pillar + category);
+  JSON-LD validator accepts `CollectionPage` + `ItemList`; i18n coverage
+  verifies 13 EN↔PL route pairs; new `validate-reconcile-drift` soft-gate
+  surfaces Excel importer drift
+
+**Tests: 149 Vitest + 21 Playwright E2E, all green.** (Was 62 + 11 at S0.)
+New specs: `plurals`, `t-interpolation`, `category-card`, `pillar.spec`,
+`search.spec`, `navigation.spec`, `hreflang-pillar.spec`.
+
+**Accepted limitations for S1 (revisit in S2+):**
+- Excel reconcile drift: `pnpm validate:reconcile-drift` warns that ~30+
+  PL MDX files would change on re-import. Soft-gate only. Blazej to correct
+  source Excel and rerun import in a follow-up.
+- ES pillar + category pages not built. ES remains stubs-only per S0 scope.
+- Mobile hamburger menu still deferred (waiting on S3+ for real app
+  targets in the header nav).
+- Embedding-based RelatedContent deferred — current implementation uses
+  curated slugs + category siblings fallback, which is good enough for v1.
+
+**Next: S2 — AI routing layer**
+Multi-LLM router behind `src/lib/ai/router.ts` interface; all S3+ app
+features (lab results, symptom checker, assessments) route through it.
+
 ## 2026-04-23 — S1 Content Platform: Task 14 — Pagefind postbuild indexing
 
 - `package.json`: added `pagefind@1.5.2` to `devDependencies`.
