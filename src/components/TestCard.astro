@@ -5,35 +5,82 @@ interface Props {
   aiUseCase: string;
   categoryLabel: string;
   paletteAccent: string;
+  illustration?: string;
+  illustrationBg?: string;
 }
 
-const { href, title, aiUseCase, categoryLabel, paletteAccent } = Astro.props;
+const {
+  href,
+  title,
+  aiUseCase,
+  categoryLabel,
+  paletteAccent,
+  illustration,
+  illustrationBg = '#F5F0EC',
+} = Astro.props;
 ---
 <a
   href={href}
   class="test-card"
   data-palette-accent={paletteAccent}
 >
-  <div class="test-card__eyebrow" style={`color: ${paletteAccent}`}>
-    {categoryLabel}
+  {illustration && (
+    <div
+      class="test-card__illustration"
+      style={`background-color: ${illustrationBg}`}
+    >
+      <img
+        src={illustration}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        class="test-card__img"
+      />
+    </div>
+  )}
+  <div class="test-card__body">
+    <div class="test-card__eyebrow" style={`color: ${paletteAccent}`}>
+      {categoryLabel}
+    </div>
+    <div class="test-card__title">{title}</div>
+    {aiUseCase && <div class="test-card__excerpt">{aiUseCase}</div>}
   </div>
-  <div class="test-card__title">{title}</div>
-  {aiUseCase && <div class="test-card__excerpt">{aiUseCase}</div>}
 </a>
 
 <style>
   .test-card {
-    display: block;
+    display: flex;
+    flex-direction: column;
     background: #FFFFFF;
     border: 1px solid #F0E0D0;
     border-radius: 8px;
-    padding: 20px;
+    overflow: hidden;
     text-decoration: none;
     transition: border-color 0.15s ease;
   }
 
   .test-card:hover {
     border-color: #D4BAC8;
+  }
+
+  .test-card__illustration {
+    width: 100%;
+    aspect-ratio: 2 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .test-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .test-card__body {
+    padding: 20px;
   }
 
   .test-card__eyebrow {

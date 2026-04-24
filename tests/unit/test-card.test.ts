@@ -52,4 +52,34 @@ describe('TestCard', () => {
     // Allow either uppercase in HTML or via CSS class applying text-transform: uppercase.
     expect(html.toLowerCase()).toContain('hematology');
   });
+
+  it('renders the illustration zone when an illustration URL is supplied', async () => {
+    const container = await AstroContainer.create();
+    const html = await container.renderToString(TestCard, {
+      props: {
+        href: '/medical-tests/cbc/',
+        title: 'CBC',
+        aiUseCase: 'Anemia',
+        categoryLabel: 'Hematology',
+        paletteAccent: '#D4654A',
+        illustration: '/assets/illustrations/pillar/hero.webp',
+      },
+    });
+    expect(html).toContain('test-card__illustration');
+    expect(html).toContain('/assets/illustrations/pillar/hero.webp');
+  });
+
+  it('omits the illustration zone when no illustration URL is supplied', async () => {
+    const container = await AstroContainer.create();
+    const html = await container.renderToString(TestCard, {
+      props: {
+        href: '/medical-tests/cbc/',
+        title: 'CBC',
+        aiUseCase: 'Anemia',
+        categoryLabel: 'Hematology',
+        paletteAccent: '#D4654A',
+      },
+    });
+    expect(html).not.toContain('test-card__illustration');
+  });
 });
