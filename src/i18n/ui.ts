@@ -30,6 +30,8 @@ export const ui = {
     'pillar.categoriesHeading': 'Browse by category',
     'pillar.categoriesSubhead': 'Every test grouped by the body system or mechanism it measures.',
     'category.relatedHeading': 'Related categories',
+    'category.description': 'All {label} tests we currently interpret.',
+    'category.metaDescription': '{label} lab tests — ranges, interpretation, and what your results mean.',
   },
   pl: {
     'nav.symptomChecker': 'Sprawdź objawy',
@@ -59,6 +61,8 @@ export const ui = {
     'pillar.categoriesHeading': 'Przeglądaj kategoriami',
     'pillar.categoriesSubhead': 'Każde badanie pogrupowane według układu lub mechanizmu, który bada.',
     'category.relatedHeading': 'Powiązane kategorie',
+    'category.description': 'Wszystkie badania z kategorii {label}, które interpretujemy.',
+    'category.metaDescription': 'Badania z kategorii {label} — normy, interpretacja, co oznaczają wyniki.',
   },
   es: {
     'nav.symptomChecker': 'Verificador de síntomas',
@@ -88,13 +92,15 @@ export const ui = {
     'pillar.categoriesHeading': 'Explorar por categoría',
     'pillar.categoriesSubhead': 'Cada prueba agrupada por sistema o mecanismo que mide.',
     'category.relatedHeading': 'Categorías relacionadas',
+    'category.description': 'Todas las pruebas de {label} que interpretamos actualmente.',
+    'category.metaDescription': 'Pruebas de {label} — rangos, interpretación y qué significan tus resultados.',
   },
 } as const;
 
 export type UIKey = keyof typeof ui.en;
 
-export function t(locale: Locale, key: UIKey): string {
-  const val = (ui[locale] as Record<string, string>)[key];
-  if (val !== undefined) return val;
-  return ui[defaultLocale][key];
+export function t(locale: Locale, key: UIKey, vars?: Record<string, string>): string {
+  const raw = (ui[locale] as Record<string, string>)[key] ?? ui[defaultLocale][key] ?? key;
+  if (!vars) return raw;
+  return raw.replace(/\{(\w+)\}/g, (_match, k) => vars[k] ?? '');
 }

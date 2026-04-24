@@ -2,9 +2,11 @@
 import BaseLayout from './BaseLayout.astro';
 import MedicalDisclaimer from './MedicalDisclaimer.astro';
 import BreadcrumbNav from './BreadcrumbNav.astro';
+import RelatedContent from './RelatedContent.astro';
 import { t } from '@/i18n/ui';
 import type { Locale } from '@/i18n/locales';
 import type { Alternate } from '@/lib/seo/meta';
+import type { CategoryKey } from '@/i18n/categories';
 
 interface BreadcrumbItem {
   label: string;
@@ -22,11 +24,15 @@ interface Props {
   h1Text: string;
   sections: { heading: string; body: string }[];
   updatedAt: Date;
+  slug?: string;
+  categoryKey?: CategoryKey;
+  relatedTests?: readonly string[];
 }
 
 const {
   title, description, canonical, alternates, locale, jsonLd,
   breadcrumbs, h1, h1Text, sections, updatedAt,
+  slug, categoryKey, relatedTests,
 } = Astro.props as Props;
 
 const reviewedLabel = t(locale, 'lastReviewed');
@@ -38,6 +44,14 @@ const reviewedStr = updatedAt.toISOString().slice(0, 10);
     <h1 class="font-serif text-3xl md:text-4xl text-neutral-900 mt-2 mb-4">{h1}</h1>
     <p class="text-neutral-700 leading-relaxed">{h1Text}</p>
 
+    {slug && categoryKey && (
+      <RelatedContent
+        currentSlug={slug}
+        categoryKey={categoryKey}
+        lang={locale}
+        curated={[...(relatedTests ?? [])]}
+      />
+    )}
     <MedicalDisclaimer locale={locale} variant="content" />
 
     {sections.map((s) => (
