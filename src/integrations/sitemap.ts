@@ -1,7 +1,8 @@
 import type { AstroIntegration } from 'astro';
-import { writeFile } from 'node:fs/promises';
+import { writeFile, readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
-import { buildURL } from '../i18n/routes';
+import { buildURL, buildPillarURL, buildCategoryURL } from '../i18n/routes';
+import { categoryMeta, type CategoryKey } from '../i18n/categories';
 
 export interface SitemapEntry {
   loc: string;
@@ -51,14 +52,64 @@ ${items}
 `;
 }
 
+interface MdxMeta {
+  slug: string;
+  canonicalSlug: string;
+  lang: 'en' | 'pl' | 'es';
+  categorySlug: CategoryKey;
+}
+
+/** Minimal frontmatter parser — reads only the flat keys we need for sitemap emission. */
+function parseFrontmatter(raw: string): Partial<MdxMeta> {
+  const m = raw.match(/^---\n([\s\S]*?)\n---/);
+  if (!m) return {};
+  const body = m[1];
+  const out: Record<string, string> = {};
+  for (const line of body.split('\n')) {
+    const kv = line.match(/^([A-Za-z_][A-Za-z0-9_]*):\s*(.*)$/);
+    if (!kv) continue;
+    const [, key, rawVal] = kv;
+    const val = rawVal.trim().replace(/^["']|["']$/g, '');
+    out[key] = val;
+  }
+  return out as Partial<MdxMeta>;
+}
+
+async function readAllTestFrontmatter(srcContentDir: string): Promise<MdxMeta[]> {
+  const langs: Array<'en' | 'pl' | 'es'> = ['en', 'pl', 'es'];
+  const entries: MdxMeta[] = [];
+  for (const lang of langs) {
+    const dir = path.join(srcContentDir, 'medical-tests', lang);
+    let files: string[];
+    try {
+      files = await readdir(dir);
+    } catch {
+      continue; // locale directory may not exist (e.g., es when not yet populated)
+    }
+    for (const f of files) {
+      if (!f.endsWith('.mdx')) continue;
+      const raw = await readFile(path.join(dir, f), 'utf8');
+      const fm = parseFrontmatter(raw);
+      if (!fm.slug || !fm.canonicalSlug || !fm.lang || !fm.categorySlug) continue;
+      entries.push({
+        slug: fm.slug,
+        canonicalSlug: fm.canonicalSlug,
+        lang: fm.lang,
+        categorySlug: fm.categorySlug as CategoryKey,
+      });
+    }
+  }
+  return entries;
+}
+
 /**
  * Custom Astro integration emitting per-locale sitemaps with inline hreflang
  * alternates and a sitemap index.
  *
- * NOTE for S0: this integration hard-codes the CBC page pair as the only
- * content entry, which matches the S0 "golden path" scope (one validated
- * content page per locale). When S1 imports all 102 tests, replace the
- * hard-coded addPair() calls with a full content-collection traversal.
+ * Enumerates the homepage, pillar pages (EN/PL), category pages (EN/PL per
+ * non-empty category), and every test-detail page across locales. Test-detail
+ * pairs are reconciled by `canonicalSlug` so EN ↔ PL ↔ ES counterparts emit
+ * mutual hreflang alternates.
  */
 export default function sitemapIntegration(options: { site: string }): AstroIntegration {
   return {
@@ -73,6 +124,7 @@ export default function sitemapIntegration(options: { site: string }): AstroInte
         const plEntries: SitemapEntry[] = [];
         const esEntries: SitemapEntry[] = [];
 
+        // ── 1. Homepages ────────────────────────────────────────────────
         const homepageAlternates = [
           { hreflang: 'en', href: `${site}/` },
           { hreflang: 'pl', href: `${site}/pl/` },
@@ -83,21 +135,72 @@ export default function sitemapIntegration(options: { site: string }): AstroInte
         plEntries.push({ loc: `${site}/pl/`, lastmod: today, alternates: homepageAlternates });
         esEntries.push({ loc: `${site}/es/`, lastmod: today, alternates: homepageAlternates });
 
-        const addContentPair = (enSlug: string, plSlug: string) => {
-          const enURL = `${site}${buildURL({ lang: 'en', collection: 'medical-tests', slug: enSlug })}`;
-          const plURL = `${site}${buildURL({ lang: 'pl', collection: 'medical-tests', slug: plSlug })}`;
-          const alternates = [
+        // ── 2. Read all test-detail frontmatter, group by canonicalSlug ─
+        const srcContentDir = path.join(process.cwd(), 'src', 'content');
+        const allTests = await readAllTestFrontmatter(srcContentDir);
+
+        const byCanonical = new Map<string, MdxMeta[]>();
+        for (const e of allTests) {
+          const arr = byCanonical.get(e.canonicalSlug) ?? [];
+          arr.push(e);
+          byCanonical.set(e.canonicalSlug, arr);
+        }
+
+        // ── 3. Pillar pages (EN + PL — no ES pillar in S1 scope) ────────
+        const enPillar = `${site}${buildPillarURL('en', 'medical-tests')}`;
+        const plPillar = `${site}${buildPillarURL('pl', 'medical-tests')}`;
+        const pillarAlternates = [
+          { hreflang: 'en', href: enPillar },
+          { hreflang: 'pl', href: plPillar },
+          { hreflang: 'x-default', href: enPillar },
+        ];
+        enEntries.push({ loc: enPillar, lastmod: today, alternates: pillarAlternates });
+        plEntries.push({ loc: plPillar, lastmod: today, alternates: pillarAlternates });
+
+        // ── 4. Category pages per non-empty category (EN + PL) ──────────
+        const enByCategory = new Set(
+          allTests.filter((e) => e.lang === 'en').map((e) => e.categorySlug),
+        );
+        const plByCategory = new Set(
+          allTests.filter((e) => e.lang === 'pl').map((e) => e.categorySlug),
+        );
+        for (const key of Object.keys(categoryMeta) as CategoryKey[]) {
+          const enURL = `${site}${buildCategoryURL('en', key)}`;
+          const plURL = `${site}${buildCategoryURL('pl', key)}`;
+          const catAlternates = [
             { hreflang: 'en', href: enURL },
             { hreflang: 'pl', href: plURL },
             { hreflang: 'x-default', href: enURL },
           ];
-          enEntries.push({ loc: enURL, lastmod: today, alternates });
-          plEntries.push({ loc: plURL, lastmod: today, alternates });
-        };
+          if (enByCategory.has(key)) {
+            enEntries.push({ loc: enURL, lastmod: today, alternates: catAlternates });
+          }
+          if (plByCategory.has(key)) {
+            plEntries.push({ loc: plURL, lastmod: today, alternates: catAlternates });
+          }
+        }
 
-        // S0 content: just the CBC golden-path pair.
-        // S1+ will replace this with a full content-collection traversal.
-        addContentPair('complete-blood-count-cbc', 'morfologia-krwi-cbc');
+        // ── 5. Test-detail pages (group by canonicalSlug for hreflang) ──
+        const canonicalSlugs = Array.from(byCanonical.keys()).sort();
+        for (const canonicalSlug of canonicalSlugs) {
+          const variants = byCanonical.get(canonicalSlug)!;
+          const alternates: Array<{ hreflang: string; href: string }> = [];
+          let xDefault: string | undefined;
+          for (const v of variants) {
+            const href = `${site}${buildURL({ lang: v.lang, collection: 'medical-tests', slug: v.slug })}`;
+            alternates.push({ hreflang: v.lang, href });
+            if (v.lang === 'en') xDefault = href;
+          }
+          if (xDefault) alternates.push({ hreflang: 'x-default', href: xDefault });
+
+          for (const v of variants) {
+            const href = `${site}${buildURL({ lang: v.lang, collection: 'medical-tests', slug: v.slug })}`;
+            const entry: SitemapEntry = { loc: href, lastmod: today, alternates };
+            if (v.lang === 'en') enEntries.push(entry);
+            else if (v.lang === 'pl') plEntries.push(entry);
+            else if (v.lang === 'es') esEntries.push(entry);
+          }
+        }
 
         await writeFile(path.join(distDir, 'sitemap-en.xml'), buildSitemapXml(enEntries), 'utf8');
         await writeFile(path.join(distDir, 'sitemap-pl.xml'), buildSitemapXml(plEntries), 'utf8');
@@ -112,7 +215,9 @@ export default function sitemapIntegration(options: { site: string }): AstroInte
           'utf8',
         );
 
-        console.log('[symptomatik-sitemap] wrote sitemap-en.xml, sitemap-pl.xml, sitemap-es.xml, sitemap-index.xml');
+        console.log(
+          `[symptomatik-sitemap] wrote sitemap-en.xml (${enEntries.length}), sitemap-pl.xml (${plEntries.length}), sitemap-es.xml (${esEntries.length}), sitemap-index.xml`,
+        );
       },
     },
   };
