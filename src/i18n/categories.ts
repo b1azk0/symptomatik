@@ -30,21 +30,25 @@ export const categoryMeta = {
   'autoimmunology': {
     en: { slug: 'autoimmunology', label: 'Autoimmunology' },
     pl: { slug: 'autoimmunologia', label: 'Autoimmunologia' },
+    illustration: '/assets/illustrations/category/autoimmunology.webp',
     paletteAccent: '#8B5A75',
   },
   'cardiometabolic': {
     en: { slug: 'cardiometabolic', label: 'Cardiometabolic' },
     pl: { slug: 'kardiometaboliczne', label: 'Kardiometaboliczne' },
+    illustration: '/assets/illustrations/category/cardiometabolic.webp',
     paletteAccent: '#C75040',
   },
   'gastro': {
     en: { slug: 'gastrointestinal', label: 'Gastrointestinal' },
     pl: { slug: 'uklad-pokarmowy', label: 'Układ pokarmowy' },
+    illustration: '/assets/illustrations/category/gastro.webp',
     paletteAccent: '#8B6020',
   },
   'heart': {
     en: { slug: 'heart-tests', label: 'Heart Tests' },
     pl: { slug: 'serce', label: 'Serce' },
+    illustration: '/assets/illustrations/category/heart.webp',
     paletteAccent: '#A0404A',
   },
   'hematology': {
