@@ -4,7 +4,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import ExcelJS from 'exceljs';
-import { EN_TO_PL_TEST_ALIAS, PL_TO_EN_TEST_ALIAS } from './test-aliases';
+import { EN_TO_PL_TEST_ALIAS, PL_TO_EN_TEST_ALIAS, EN_KNOWN_DUPLICATE_NAMES } from './test-aliases';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, '..');
@@ -641,6 +641,18 @@ export async function runImport(args: RunImportArgs): Promise<RunImportResult> {
 
     const slug = slugify(enName);
     if (writtenEnSlugs.has(slug)) {
+      skipped.push({
+        issue: 'DUPLICATE',
+        flags: [],
+        enRowIndex: i + 2,
+        plRowIndex: 0,
+        enName,
+        plName: '',
+        canonicalSlug: slug,
+      });
+      continue;
+    }
+    if (EN_KNOWN_DUPLICATE_NAMES.has(enName)) {
       skipped.push({
         issue: 'DUPLICATE',
         flags: [],

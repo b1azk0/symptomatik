@@ -84,7 +84,26 @@ export const EN_TO_PL_TEST_ALIAS: Record<string, string> = {
   'RF Test': 'RF',
   'Anti-TPO Antibodies': 'Anty-TPO',
   'Anti-Thyroglobulin Antibodies': 'Anty-TG',
+
+  // Immunology
+  'Specific IgE Antibodies': 'IgE swoiste',
+
+  // Coagulation / Liver — same test, different naming convention
+  'Prothrombin Time (PT)': 'PT/INR',
+  'Bilirubin': 'Bilirubina (z CMP)',
 };
+
+// EN test names that duplicate another EN row's content (different slug, same
+// underlying test). The import skips them so they don't produce single-locale
+// MDX with no real PL counterpart. These are data-quality artifacts in the
+// source xlsx (separate row entries for the same test) — the canonical EN
+// row for each concept is the one already paired in EN_TO_PL_TEST_ALIAS.
+export const EN_KNOWN_DUPLICATE_NAMES = new Set<string>([
+  'C-Reactive Protein (CRP)',                    // dup of row "CRP" (paired)
+  'Thyroid Stimulating Hormone (TSH)',           // dup of "TSH (Thyroid Stimulating Hormone)"
+  'DASS-21 (Depression Anxiety Stress Scale)',   // dup of "...Scales" plural variant (paired)
+  'Lipoprotein(a)',                              // dup of "Lipoprotein(a) - Cardiovascular Risk"
+]);
 
 // Reverse lookup table built once.
 export const PL_TO_EN_TEST_ALIAS: Record<string, string> = Object.fromEntries(

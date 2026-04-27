@@ -1,5 +1,45 @@
 # Changelog
 
+## 2026-04-27 — Phase 2 coverage: 1:1 EN↔PL parity (+36 translations)
+
+Every test on the platform now has both an English and a Polish version.
+121 unique tests, 121 EN MDX + 121 PL MDX = 242 pages total. Up from 210
+after Phase 1 (and 118 at the start of the day).
+
+- **36 medical translations** authored across both directions:
+  - 21 PL→EN (Kidney function: ACR, eGFR, Creatinine, Microalbuminuria;
+    Liver: LFT panel; Heart: BNP, Troponin; Coagulation: APTT, D-dimer;
+    Cardiometabolic: CK; Autoimmunology: ANCA, HLA-B27, tTG; Infections:
+    Borrelia, EBV/CMV, Hepatitis Panel; Gastro: Gut Microbiota Analysis;
+    Immunology: IL-6/TNF-alpha, Immunoglobulins; Mental Health: EPDS,
+    UCLA Loneliness Scale).
+  - 15 EN→PL (Cardiometabolic: Adiponektyna, Markery zespołu
+    metabolicznego; Liver: Albumina; Hematology: Liczba płytek krwi,
+    Liczba krwinek czerwonych/białych (RBC/WBC); Coagulation:
+    Tromboplastyna; Gastro: Lipopolisacharydy (LPS); Immunology:
+    IgA/IgG test celiakii, Całkowity poziom IgE w surowicy,
+    Immunoglobulina M (IgM); Endocrinology: Hormon T3/T4; Mental
+    Health: PSQI).
+- **3 new aliases + 4 EN duplicate prunes** before translation reduced
+  the gap from 46 to 36. Aliases: Specific IgE↔IgE swoiste, PT↔PT/INR,
+  Bilirubin↔Bilirubina (z CMP). EN duplicates removed from the import
+  via `EN_KNOWN_DUPLICATE_NAMES`: "C-Reactive Protein (CRP)" (dup of
+  CRP), "Thyroid Stimulating Hormone (TSH)" (dup of TSH (...)),
+  "DASS-21 (...Scale)" (dup of "...Scales"), "Lipoprotein(a)" (dup of
+  "Lipoprotein(a) - Cardiovascular Risk").
+- **Cross-locale linking verified.** Each new MDX `canonicalSlug` points
+  at the existing counterpart's slug so `findAlternatesByCanonicalSlug`
+  resolves correctly (e.g. `pl/wapn` → `en/calcium`,
+  `en/borrelia` → `pl/borrelia`, `en/creatinine` → `pl/kreatynina`).
+- **Note:** New translations live in MDX only; the source xlsx still has
+  106 EN rows + 106 PL rows. Future imports won't regenerate the
+  manually-authored MDX (no source row to read from). For long-term
+  source-of-truth integrity, the new tests should eventually be
+  reflected in the xlsx — but that's a separate cleanup pass.
+- **Verification:** 165 Vitest pass, 0 errors / 0 warnings on pnpm
+  check, build clean (242 MDX, all 16 categorySlug values registered
+  in categories.ts).
+
 ## 2026-04-27 — Phase 1 coverage: all source-content tests now generate MDX (+92 pages)
 
 Every row in `medical-tests.xlsx` now produces an MDX file regardless of how the
