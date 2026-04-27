@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-04-27 — Housekeeping: preserve in-flight design work + reconciliation xlsx history
+
+Two cleanup commits with no behavior change:
+
+1. `docs/design/s1-content-platform.pen` — saves +1224 lines of Pencil design
+   work that was sitting uncommitted in the `s1-content` worktree before that
+   worktree was cleared. `docs/design/images/` adds four AI-generated reference
+   images from the same session.
+2. `content-sources/medical-tests-{corrected,fixed}.xlsx` — preserves two
+   intermediate xlsx artifacts produced during the 2026-04-27 reconciliation
+   day. These predate `medical-tests.xlsx` (the source of truth) and exist as
+   historical reference, not as inputs to any pipeline.
+
 ## 2026-04-27 — OG cards: 279 cards live, every public LP gets a per-page social preview
 
 Build-time satori → resvg pipeline generates a unique 1200×630 OG card for
