@@ -1,5 +1,36 @@
 # Changelog
 
+## 2026-04-27 — Phase 1 coverage: all source-content tests now generate MDX (+92 pages)
+
+Every row in `medical-tests.xlsx` now produces an MDX file regardless of how the
+counterpart locale's row is ordered. Result: 104 EN + 106 PL = 210 MDX, up from
+59 + 59 = 118 (+92 pages). Phase 2 (translations for the 48 locale-only tests)
+is the next pass.
+
+- **Decoupled row pairing.** `runImport` no longer pairs by row index. EN and
+  PL sheets are processed independently — each non-duplicate row writes its
+  own MDX file. The MISALIGNED skip path is gone; misalignment is no longer
+  fatal because rows aren't paired in the first place.
+- **Cross-locale linking via alias map.** `scripts/test-aliases.ts` lists the
+  ~50 cognate pairs whose names slugify differently (`Calcium` ↔ `Wapń`,
+  `Cortisol` ↔ `Kortyzol`, `ESR` ↔ `OB`, `Iron Panel` ↔ `Panel żelaza`, …).
+  PL rows use the alias to derive `canonicalSlug` from the matching EN test.
+  PL/EN tests with names that already share a slug (PHQ-9, AUDIT, CA-125,
+  DHEA-S, …) auto-pair without an alias entry. PL- or EN-only tests
+  self-canonical and become single-locale pages until the other side is
+  authored.
+- **Category taxonomy extended.** Source xlsx surfaces 4 categories not in
+  `categories.ts`: `infections`, `coagulation`, `immunology`, `kidneys`.
+  Added with PL/EN labels + palette accents (illustrations to come). Two
+  EN labels (`Inflammation`, `Endocrinology`) and three PL labels (`Mięśnie`,
+  `Genetyka`, `Toksyny`) normalize into existing keys via a label→key table
+  in the importer.
+- **Diagnostics:** import now reports `wrote N file(s) (X EN + Y PL)` rather
+  than the old `tests × 2 locales` line, since EN and PL counts can differ.
+  Reconcile workbook only logs true duplicates and meta-too-long warnings now.
+- **Verification:** 165 Vitest pass, 0 errors / 0 warnings, build clean
+  (210 MDX, all categories register against `categories.ts`).
+
 ## 2026-04-27 — EN↔PL alignment audit: fix 11 broken cross-locale links
 
 - **Audit:** Cross-checked all 56 canonical EN↔PL pairs with 3 parallel agents.

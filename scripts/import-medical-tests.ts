@@ -4,9 +4,70 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import ExcelJS from 'exceljs';
+import { EN_TO_PL_TEST_ALIAS, PL_TO_EN_TEST_ALIAS } from './test-aliases';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, '..');
+
+// ────────────────────────────────────────────────────────────────────────────
+// Category label → key resolution
+//
+// xlsx category cells use a mix of EN labels (Hematology, Liver, …) and PL
+// labels (Hematologia, Wątroba, …) and a few labels that only appear on one
+// side or are too small to warrant their own taxonomy entry. This table
+// resolves any of them to a canonical key that exists in
+// `src/i18n/categories.ts`.
+// ────────────────────────────────────────────────────────────────────────────
+
+const CATEGORY_LABEL_TO_KEY: Record<string, string> = {
+  // EN labels
+  'Hematology': 'hematology',
+  'Metabolism': 'metabolism',
+  'Hormonal': 'hormonal',
+  'Endocrinology': 'hormonal',          // 3 source rows, fold into hormonal
+  'Inflammatory': 'inflammatory',
+  'Inflammation': 'inflammatory',       // 1 source row, normalize
+  'Cardiometabolic': 'cardiometabolic',
+  'Liver': 'liver',
+  'Urine': 'urine',
+  'Gastro': 'gastro',
+  'Heart': 'heart',
+  'Oncology': 'oncology',
+  'Autoimmunology': 'autoimmunology',
+  'Mental Health': 'mental-health',
+  'Infections': 'infections',
+  'Coagulation': 'coagulation',
+  'Immunology': 'immunology',
+  // PL labels
+  'Hematologia': 'hematology',
+  'Metabolizm': 'metabolism',
+  'Hormonalne': 'hormonal',
+  'Zapalny': 'inflammatory',
+  'Kardiometaboliczne': 'cardiometabolic',
+  'Wątroba': 'liver',
+  'Mocz': 'urine',
+  'Onkologia': 'oncology',
+  'Autoimmunologia': 'autoimmunology',
+  'Zdrowie Psychiczne': 'mental-health',
+  'Infekcje': 'infections',
+  'Krzepnięcie': 'coagulation',
+  'Immunologia': 'immunology',
+  'Mięśnie': 'cardiometabolic',          // 1 PL row (CK), fold into cardiometabolic
+  'Genetyka': 'metabolism',              // 1 PL row (SNP/MTHFR), fold into metabolism
+  'Toksyny': 'metabolism',               // 1 PL row (BPA), fold into metabolism
+  'Nerki': 'kidneys',
+  'Serce': 'heart',
+};
+
+function lookupCategoryKey(rawLabel: string): string {
+  const trimmed = rawLabel.trim();
+  if (!trimmed) return '';
+  const k = CATEGORY_LABEL_TO_KEY[trimmed];
+  if (k) return k;
+  // Fallback: slugify and hope it's a known key. The drift guard later
+  // surfaces any unmapped value so we fail loudly rather than silently.
+  return slugify(trimmed);
+}
 
 // ────────────────────────────────────────────────────────────────────────────
 // slugify
@@ -555,60 +616,144 @@ export async function runImport(args: RunImportArgs): Promise<RunImportResult> {
   const written = { en: [] as string[], pl: [] as string[] };
   const skipped: SkippedEntry[] = [];
   const categoriesSeen = new Map<string, { labelEn: string; labelPl: string }>();
-  const seenEnSlugs = new Set<string>();
 
-  const rowLimit = Math.max(enRows.length, plRows.length);
-  for (let i = 0; i < rowLimit; i++) {
-    const enRow = enRows[i] ?? {};
-    const plRow = plRows[i] ?? {};
-    const cls = classifyRowPair({ enRow, plRow, seenEnSlugs });
+  // ── Pass 1: index EN rows by name + category-key by EN test name.
+  // Each EN test name resolves to a canonical category key — PL rows that
+  // alias to an EN test inherit that key; PL-only rows resolve their own.
+  const enRowByName = new Map<string, Row>();
+  const enCategoryKeyByName = new Map<string, string>();
+  for (const r of enRows) {
+    const name = (r['test name'] ?? '').trim();
+    if (!name) continue;
+    if (!enRowByName.has(name)) enRowByName.set(name, r);
+    const catLabel = (r['category'] ?? '').trim();
+    if (catLabel) enCategoryKeyByName.set(name, lookupCategoryKey(catLabel));
+  }
 
-    if (cls.issue === 'EMPTY') continue; // silently skip trailing blanks
+  // ── Pass 2: write EN MDX. Each EN row generates en/<slug>.mdx with
+  // canonicalSlug = its own slug. Duplicates by slug skip silently after the
+  // first occurrence (and surface in the reconcile workbook).
+  const writtenEnSlugs = new Set<string>();
+  for (let i = 0; i < enRows.length; i++) {
+    const enRow = enRows[i];
+    const enName = (enRow['test name'] ?? '').trim();
+    if (!enName) continue;
 
-    if (cls.issue === 'OK' && cls.canonicalSlug) {
-      seenEnSlugs.add(cls.canonicalSlug);
-
-      // Track category from the OK row (EN side is the source of truth for category key).
-      // Done before the onlySlug guard so categoriesSeen reflects the full dataset.
-      const categoryEn = (enRow['category'] ?? '').trim();
-      const categoryPl = (plRow['kategoria'] ?? '').trim();
-      if (categoryEn) {
-        const key = slugify(categoryEn);
-        if (!categoriesSeen.has(key))
-          categoriesSeen.set(key, { labelEn: categoryEn, labelPl: categoryPl });
-      }
-
-      if (args.onlySlug && cls.canonicalSlug !== args.onlySlug) continue;
-
-      // Build frontmatter per locale, write MDX (or skip in dryRun).
-      // canonicalCategoryKey is the EN-slugified category key (source of truth for both
-      // EN and PL MDX), ensuring PL files never write a Polish slug into categorySlug.
-      const canonicalCategoryKey = slugify(categoryEn);
-      try {
-        const enFm = rowToFrontmatter(enRow, { lang: 'en', canonicalSlug: cls.canonicalSlug, canonicalCategoryKey, today });
-        const plFm = rowToFrontmatter(plRow, { lang: 'pl', canonicalSlug: cls.canonicalSlug, canonicalCategoryKey, today });
-        if (!args.dryRun) {
-          await writeTestMdx(enFm, outputDir);
-          await writeTestMdx(plFm, outputDir);
-        }
-        written.en.push(cls.canonicalSlug);
-        written.pl.push(cls.canonicalSlug);
-      } catch (err) {
-        console.warn(`[WARN] Row ${i + 2}: ${(err as Error).message} — skipping`);
-      }
+    const slug = slugify(enName);
+    if (writtenEnSlugs.has(slug)) {
+      skipped.push({
+        issue: 'DUPLICATE',
+        flags: [],
+        enRowIndex: i + 2,
+        plRowIndex: 0,
+        enName,
+        plName: '',
+        canonicalSlug: slug,
+      });
       continue;
     }
 
-    // Non-OK (and non-EMPTY): route to reconciliation.
-    skipped.push({
-      issue: cls.issue,
-      flags: cls.flags,
-      enRowIndex: i + 2,
-      plRowIndex: i + 2,
-      enName: (enRow['test name'] ?? '').trim(),
-      plName: (plRow['nazwa testu'] ?? '').trim(),
-      canonicalSlug: cls.canonicalSlug,
-    });
+    const catLabel = (enRow['category'] ?? '').trim();
+    const categoryKey = lookupCategoryKey(catLabel);
+    if (catLabel && categoryKey) {
+      if (!categoriesSeen.has(categoryKey)) {
+        const aliasedPlName = EN_TO_PL_TEST_ALIAS[enName] ?? enName;
+        const plRow = plRows.find((r) => (r['nazwa testu'] ?? '').trim() === aliasedPlName);
+        const labelPl = (plRow?.['kategoria'] ?? '').trim() || catLabel;
+        categoriesSeen.set(categoryKey, { labelEn: catLabel, labelPl });
+      }
+    }
+
+    if (args.onlySlug && slug !== args.onlySlug) continue;
+
+    const flags: IssueFlag[] = [];
+    if ((enRow['meta description'] ?? '').length > META_MAX) flags.push('META_TOO_LONG_EN');
+    if (flags.length) {
+      skipped.push({
+        issue: 'OK',
+        flags,
+        enRowIndex: i + 2,
+        plRowIndex: 0,
+        enName,
+        plName: '',
+        canonicalSlug: slug,
+      });
+    }
+
+    try {
+      const fm = rowToFrontmatter(enRow, { lang: 'en', canonicalSlug: slug, canonicalCategoryKey: categoryKey, today });
+      if (!args.dryRun) await writeTestMdx(fm, outputDir);
+      written.en.push(slug);
+      writtenEnSlugs.add(slug);
+    } catch (err) {
+      console.warn(`[WARN] EN row ${i + 2} "${enName}": ${(err as Error).message} — skipping`);
+    }
+  }
+
+  // ── Pass 3: write PL MDX. Each PL row generates pl/<slug>.mdx. canonical
+  // points to the EN counterpart's slug if the PL name appears in the alias
+  // map (or has an EN row by exact-name match); otherwise it self-canonicals
+  // (PL-only test, no cross-locale link).
+  const writtenPlSlugs = new Set<string>();
+  for (let i = 0; i < plRows.length; i++) {
+    const plRow = plRows[i];
+    const plName = (plRow['nazwa testu'] ?? '').trim();
+    if (!plName) continue;
+
+    const slug = slugify(plName);
+    if (writtenPlSlugs.has(slug)) {
+      skipped.push({
+        issue: 'DUPLICATE',
+        flags: [],
+        enRowIndex: 0,
+        plRowIndex: i + 2,
+        enName: '',
+        plName,
+        canonicalSlug: slug,
+      });
+      continue;
+    }
+
+    // Resolve canonical: alias → EN → EN slug; else self.
+    const aliasedEnName = PL_TO_EN_TEST_ALIAS[plName] ?? (enRowByName.has(plName) ? plName : null);
+    const canonicalSlug = aliasedEnName ? slugify(aliasedEnName) : slug;
+    // Resolve category: prefer EN counterpart's category key (so paired
+    // pages stay in the same taxonomy bucket); fall back to PL's own.
+    const enCategoryKey = aliasedEnName ? enCategoryKeyByName.get(aliasedEnName) : undefined;
+    const plCatLabel = (plRow['kategoria'] ?? '').trim();
+    const categoryKey = enCategoryKey ?? lookupCategoryKey(plCatLabel);
+
+    if (plCatLabel && categoryKey && !categoriesSeen.has(categoryKey)) {
+      // PL-only category (no EN-side row introduced this key). Use PL label
+      // for both labelEn and labelPl placeholder; the drift guard will fail
+      // loudly if the key isn't in categories.ts.
+      categoriesSeen.set(categoryKey, { labelEn: plCatLabel, labelPl: plCatLabel });
+    }
+
+    if (args.onlySlug && canonicalSlug !== args.onlySlug) continue;
+
+    const flags: IssueFlag[] = [];
+    if ((plRow['meta description'] ?? '').length > META_MAX) flags.push('META_TOO_LONG_PL');
+    if (flags.length) {
+      skipped.push({
+        issue: 'OK',
+        flags,
+        enRowIndex: 0,
+        plRowIndex: i + 2,
+        enName: aliasedEnName ?? '',
+        plName,
+        canonicalSlug,
+      });
+    }
+
+    try {
+      const fm = rowToFrontmatter(plRow, { lang: 'pl', canonicalSlug, canonicalCategoryKey: categoryKey, today });
+      if (!args.dryRun) await writeTestMdx(fm, outputDir);
+      written.pl.push(slug);
+      writtenPlSlugs.add(slug);
+    } catch (err) {
+      console.warn(`[WARN] PL row ${i + 2} "${plName}": ${(err as Error).message} — skipping`);
+    }
   }
 
   if (!args.dryRun) {
@@ -662,13 +807,14 @@ async function main() {
     onlySlug: opts.onlySlug,
   });
 
-  const totalWritten = result.written.en.length;
+  const enCount = result.written.en.length;
+  const plCount = result.written.pl.length;
   const totalSkipped = result.skipped.length;
 
   if (opts.dryRun) {
-    console.log(`\n[dry-run] would write ${totalWritten * 2} file(s) (${totalWritten} tests × 2 locales).`);
+    console.log(`\n[dry-run] would write ${enCount + plCount} file(s) (${enCount} EN + ${plCount} PL).`);
   } else {
-    console.log(`\nwrote ${totalWritten * 2} file(s) (${totalWritten} tests × 2 locales).`);
+    console.log(`\nwrote ${enCount + plCount} file(s) (${enCount} EN + ${plCount} PL).`);
   }
 
   if (totalSkipped > 0) {

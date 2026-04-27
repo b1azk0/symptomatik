@@ -39,6 +39,11 @@ export const categoryMeta = {
     illustration: '/assets/illustrations/category/cardiometabolic.webp',
     paletteAccent: '#C75040',
   },
+  'coagulation': {
+    en: { slug: 'coagulation', label: 'Blood Coagulation' },
+    pl: { slug: 'krzepniecie', label: 'Krzepnięcie krwi' },
+    paletteAccent: '#A05050',
+  },
   'gastro': {
     en: { slug: 'gastrointestinal', label: 'Gastrointestinal' },
     pl: { slug: 'uklad-pokarmowy', label: 'Układ pokarmowy' },
@@ -63,11 +68,26 @@ export const categoryMeta = {
     illustration: '/assets/illustrations/category/hormonal.webp',
     paletteAccent: '#8B5A75',
   },
+  'immunology': {
+    en: { slug: 'immunology', label: 'Immunology' },
+    pl: { slug: 'immunologia', label: 'Immunologia' },
+    paletteAccent: '#7A6090',
+  },
+  'infections': {
+    en: { slug: 'infections', label: 'Infections' },
+    pl: { slug: 'infekcje', label: 'Infekcje' },
+    paletteAccent: '#5A8A6F',
+  },
   'inflammatory': {
     en: { slug: 'inflammatory-markers', label: 'Inflammatory Markers' },
     pl: { slug: 'stan-zapalny', label: 'Stan zapalny' },
     illustration: '/assets/illustrations/category/inflammatory.webp',
     paletteAccent: '#C75040',
+  },
+  'kidneys': {
+    en: { slug: 'kidney-tests', label: 'Kidney Function Tests' },
+    pl: { slug: 'nerki', label: 'Nerki' },
+    paletteAccent: '#5570A5',
   },
   'liver': {
     en: { slug: 'liver-function-tests', label: 'Liver Function Tests' },

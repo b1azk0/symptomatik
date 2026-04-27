@@ -267,23 +267,26 @@ describe('runImport (integration, in-memory)', () => {
     'h2_5': 'i', 'h2_5_text': 'j', 'ai use-case': 'u',
   });
 
-  it('writes MDX only for OK rows; skips DUPLICATE / MISSING_PL', async () => {
+  it('processes each row independently — every non-duplicate row writes MDX', async () => {
     const result = await runImport({
       enRows: [
-        fullEn('Complete Blood Count (CBC)'),     // row 0: OK (paired with CBC PL)
-        fullEn('Complete Blood Count (CBC)'),     // row 1: DUPLICATE (same EN slug)
-        fullEn('OrphanEn'),                        // row 2: MISSING_PL
+        fullEn('Complete Blood Count (CBC)'),       // EN: written
+        fullEn('Complete Blood Count (CBC)'),       // EN: DUPLICATE skip (same slug)
+        fullEn('OrphanEn'),                          // EN: written (no PL counterpart, that's fine)
       ],
       plRows: [
-        fullPl('Morfologia krwi (CBC)'),           // row 0: pairs with EN row 0 → OK
-        fullPl('Morfologia2 (CBC)'),               // row 1: pairs with EN row 1 → but EN row 1 is DUPLICATE
-        {},                                         // row 2: empty → EN row 2 becomes MISSING_PL
+        fullPl('Morfologia krwi (CBC)'),             // PL: written
+        fullPl('Morfologia2 (CBC)'),                 // PL: written (different slug)
+        {},                                           // PL: empty row → silently skipped
       ],
       dryRun: true,
     });
-    expect(result.written.en).toHaveLength(1);
-    expect(result.written.pl).toHaveLength(1);
-    expect(result.skipped.map((s) => s.issue).sort()).toEqual(['DUPLICATE', 'MISSING_PL']);
+    expect(result.written.en).toHaveLength(2);
+    expect(result.written.en).toEqual(['complete-blood-count-cbc', 'orphanen']);
+    expect(result.written.pl).toHaveLength(2);
+    expect(result.written.pl).toEqual(['morfologia-krwi-cbc', 'morfologia2-cbc']);
+    expect(result.skipped.map((s) => s.issue)).toEqual(['DUPLICATE']);
+    expect(result.skipped[0].enName).toBe('Complete Blood Count (CBC)');
   });
 });
 
