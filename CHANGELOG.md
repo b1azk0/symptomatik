@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-04-27 — OG cards: 279 cards live, every public LP gets a per-page social preview
+
+Build-time satori → resvg pipeline generates a unique 1200×630 OG card for
+every public LP — homes (3), pillar root (2), category indexes (32), test
+pages (242). Cards inherit per-category illustration + accent from
+`src/i18n/categories.ts`; home + pillar use neutral / earthy accents.
+Skipped in `pnpm dev`. PNGs committed to `public/og/` (~10 MB total). Hash-based
+cache at `scripts/.og-cache.json` makes incremental builds fast (≤ 5 s when
+unchanged).
+
+`SEOHead.astro` now derives `og:image` from the page's canonical pathname
+via `ogPathForCanonical(pathname, locale)`; legal pages explicitly opt out
+(`ogImage="/og-default.png"`).
+
+Spec: `docs/superpowers/specs/2026-04-27-symptomatik-og-cards-design.md`.
+Plan: `docs/superpowers/plans/2026-04-27-symptomatik-og-cards.md`.
+
 ## 2026-04-27 — OG card generation: 279 PNGs committed
 
 First full run of the `scripts/generate-og-cards.ts` pipeline — all 279 OG
