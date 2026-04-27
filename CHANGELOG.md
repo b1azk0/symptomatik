@@ -1,5 +1,37 @@
 # Changelog
 
+## 2026-04-27 — OG card generation: 279 PNGs committed
+
+First full run of the `scripts/generate-og-cards.ts` pipeline — all 279 OG
+cards generated and committed to `public/og/`.
+
+**Runtime fixes applied during this task:**
+
+1. **WOFF2 → WOFF font swap** — satori 0.26.0 does not support WOFF2; switched
+   `fraunces-latin-600-normal.woff2` and `geist-latin-500-normal.woff2` to
+   their `.woff` (v1) counterparts in the same `@fontsource` package.
+
+2. **WebP → JPEG conversion before satori embed** — satori does not support
+   `data:image/webp` URIs in `backgroundImage`; illustrations are now resized
+   to the display panel (720×630) and re-encoded as JPEG (quality 82) in-memory
+   before being embedded. SVG illustrations pass through unchanged.
+
+3. **Palette-PNG output for size budget** — resvg produces raw RGBA bitmaps;
+   the output is re-compressed via `sharp` with `palette: true, quality: 75,
+   compressionLevel: 9` (256-colour indexed PNG). Result: ≤ 57 KB per card,
+   ~10 MB total for 279 cards.
+
+4. **`sharp` added as devDependency** — needed for both the WebP→JPEG
+   illustration conversion and the final palette-PNG output step.
+
+**Output breakdown:** 3 home + 2 pillar + 32 category + 242 test cards.
+All report `PNG image data, 1200 x 630, 8-bit colormap, non-interlaced`.
+
+**Satori warning (z-index):** `z-index` is not supported by satori — it prints
+a warning per card but does not affect rendering (the template uses `position:
+absolute` stacking order which does work). The `zIndex: 2` property on the text
+panel can be removed in a future cleanup.
+
 ## 2026-04-27 — OG cards design spec
 
 Spec for programmatic OG card generation across all public LPs (homes, pillar

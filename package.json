@@ -41,6 +41,7 @@
     "lighthouse": "^12",
     "pagefind": "^1.5.2",
     "satori": "^0.26.0",
+    "sharp": "^0.34.5",
     "tailwindcss": "^4",
     "tsx": "^4",
     "typescript": "^5",

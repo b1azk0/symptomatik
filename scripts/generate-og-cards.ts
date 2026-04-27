@@ -10,6 +10,7 @@
  */
 import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
+import sharp from 'sharp';
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { createHash } from 'node:crypto';
@@ -22,8 +23,9 @@ const OG_DIR = join(PUBLIC_DIR, 'og');
 const CACHE_FILE = join(ROOT, 'scripts', '.og-cache.json');
 const TEMPLATE_VERSION = 'v1'; // bump when template changes
 
-const FRAUNCES_600 = readFileSync(join(ROOT, 'node_modules/@fontsource/fraunces/files/fraunces-latin-600-normal.woff2'));
-const GEIST_500 = readFileSync(join(ROOT, 'node_modules/@fontsource/geist/files/geist-latin-500-normal.woff2'));
+// satori requires WOFF v1 or raw OT/TT — WOFF2 is not supported
+const FRAUNCES_600 = readFileSync(join(ROOT, 'node_modules/@fontsource/fraunces/files/fraunces-latin-600-normal.woff'));
+const GEIST_500 = readFileSync(join(ROOT, 'node_modules/@fontsource/geist/files/geist-latin-500-normal.woff'));
 
 const WIDTH = 1200;
 const HEIGHT = 630;
@@ -51,14 +53,32 @@ function hashCard(card: OGCardData, illustrationBytes: Buffer): string {
   return h.digest('hex');
 }
 
+// Display width of the illustration panel in the card template (~58% of 1200 = 720px)
+const ILLO_DISPLAY_W = 720;
+const ILLO_DISPLAY_H = HEIGHT; // full height bleed
+
 async function renderCard(card: OGCardData): Promise<{ png: Buffer; hash: string }> {
   const illustrationFsPath = join(PUBLIC_DIR, card.illustration);
   if (!existsSync(illustrationFsPath)) {
     throw new Error(`Missing illustration for ${card.outputPath}: ${illustrationFsPath}`);
   }
   const illustrationBytes = readFileSync(illustrationFsPath);
-  const ext = card.illustration.endsWith('.svg') ? 'svg+xml' : 'webp';
-  const illustrationDataUri = `data:image/${ext};base64,${illustrationBytes.toString('base64')}`;
+
+  // satori supports SVG, PNG, and JPEG — but NOT WebP.
+  // For WebP: resize to the display panel size and convert to JPEG (lossy) so the
+  // embedded data URI stays small and the final PNG compresses well.
+  let illustrationDataUri: string;
+  if (card.illustration.endsWith('.webp')) {
+    const jpegBytes = await sharp(illustrationBytes)
+      .resize(ILLO_DISPLAY_W, ILLO_DISPLAY_H, { fit: 'cover' })
+      .jpeg({ quality: 82 })
+      .toBuffer();
+    illustrationDataUri = `data:image/jpeg;base64,${jpegBytes.toString('base64')}`;
+  } else if (card.illustration.endsWith('.svg')) {
+    illustrationDataUri = `data:image/svg+xml;base64,${illustrationBytes.toString('base64')}`;
+  } else {
+    illustrationDataUri = `data:image/png;base64,${illustrationBytes.toString('base64')}`;
+  }
 
   const element = buildCardElement(card, illustrationDataUri);
 
@@ -71,10 +91,19 @@ async function renderCard(card: OGCardData): Promise<{ png: Buffer; hash: string
     ],
   });
 
-  const resvg = new Resvg(svg, { fitTo: { mode: 'width', value: WIDTH } });
-  const png = resvg.render().asPng();
+  // Resvg renders to raw RGBA bitmap; recompress with sharp palette-PNG for size budget.
+  // palette: true (256-colour quantisation) keeps OG PNGs well under 80 KB each.
+  const rawPng = resvg_render(svg);
+  const png = await sharp(rawPng)
+    .png({ palette: true, quality: 75, compressionLevel: 9 })
+    .toBuffer();
   const hash = hashCard(card, illustrationBytes);
   return { png, hash };
+}
+
+function resvg_render(svg: string): Buffer {
+  const resvg = new Resvg(svg, { fitTo: { mode: 'width', value: WIDTH } });
+  return Buffer.from(resvg.render().asPng());
 }
 
 async function main(): Promise<void> {
