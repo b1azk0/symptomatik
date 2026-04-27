@@ -1,5 +1,6 @@
 ---
 import type { Alternate } from '@/lib/seo/meta';
+import { ogPathForCanonical } from '@/lib/og/path';
 
 interface Props {
   title: string;
@@ -12,7 +13,12 @@ interface Props {
 }
 
 const { title, description, canonical, alternates, ogImage, jsonLd, locale } = Astro.props as Props;
-const ogImageAbsolute = ogImage ?? new URL('/og-default.png', Astro.site ?? 'https://symptomatik.com').toString();
+const site = Astro.site ?? new URL('https://symptomatik.com');
+const canonicalPathname = new URL(canonical).pathname;
+const derivedOgPath = `/og/${ogPathForCanonical(canonicalPathname, locale as 'en' | 'pl' | 'es')}`;
+const ogImageAbsolute = ogImage
+  ? new URL(ogImage, site).toString()
+  : new URL(derivedOgPath, site).toString();
 const jsonLdArray = Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [];
 ---
 <meta charset="utf-8" />

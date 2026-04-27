@@ -35,6 +35,12 @@ The full platform is being built as 10 sub-projects (S0–S9), each with its own
 
 Full detail in the S0 design spec.
 
+## What shipped in feat/og-cards
+
+1. **OG cards:** 279 unique 1200×630 PNGs generated at build time via satori → resvg → sharp pipeline. Every public LP (homes, pillar, category indexes, test pages) gets a per-page social preview image. Legal pages explicitly opt out and use `/og-default.png`.
+2. **`pnpm generate:og`** — new script (`scripts/generate-og-cards.ts`). Reads per-category illustration + accent from `src/i18n/categories.ts`, renders via satori, writes to `public/og/`. Hash-based cache at `scripts/.og-cache.json` keeps incremental builds fast.
+3. **`prebuild` pipeline** now runs `import:tests && generate:og` before `astro build`, so OG cards are always regenerated alongside MDX content.
+
 ## What shipped in S1
 
 1. **Content scale:** 51 medical-tests imported from Excel source × EN + PL = 102 test detail pages (up from the single CBC page in S0).

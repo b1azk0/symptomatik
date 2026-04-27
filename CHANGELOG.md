@@ -1,5 +1,49 @@
 # Changelog
 
+## 2026-04-27 — OG cards: 279 cards live, every public LP gets a per-page social preview
+
+Build-time satori → resvg pipeline generates a unique 1200×630 OG card for
+every public LP — homes (3), pillar root (2), category indexes (32), test
+pages (242). Cards inherit per-category illustration + accent from
+`src/i18n/categories.ts`; home + pillar use neutral / earthy accents.
+Skipped in `pnpm dev`. PNGs committed to `public/og/` (~10 MB total). Hash-based
+cache at `scripts/.og-cache.json` makes incremental builds fast (≤ 5 s when
+unchanged).
+
+`SEOHead.astro` now derives `og:image` from the page's canonical pathname
+via `ogPathForCanonical(pathname, locale)`; legal pages explicitly opt out
+(`ogImage="/og-default.png"`).
+
+Spec: `docs/superpowers/specs/2026-04-27-symptomatik-og-cards-design.md`.
+Plan: `docs/superpowers/plans/2026-04-27-symptomatik-og-cards.md`.
+
+**Runtime fixes applied during first pipeline run:**
+
+1. **WOFF2 → WOFF font swap** — satori 0.26.0 does not support WOFF2; switched
+   `fraunces-latin-600-normal.woff2` and `geist-latin-500-normal.woff2` to
+   their `.woff` (v1) counterparts in the same `@fontsource` package.
+
+2. **WebP → JPEG conversion before satori embed** — satori does not support
+   `data:image/webp` URIs in `backgroundImage`; illustrations are now resized
+   to the display panel (720×630) and re-encoded as JPEG (quality 82) in-memory
+   before being embedded. SVG illustrations pass through unchanged.
+
+3. **Palette-PNG output for size budget** — resvg produces raw RGBA bitmaps;
+   the output is re-compressed via `sharp` with `palette: true, quality: 75,
+   compressionLevel: 9` (256-colour indexed PNG). Result: ≤ 57 KB per card,
+   ~10 MB total for 279 cards.
+
+4. **`sharp` added as devDependency** — needed for both the WebP→JPEG
+   illustration conversion and the final palette-PNG output step.
+
+**Output breakdown:** 3 home + 2 pillar + 32 category + 242 test cards.
+All report `PNG image data, 1200 x 630, 8-bit colormap, non-interlaced`.
+
+**Satori warning (z-index):** `z-index` is not supported by satori — it prints
+a warning per card but does not affect rendering (the template uses `position:
+absolute` stacking order which does work). The `zIndex: 2` property on the text
+panel can be removed in a future cleanup.
+
 ## 2026-04-27 — OG cards design spec
 
 Spec for programmatic OG card generation across all public LPs (homes, pillar

@@ -19,17 +19,19 @@ interface Props {
   breadcrumbs: BreadcrumbItem[];
   h1: string;
   updatedAt: Date;
+  ogImage?: string | undefined;
 }
 
 const {
   title, description, canonical, alternates, locale, jsonLd,
   breadcrumbs, h1, updatedAt,
+  ogImage = '/og-default.png',
 } = Astro.props as Props;
 
 const reviewedLabel = t(locale, 'lastReviewed');
 const reviewedStr = updatedAt.toISOString().slice(0, 10);
 ---
-<BaseLayout {title} {description} {canonical} {alternates} {locale} {jsonLd}>
+<BaseLayout {title} {description} {canonical} {alternates} {locale} {jsonLd} {ogImage}>
   <BreadcrumbNav items={breadcrumbs} />
   <article class="prose prose-neutral max-w-3xl mx-auto">
     <h1 class="font-serif text-3xl md:text-4xl text-neutral-900 mt-2 mb-6">{h1}</h1>
