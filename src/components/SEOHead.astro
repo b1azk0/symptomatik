@@ -16,7 +16,9 @@ const { title, description, canonical, alternates, ogImage, jsonLd, locale } = A
 const site = Astro.site ?? new URL('https://symptomatik.com');
 const canonicalPathname = new URL(canonical).pathname;
 const derivedOgPath = `/og/${ogPathForCanonical(canonicalPathname, locale as 'en' | 'pl' | 'es')}`;
-const ogImageAbsolute = ogImage ?? new URL(derivedOgPath, site).toString();
+const ogImageAbsolute = ogImage
+  ? new URL(ogImage, site).toString()
+  : new URL(derivedOgPath, site).toString();
 const jsonLdArray = Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [];
 ---
 <meta charset="utf-8" />
