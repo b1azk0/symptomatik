@@ -1,0 +1,42 @@
+<svg viewBox="0 0 800 432" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Stylized bacteria and viruses representing infections">
+  <rect width="800" height="432" fill="#E8F0E5"/>
+  <path d="M -50 200 Q 200 100, 500 220 T 850 280 L 850 432 L -50 432 Z" fill="#D4E0CC" opacity="0.6"/>
+  <g transform="translate(540 210)">
+    <circle r="62" fill="#A8C49B"/>
+    <g fill="#5A8A6F">
+      <circle cx="70" cy="0" r="8"/>
+      <circle cx="-70" cy="0" r="8"/>
+      <circle cx="0" cy="70" r="8"/>
+      <circle cx="0" cy="-70" r="8"/>
+      <circle cx="50" cy="50" r="7"/>
+      <circle cx="-50" cy="50" r="7"/>
+      <circle cx="50" cy="-50" r="7"/>
+      <circle cx="-50" cy="-50" r="7"/>
+    </g>
+    <circle r="22" fill="#5A8A6F" opacity="0.5"/>
+  </g>
+  <ellipse cx="180" cy="160" rx="50" ry="14" fill="#5A8A6F" transform="rotate(-25 180 160)"/>
+  <ellipse cx="280" cy="280" rx="42" ry="12" fill="#A8C49B" transform="rotate(35 280 280)"/>
+  <ellipse cx="120" cy="320" rx="45" ry="13" fill="#3D5C46" transform="rotate(-15 120 320)"/>
+  <ellipse cx="380" cy="120" rx="40" ry="11" fill="#A8C49B" transform="rotate(20 380 120)"/>
+  <ellipse cx="320" cy="370" rx="38" ry="10" fill="#5A8A6F" transform="rotate(-10 320 370)"/>
+  <g fill="#5A8A6F">
+    <circle cx="60" cy="80" r="5"/>
+    <circle cx="80" cy="100" r="4"/>
+    <circle cx="700" cy="80" r="6"/>
+    <circle cx="730" cy="350" r="5"/>
+    <circle cx="650" cy="380" r="4"/>
+    <circle cx="450" cy="380" r="5"/>
+    <circle cx="220" cy="60" r="4"/>
+    <circle cx="450" cy="60" r="4"/>
+  </g>
+  <g transform="translate(180 80)">
+    <circle r="22" fill="#5A8A6F"/>
+    <g fill="#3D5C46">
+      <circle cx="26" cy="0" r="4"/>
+      <circle cx="-26" cy="0" r="4"/>
+      <circle cx="0" cy="26" r="4"/>
+      <circle cx="0" cy="-26" r="4"/>
+    </g>
+  </g>
+</svg>

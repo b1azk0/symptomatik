@@ -42,6 +42,7 @@ export const categoryMeta = {
   'coagulation': {
     en: { slug: 'coagulation', label: 'Blood Coagulation' },
     pl: { slug: 'krzepniecie', label: 'Krzepnięcie krwi' },
+    illustration: '/assets/illustrations/category/coagulation.svg',
     paletteAccent: '#A05050',
   },
   'gastro': {
@@ -71,11 +72,13 @@ export const categoryMeta = {
   'immunology': {
     en: { slug: 'immunology', label: 'Immunology' },
     pl: { slug: 'immunologia', label: 'Immunologia' },
+    illustration: '/assets/illustrations/category/immunology.svg',
     paletteAccent: '#7A6090',
   },
   'infections': {
     en: { slug: 'infections', label: 'Infections' },
     pl: { slug: 'infekcje', label: 'Infekcje' },
+    illustration: '/assets/illustrations/category/infections.svg',
     paletteAccent: '#5A8A6F',
   },
   'inflammatory': {
@@ -87,6 +90,7 @@ export const categoryMeta = {
   'kidneys': {
     en: { slug: 'kidney-tests', label: 'Kidney Function Tests' },
     pl: { slug: 'nerki', label: 'Nerki' },
+    illustration: '/assets/illustrations/category/kidneys.svg',
     paletteAccent: '#5570A5',
   },
   'liver': {

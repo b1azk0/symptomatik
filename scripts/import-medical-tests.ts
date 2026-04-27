@@ -37,7 +37,10 @@ const CATEGORY_LABEL_TO_KEY: Record<string, string> = {
   'Mental Health': 'mental-health',
   'Infections': 'infections',
   'Coagulation': 'coagulation',
+  'Blood Coagulation': 'coagulation',           // categories.ts EN label form
   'Immunology': 'immunology',
+  'Kidneys': 'kidneys',
+  'Kidney Function Tests': 'kidneys',           // categories.ts EN label form
   // PL labels
   'Hematologia': 'hematology',
   'Metabolizm': 'metabolism',
@@ -51,6 +54,7 @@ const CATEGORY_LABEL_TO_KEY: Record<string, string> = {
   'Zdrowie Psychiczne': 'mental-health',
   'Infekcje': 'infections',
   'Krzepnięcie': 'coagulation',
+  'Krzepnięcie krwi': 'coagulation',            // categories.ts PL label form
   'Immunologia': 'immunology',
   'Mięśnie': 'cardiometabolic',          // 1 PL row (CK), fold into cardiometabolic
   'Genetyka': 'metabolism',              // 1 PL row (SNP/MTHFR), fold into metabolism

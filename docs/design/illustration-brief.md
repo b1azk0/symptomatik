@@ -40,6 +40,10 @@ Each category owns a 4-color range encoded in `src/i18n/categories.ts` (extended
 | metabolism | Olive / moss | `#EEEEDC` | `#C5C98A` | `#6B7040` |
 | oncology | Lilac / violet | `#ECE5F0` | `#C5B5D4` | `#6A5485` |
 | urine | Sage / teal-gray | `#E6ECE8` | `#B5C6BD` | `#4A6F5C` |
+| infections | Sage green | `#E8F0E5` | `#A8C49B` | `#5A8A6F` / `#3D5C46` |
+| coagulation | Burgundy / clay | `#FCE4DC` | `#E0908A` | `#A05050` / `#732838` |
+| immunology | Blue-violet | `#E8E5F0` | `#A8A0C8` | `#7A6090` / `#4A3D6A` |
+| kidneys | Slate blue | `#DCE4EE` | `#9BB0CC` | `#5570A5` / `#324B70` |
 
 Text + pill accents within each palette derive from the dark-accent shade at 80% saturation. Page background is always warm linen `#FEF7F2`.
 
@@ -89,6 +93,11 @@ Each subject paired with exact prompt — these subjects are what shipped after 
 | `gastro` | stylized digestive tract silhouette with soft flowing curves | Reserve |
 | `heart` | stylized anatomical heart silhouette with gentle pulse wave motif | Reserve |
 | `autoimmunology` | stylized abstract shield or protective cluster motif | Reserve |
+| **Phase 2 categories — SVG placeholders shipped 2026-04-27, webp regen pending** | | |
+| `infections` | stylized rod-shaped bacteria and spherical virus particles in a microscopic field, with small ambient bacterial colony dots | Differentiates infectious workup from inflammation/immunology; rod + sphere shapes signal "pathogen identification" |
+| `coagulation` | stylized fibrin mesh of overlapping cross-hatched filaments with rounded platelet aggregations clustering at intersections | Recognizable as the "clotting" cascade visual; fibrin mesh is the canonical illustration for coagulation textbooks |
+| `immunology` | cluster of stylized Y-shaped antibody silhouettes (immunoglobulins) in editorial overlapping arrangement | Y-shape is the universally readable antibody glyph; differentiates from autoimmunology's defensive-shield motif and from oncology's lens motif |
+| `kidneys` | paired stylized bean-shaped kidney silhouettes with descending droplet motif suggesting filtration / urine output | Differentiates from `metabolism` (which uses paired kidneys for BMP/CMP context) by adding the filtration droplet element so the kidney-tests page reads as kidney-function-specific |
 
 ## Pillar hero (1 per pillar)
 

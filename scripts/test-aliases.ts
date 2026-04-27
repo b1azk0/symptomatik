@@ -91,6 +91,37 @@ export const EN_TO_PL_TEST_ALIAS: Record<string, string> = {
   // Coagulation / Liver — same test, different naming convention
   'Prothrombin Time (PT)': 'PT/INR',
   'Bilirubin': 'Bilirubina (z CMP)',
+
+  // Phase 2 translations — pairs whose EN/PL slugs differ.
+  // Hematology
+  'Platelet Count': 'Liczba płytek krwi',
+  'Red Blood Cell Count (RBC)': 'Liczba krwinek czerwonych (RBC)',
+  'White Blood Cell Count (WBC)': 'Liczba krwinek białych (WBC)',
+  // Liver / Cardiometabolic / Coagulation / Gastro
+  'LFT': 'LFT (panel)',
+  'Albumin': 'Albumina',
+  'Adiponectin': 'Adiponektyna',
+  'Metabolic Syndrome Markers': 'Markery zespołu metabolicznego',
+  'Thromboplastin': 'Tromboplastyna',
+  'Lipopolysaccharide (LPS)': 'Lipopolisacharydy (LPS)',
+  'Gut Microbiota': 'Mikrobiota jelitowa',
+  // Endocrinology / Hormonal
+  'T3 Hormone': 'Hormon T3',
+  'T4 Hormone': 'Hormon T4',
+  // Immunology
+  'IgA Celiac Test': 'IgA test celiakii',
+  'IgG Celiac Test': 'IgG test celiakii',
+  'Immunoglobulin M (IgM)': 'Immunoglobulina M (IgM)',
+  'Total IgE Serum Level': 'Całkowity poziom IgE w surowicy',
+  'IL-6 / TNF-alpha': 'IL-6 / TNF-alfa',
+  'Immunoglobulins': 'Immunoglobuliny',
+  // Kidneys
+  'Creatinine': 'Kreatynina',
+  'Microalbuminuria': 'Mikroalbuminuria',
+  // Heart / Coagulation / Infections
+  'Troponin': 'Troponina',
+  'D-dimer': 'D-dimery',
+  'Hepatitis Panel': 'Panel WZW',
 };
 
 // EN test names that duplicate another EN row's content (different slug, same

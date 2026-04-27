@@ -1,5 +1,55 @@
 # Changelog
 
+## 2026-04-27 — Phase 3 source-of-truth + 4 new category illustrations
+
+**Two cleanup tasks closing out the day's content work.**
+
+### Source of truth — xlsx absorbs Phase 2 translations
+
+The 36 Phase 2 translations now live in `content-sources/medical-tests.xlsx`
+(was MDX-only). Running `pnpm import:tests` now produces all 242 MDX files
+deterministically from the xlsx with 121 paired canonical pairs, 0 EN-only,
+0 PL-only.
+
+- 21 new EN rows + 15 new PL rows appended to the source xlsx (now 128 EN +
+  124 PL rows including header).
+- Added 22 cognate-pair aliases to `scripts/test-aliases.ts` so the import's
+  canonicalSlug derivation pairs Polish/English row variants whose names
+  slugify to different values (Calcium↔Wapń, Cortisol↔Kortyzol, …, plus the
+  Phase 2 additions: Adiponectin↔Adiponektyna, Albumin↔Albumina,
+  T3 Hormone↔Hormon T3, Troponin↔Troponina, etc.).
+- Shortened 12 EN test titles to match short slugs (ACR, ANCA, APTT, BNP,
+  Borrelia, CK, D-dimer, EBV / CMV, eGFR, Gut Microbiota, LFT, tTG) so
+  `slugify(title)` matches the manually-set slug — keeps URLs short and
+  removes 12 long-slug duplicates that the import had been creating.
+- Extended `CATEGORY_LABEL_TO_KEY` with the four-category-display labels
+  ("Blood Coagulation", "Kidney Function Tests", "Krzepnięcie krwi") that
+  appeared in newly-translated MDX category fields.
+- Verification: `pnpm import:tests` is fully roundtrip clean now (121 EN +
+  121 PL written, 0 unwanted skips). 165 Vitest pass, 0 errors / 0 warnings.
+
+### 4 new category illustrations (placeholder SVGs)
+
+Closes the visual gap left by Phase 1's `infections`, `coagulation`,
+`immunology`, `kidneys` categories.
+
+- New SVG illustrations under `public/assets/illustrations/category/`:
+  `infections.svg` (sage-green bacteria + virus motif), `coagulation.svg`
+  (burgundy fibrin mesh + platelet aggregation), `immunology.svg` (blue-violet
+  Y-shaped antibody cluster), `kidneys.svg` (slate-blue paired kidneys with
+  filtration droplet motif).
+- `docs/design/illustration-brief.md` extended with palette entries + subject
+  library entries for all four. Each subject was chosen to avoid visual
+  collision with adjacent categories (`kidneys` adds the filtration droplet
+  motif so it reads distinctly from `metabolism`, which already uses paired
+  kidneys for BMP/CMP context).
+- `categoryMeta` in `src/i18n/categories.ts` updated to include `illustration`
+  paths for all four. `<CategoryCard>` consumes the field as `<img src>`.
+- Note: these are SVG placeholders; a Flux Pro 1.1 / Recraft v3 pass to
+  generate proper webp at editorial density (matching the existing 12
+  category illustrations) is still needed. The brief now contains the
+  prompts ready to feed.
+
 ## 2026-04-27 — Phase 2 coverage: 1:1 EN↔PL parity (+36 translations)
 
 Every test on the platform now has both an English and a Polish version.
