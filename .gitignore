@@ -44,3 +44,6 @@ playwright-report/
 .worktrees/
 
 .superpowers/
+
+# OG card generator cache (build artefact; regenerated from inputs)
+scripts/.og-cache.json
