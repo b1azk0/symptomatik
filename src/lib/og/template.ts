@@ -78,7 +78,6 @@ export function buildCardElement(data: OGCardData, illustrationDataUri: string) 
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
-              zIndex: 2,
             },
             children: [
               // Pill (top)

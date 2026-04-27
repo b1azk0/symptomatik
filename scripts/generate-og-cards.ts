@@ -93,7 +93,7 @@ async function renderCard(card: OGCardData): Promise<{ png: Buffer; hash: string
 
   // Resvg renders to raw RGBA bitmap; recompress with sharp palette-PNG for size budget.
   // palette: true (256-colour quantisation) keeps OG PNGs well under 80 KB each.
-  const rawPng = resvg_render(svg);
+  const rawPng = renderToRawPng(svg);
   const png = await sharp(rawPng)
     .png({ palette: true, quality: 75, compressionLevel: 9 })
     .toBuffer();
@@ -101,7 +101,7 @@ async function renderCard(card: OGCardData): Promise<{ png: Buffer; hash: string
   return { png, hash };
 }
 
-function resvg_render(svg: string): Buffer {
+function renderToRawPng(svg: string): Buffer {
   const resvg = new Resvg(svg, { fitTo: { mode: 'width', value: WIDTH } });
   return Buffer.from(resvg.render().asPng());
 }
