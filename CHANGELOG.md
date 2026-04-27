@@ -1,5 +1,27 @@
 # Changelog
 
+## 2026-04-27 — Content reconcile: refusal cells + alignment heuristic
+
+- **Source data:** Replaced 5 LLM-refusal cells in `content-sources/medical-tests.xlsx`
+  PL sheet with full 4-paragraph H2_5 sections (wskazania / przygotowanie / przebieg /
+  potencjalne skutki uboczne) for DHEA-S, SHBG, hs-CRP, Wapń, Borrelia. Also fixed PL
+  row 81 H2_5 heading (was incorrectly "Posiew krwi", now "Borrelia").
+- **Heuristic fix:** `namesLikelyAligned` in `scripts/import-medical-tests.ts` now skips
+  common Polish noun endings (`-ina`, `-yna`, `-oza`, `-owy`, `-owa`, `-ego`) in its
+  3-char substring fallback. Prevents the false positive where row 54 EN "Lipoprotein(a)"
+  was matching PL "Zonulina" purely on the shared suffix `-ina`, which had been
+  silently overwriting `pl/zonulina.mdx`'s `categorySlug` from `gastro` to `heart` on
+  every import. Added unit tests for Cortisol/Kortyzol (still aligns) and
+  Lipoprotein(a)/Zonulina (now correctly MISALIGNED).
+- **Generated MDX:** 5 new aligned tests imported (10 files × 2 locales): GAD-2 + PHQ-2
+  Ultra-Brief Screening, Lipoprotein(a) Cardiovascular Risk, PHQ-A, Rosenberg
+  Self-Esteem Scale, SCOFF. Refusal fixes propagated to `pl/dhea-s.mdx`,
+  `pl/hs-crp.mdx`, `pl/shbg.mdx`. Wapń (row 29) and Borrelia (row 81) PL fixes
+  remain in the source but don't propagate yet — both rows are correctly classified
+  MISALIGNED with their EN counterparts.
+- **Tests:** 151 Vitest passing (was 149); 0 errors / 0 warnings on `pnpm check`;
+  production build clean (138 pages indexed by Pagefind, +8 from S1 ship baseline).
+
 ## 2026-04-24 — S1 Content Platform shipped · v0.2.0
 
 All 32 S1 tasks complete. Production at https://symptomatik.com now

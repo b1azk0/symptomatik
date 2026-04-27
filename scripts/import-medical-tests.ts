@@ -76,6 +76,11 @@ export interface ClassifyResult {
 
 const META_MAX = 160;
 
+// Common Polish/medical noun endings that frequently appear across unrelated
+// terms. Excluded from the substring fallback so e.g. "Zonulina" doesn't get
+// matched to "Lipoproteina" purely on the shared "-ina" suffix.
+const SUBSTRING_NOISE = new Set(['ina', 'yna', 'oza', 'owy', 'owa', 'ego']);
+
 function namesLikelyAligned(enName: string, plName: string): boolean {
   const normalize = (s: string) =>
     slugify(s).replace(/-/g, '').replace(/[0-9]/g, '');
@@ -95,12 +100,16 @@ function namesLikelyAligned(enName: string, plName: string): boolean {
   const SUB = 3;
   if (a.length >= SUB) {
     for (let i = 0; i <= a.length - SUB; i++) {
-      if (b.includes(a.slice(i, i + SUB))) return true;
+      const sub = a.slice(i, i + SUB);
+      if (SUBSTRING_NOISE.has(sub)) continue;
+      if (b.includes(sub)) return true;
     }
   }
   if (b.length >= SUB) {
     for (let i = 0; i <= b.length - SUB; i++) {
-      if (a.includes(b.slice(i, i + SUB))) return true;
+      const sub = b.slice(i, i + SUB);
+      if (SUBSTRING_NOISE.has(sub)) continue;
+      if (a.includes(sub)) return true;
     }
   }
   return false;

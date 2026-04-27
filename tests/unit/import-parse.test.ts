@@ -159,6 +159,28 @@ describe('classifyRowPair', () => {
     });
     expect(res.issue).toBe<IssueType>('OK');
   });
+
+  it('still aligns Cortisol/Kortyzol via shared internal substring "ort"', () => {
+    const res = classifyRowPair({
+      enRow: { 'test name': 'Cortisol' },
+      plRow: { 'nazwa testu': 'Kortyzol' },
+      seenEnSlugs: new Set(),
+    });
+    expect(res.issue).toBe<IssueType>('OK');
+  });
+
+  it('flags MISALIGNED when only overlap is a generic Polish noun ending', () => {
+    // Real-world false positive: row 54 in the source had EN "Lipoprotein(a)"
+    // paired with PL "Zonulina" — entirely different tests. The naive 3-char
+    // substring fallback matched on "-ina", a common Polish suffix shared by
+    // many unrelated medical terms (witamina, kreatynina, prolaktyna, …).
+    const res = classifyRowPair({
+      enRow: { 'test name': 'Lipoprotein(a)' },
+      plRow: { 'nazwa testu': 'Zonulina' },
+      seenEnSlugs: new Set(),
+    });
+    expect(res.issue).toBe<IssueType>('MISALIGNED');
+  });
 });
 
 describe('buildReconcileRows', () => {
