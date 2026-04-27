@@ -17,12 +17,7 @@ via `ogPathForCanonical(pathname, locale)`; legal pages explicitly opt out
 Spec: `docs/superpowers/specs/2026-04-27-symptomatik-og-cards-design.md`.
 Plan: `docs/superpowers/plans/2026-04-27-symptomatik-og-cards.md`.
 
-## 2026-04-27 — OG card generation: 279 PNGs committed
-
-First full run of the `scripts/generate-og-cards.ts` pipeline — all 279 OG
-cards generated and committed to `public/og/`.
-
-**Runtime fixes applied during this task:**
+**Runtime fixes applied during first pipeline run:**
 
 1. **WOFF2 → WOFF font swap** — satori 0.26.0 does not support WOFF2; switched
    `fraunces-latin-600-normal.woff2` and `geist-latin-500-normal.woff2` to

@@ -21,7 +21,7 @@ const ROOT = new URL('..', import.meta.url).pathname;
 const PUBLIC_DIR = join(ROOT, 'public');
 const OG_DIR = join(PUBLIC_DIR, 'og');
 const CACHE_FILE = join(ROOT, 'scripts', '.og-cache.json');
-const TEMPLATE_VERSION = 'v1'; // bump when template changes
+const TEMPLATE_VERSION = 'v1'; // bump when template changes OR @fontsource/fraunces / @fontsource/geist is upgraded (fonts are not hashed in the cache key)
 
 // satori requires WOFF v1 or raw OT/TT — WOFF2 is not supported
 const FRAUNCES_600 = readFileSync(join(ROOT, 'node_modules/@fontsource/fraunces/files/fraunces-latin-600-normal.woff'));
