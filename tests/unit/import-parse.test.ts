@@ -181,6 +181,40 @@ describe('classifyRowPair', () => {
     });
     expect(res.issue).toBe<IssueType>('MISALIGNED');
   });
+
+  it.each([
+    ['PHQ-9 (Patient Health Questionnaire-9)', 'DAST-10 (Drug Abuse Screening Test)'],
+    ['AUDIT (Alcohol Use Disorders Identification Test)', 'EPDS (Edinburgh Postnatal Depression Scale)'],
+    ['C-SSRS Screener (Columbia Suicide Severity Rating Scale)', 'ISI (Insomnia Severity Index)'],
+    ['K10 (Kessler Psychological Distress Scale)', 'AUDIT (Alcohol Use Disorders Identification Test)'],
+    ['PCL-5 (PTSD Checklist for DSM-5)', 'K10 (Kessler Psychological Distress Scale)'],
+    ['DASS-21 (Depression Anxiety Stress Scale)', 'UCLA Loneliness Scale'],
+    ['DASS-21 (Depression Anxiety Stress Scales)', 'ASRS v1.1 (Adult ADHD Self-Report Scale)'],
+    ['OCI-R (Obsessive-Compulsive Inventory-Revised)', 'PHQ-15 (Patient Health Questionnaire-15)'],
+    ['PSQI (Pittsburgh Sleep Quality Index)', 'C-SSRS Screener (Columbia Suicide Severity Rating Scale)'],
+  ])('flags MISALIGNED when leading acronyms differ: %s ↔ %s', (en, pl) => {
+    const res = classifyRowPair({
+      enRow: { 'test name': en },
+      plRow: { 'nazwa testu': pl },
+      seenEnSlugs: new Set(),
+    });
+    expect(res.issue).toBe<IssueType>('MISALIGNED');
+  });
+
+  it.each([
+    ['DHEA-S', 'DHEA-S'],
+    ['ALT', 'ALT'],
+    ['SHBG', 'SHBG'],
+    ['CA 19-9 Tumor Marker', 'CA 19-9'],
+    ['PHQ-A (Patient Health Questionnaire - Adolescent)', 'PHQ-A (Patient Health Questionnaire - Adolescent)'],
+  ])('aligns when both names share the same leading acronym: %s ↔ %s', (en, pl) => {
+    const res = classifyRowPair({
+      enRow: { 'test name': en, 'meta description': '', 'category': '', 'h1 title': '', 'h1_text': '', 'h2_1': 'a', 'h2_1_text': 'a', 'h2_2': 'a', 'h2_2_text': 'a', 'h2_3': 'a', 'h2_3_text': 'a', 'h2_4': 'a', 'h2_4_text': 'a', 'h2_5': 'a', 'h2_5_text': 'a' },
+      plRow: { 'nazwa testu': pl },
+      seenEnSlugs: new Set(),
+    });
+    expect(res.issue).toBe<IssueType>('OK');
+  });
 });
 
 describe('buildReconcileRows', () => {

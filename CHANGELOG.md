@@ -1,5 +1,37 @@
 # Changelog
 
+## 2026-04-27 — EN↔PL alignment audit: fix 11 broken cross-locale links
+
+- **Audit:** Cross-checked all 56 canonical EN↔PL pairs with 3 parallel agents.
+  Found 11 broken cross-locale mappings — all in the Mental Health cluster +
+  the row 54 Lipoprotein(a)/Zonulina case from this morning.
+- **Pattern:** PL files had correct content/titles but their `canonicalSlug`
+  pointed at a DIFFERENT EN test, the result of `namesLikelyAligned`'s 3-char
+  substring fallback firing on generic English tokens like "test", "scale",
+  "scre", "tio" between unrelated psychometric instruments (PHQ-9 ↔ DAST-10,
+  AUDIT ↔ EPDS, K10 ↔ AUDIT, C-SSRS ↔ ISI, OCI-R ↔ PHQ-15, PCL-5 ↔ K10,
+  PSQI ↔ C-SSRS, DASS-21 ↔ UCLA, DASS-21 ↔ ASRS, DAST-10 ↔ EAT-26,
+  Lp(a) ↔ Zonulina).
+- **Heuristic:** `namesLikelyAligned` now extracts the leading acronym (e.g.
+  `PHQ-9`, `AUDIT`, `K10`, `DASS-21`) when both names start with one and
+  enforces an exact match. Falls back to existing prefix/substring logic for
+  non-acronym names (Cortisol/Kortyzol, Ferritin/Ferrytyna, etc.). 14 new unit
+  tests covering the acronym rule both ways. The rule also surfaced 3 pairs
+  the old heuristic was missing — CA-125, CA 19-9, RF — which now correctly
+  generate paired EN+PL MDX (+6 files).
+- **Manual fixes:** 4 broken-but-recoverable pairs (AUDIT, DAST-10, C-SSRS,
+  K10) had correct PL content under a wrong `canonicalSlug`; repointed each
+  to its real EN counterpart. 7 PL-only tests (ASRS, EAT-26, ISI, PHQ-15,
+  EPDS, UCLA, Zonulina) had `canonicalSlug` pointing at unrelated EN
+  instruments; set each to self-canonical so cross-locale links cleanly fall
+  back to `/pl/` home. EN-only tests (PHQ-9, PSQI, OCI-R, PCL-5, DASS-21 ×2,
+  Lipoprotein(a) Heart) likewise lose their phantom PL partners and fall back
+  to `/`.
+- **Prod:** All 112 EN+PL test URLs returned 200 before the fix; full audit
+  table covers 56 canonical pairs (45 correctly aligned + 11 broken now
+  fixed). Tests: 165 Vitest passing (was 151), build clean, 144 pages indexed
+  (was 138).
+
 ## 2026-04-27 — Content reconcile: refusal cells + alignment heuristic
 
 - **Source data:** Replaced 5 LLM-refusal cells in `content-sources/medical-tests.xlsx`

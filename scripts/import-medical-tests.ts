@@ -81,7 +81,27 @@ const META_MAX = 160;
 // matched to "Lipoproteina" purely on the shared "-ina" suffix.
 const SUBSTRING_NOISE = new Set(['ina', 'yna', 'oza', 'owy', 'owa', 'ego']);
 
+// Match a leading uppercase acronym like "AUDIT", "PHQ-9", "DASS-21",
+// "ASRS v1.1", "K10", "CA 19-9". Requires at least 2 leading uppercase chars
+// (first char A-Z, second char A-Z/digit/dash) so single-letter starts like
+// "Cortisol" / "Insulin" / "Estradiol" don't qualify.
+const ACRONYM_LEAD = /^([A-Z][A-Z0-9-]+(?:\s+v?\d+(?:\.\d+)?)?)/;
+
+function leadingAcronym(name: string): string | null {
+  const m = name.trim().match(ACRONYM_LEAD);
+  return m ? m[1].replace(/[\s-]/g, '').toUpperCase() : null;
+}
+
 function namesLikelyAligned(enName: string, plName: string): boolean {
+  // Hard constraint: when BOTH names start with an acronym (e.g. PHQ-9 vs
+  // DAST-10, AUDIT vs EPDS, DASS-21 vs ASRS), those acronyms must match.
+  // Without this, the substring fallback below produces many false positives
+  // across unrelated psychometric instruments that share generic English
+  // tokens like "test", "scale", "screening", "tio", "ent", etc.
+  const enAbbr = leadingAcronym(enName);
+  const plAbbr = leadingAcronym(plName);
+  if (enAbbr && plAbbr) return enAbbr === plAbbr;
+
   const normalize = (s: string) =>
     slugify(s).replace(/-/g, '').replace(/[0-9]/g, '');
   const a = normalize(enName);
