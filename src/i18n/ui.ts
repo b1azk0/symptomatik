@@ -33,6 +33,10 @@ export const ui = {
     'category.relatedHeading': 'Related categories',
     'category.description': 'All {label} tests we currently interpret.',
     'category.metaDescription': '{label} lab tests — ranges, interpretation, and what your results mean.',
+    'og.home.title': 'Understand your health, in plain language.',
+    'og.home.pill': 'Symptomatik',
+    'og.pillar.title': 'Lab results, decoded.',
+    'og.pillar.pill': 'Medical Tests',
   },
   pl: {
     'nav.medicalTests': 'Badania',
@@ -65,6 +69,10 @@ export const ui = {
     'category.relatedHeading': 'Powiązane kategorie',
     'category.description': 'Wszystkie badania z kategorii {label}, które interpretujemy.',
     'category.metaDescription': 'Badania z kategorii {label} — normy, interpretacja, co oznaczają wyniki.',
+    'og.home.title': 'Zrozum swoje zdrowie — prostym językiem.',
+    'og.home.pill': 'Symptomatik',
+    'og.pillar.title': 'Wyniki badań, jasno wyjaśnione.',
+    'og.pillar.pill': 'Badania',
   },
   es: {
     'nav.medicalTests': 'Análisis médicos',
@@ -97,13 +105,15 @@ export const ui = {
     'category.relatedHeading': 'Categorías relacionadas',
     'category.description': 'Todas las pruebas de {label} que interpretamos actualmente.',
     'category.metaDescription': 'Pruebas de {label} — rangos, interpretación y qué significan tus resultados.',
+    'og.home.title': 'Entiende tu salud, en lenguaje claro.',
+    'og.home.pill': 'Symptomatik',
   },
 } as const;
 
 export type UIKey = keyof typeof ui.en;
 
 export function t(locale: Locale, key: UIKey, vars?: Record<string, string>): string {
-  const raw = (ui[locale] as Record<string, string>)[key] ?? ui[defaultLocale][key] ?? key;
+  const raw = (ui[locale] as Record<string, string>)[key] ?? (ui[defaultLocale] as Record<string, string>)[key] ?? key;
   if (!vars) return raw;
   return raw.replace(/\{(\w+)\}/g, (_match, k) => vars[k] ?? '');
 }

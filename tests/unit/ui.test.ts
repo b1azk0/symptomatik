@@ -11,9 +11,17 @@ describe('UI translations', () => {
 
   it('every key has a value in every locale (i18n coverage)', () => {
     const enKeys = Object.keys(ui.en);
+    // Keys intentionally absent in some locales (no page exists yet → falls back to EN via t()).
+    // Format: { locale: Set<keyPrefix> }
+    const intentionallyAbsent: Partial<Record<string, Set<string>>> = {
+      // ES has no medical-tests pillar page yet.
+      es: new Set(['og.pillar.title', 'og.pillar.pill']),
+    };
     for (const locale of locales) {
       const localeKeys = Object.keys(ui[locale]);
+      const absent = intentionallyAbsent[locale] ?? new Set();
       for (const key of enKeys) {
+        if (absent.has(key)) continue;
         expect(localeKeys, `missing "${key}" in ${locale}`).toContain(key);
       }
     }
