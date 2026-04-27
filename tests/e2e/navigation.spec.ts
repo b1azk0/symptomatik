@@ -15,10 +15,9 @@ test('pillar → category → test navigation path (EN)', async ({ page }) => {
   await expect(page.locator('main h1')).toBeVisible();
 });
 
-test('nav "Check Your Lab Results" → pillar (EN)', async ({ page }) => {
+test('nav "Medical Tests" → pillar (EN)', async ({ page }) => {
   await page.goto('/');
-  // The nav link wired in Task 20 — label is "Check Your Lab Results"
-  await page.locator('header nav a', { hasText: /check your lab results/i }).click();
+  await page.locator('header nav a', { hasText: /^medical tests$/i }).click();
   await expect(page).toHaveURL(/\/medical-tests\/?$/);
   await expect(page.locator('main h1')).toContainText(/medical tests/i);
 });

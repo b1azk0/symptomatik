@@ -3,9 +3,10 @@ import { defaultLocale } from './locales';
 
 export const ui = {
   en: {
-    'nav.symptomChecker': 'Symptom Checker',
-    'nav.labResults': 'Check Your Lab Results',
-    'nav.mentalHealth': 'Mental Health Tests',
+    'nav.medicalTests': 'Medical Tests',
+    'nav.mentalHealth': 'Mental Health',
+    'nav.symptoms': 'Symptoms',
+    'nav.tools': 'Tools',
     'nav.calculators': 'Calculators',
     'footer.legal.privacy': 'Privacy Policy',
     'footer.legal.terms': 'Terms of Service',
@@ -34,9 +35,10 @@ export const ui = {
     'category.metaDescription': '{label} lab tests — ranges, interpretation, and what your results mean.',
   },
   pl: {
-    'nav.symptomChecker': 'Sprawdź objawy',
-    'nav.labResults': 'Sprawdź wyniki badań',
-    'nav.mentalHealth': 'Testy zdrowia psychicznego',
+    'nav.medicalTests': 'Badania',
+    'nav.mentalHealth': 'Zdrowie psychiczne',
+    'nav.symptoms': 'Symptomy',
+    'nav.tools': 'Narzędzia',
     'nav.calculators': 'Kalkulatory',
     'footer.legal.privacy': 'Polityka prywatności',
     'footer.legal.terms': 'Warunki korzystania',
@@ -65,9 +67,10 @@ export const ui = {
     'category.metaDescription': 'Badania z kategorii {label} — normy, interpretacja, co oznaczają wyniki.',
   },
   es: {
-    'nav.symptomChecker': 'Verificador de síntomas',
-    'nav.labResults': 'Consulta tus análisis',
-    'nav.mentalHealth': 'Tests de salud mental',
+    'nav.medicalTests': 'Análisis médicos',
+    'nav.mentalHealth': 'Salud mental',
+    'nav.symptoms': 'Síntomas',
+    'nav.tools': 'Herramientas',
     'nav.calculators': 'Calculadoras',
     'footer.legal.privacy': 'Política de privacidad',
     'footer.legal.terms': 'Términos del servicio',

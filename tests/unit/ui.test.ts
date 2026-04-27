@@ -22,11 +22,11 @@ describe('UI translations', () => {
 
 describe('t() helper', () => {
   it('returns the string for the given locale', () => {
-    expect(t('en', 'nav.symptomChecker')).toBe('Symptom Checker');
-    expect(t('pl', 'nav.symptomChecker')).toBe('Sprawdź objawy');
+    expect(t('en', 'nav.symptoms')).toBe('Symptoms');
+    expect(t('pl', 'nav.symptoms')).toBe('Symptomy');
   });
 
-  it('returns EN copy for ES locale (placeholder behaviour — ES translations happen later)', () => {
-    expect(t('es', 'nav.symptomChecker')).toBe('Verificador de síntomas');
+  it('returns ES translation for ES locale', () => {
+    expect(t('es', 'nav.symptoms')).toBe('Síntomas');
   });
 });
