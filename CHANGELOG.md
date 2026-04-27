@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-04-27 — OG cards design spec
+
+Spec for programmatic OG card generation across all public LPs (homes, pillar
+root, category indexes, tests — 279 cards total). Build-time satori → resvg
+pipeline modeled after `blazejmrozinski.com/scripts/generate-covers.ts`,
+adapted to the locked Warm Linen × patient.info visual direction with
+per-category accent + illustration. Spec at
+`docs/superpowers/specs/2026-04-27-symptomatik-og-cards-design.md`.
+Implementation plan to follow.
+
 ## 2026-04-27 — Phase 3 source-of-truth + 4 new category illustrations
 
 **Two cleanup tasks closing out the day's content work.**
