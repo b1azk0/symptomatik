@@ -99,8 +99,10 @@ Cloudflare Pages is connected to `main` branch. Builds on every push; preview de
 
 **Environment variables (Production and Preview):**
 - `PUBLIC_SITE_URL` — `https://symptomatik.com` (prod) / `https://<branch>.symptomatik.pages.dev` (preview)
-- `PUBLIC_CF_ANALYTICS_TOKEN` — Cloudflare Web Analytics beacon token (fill after enabling Web Analytics)
 - `PUBLIC_GA4_ID` — Google Analytics 4 measurement ID (optional; loads only on user consent)
+
+Cloudflare Web Analytics is enabled via Pages → Settings → Web Analytics
+(auto-injection). No env var or in-app `<script>` is needed.
 
 ## Sources
 

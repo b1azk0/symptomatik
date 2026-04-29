@@ -20,7 +20,6 @@ interface Props {
 
 const { title, description, canonical, alternates, locale, jsonLd, ogImage } = Astro.props as Props;
 const GA4_ID = import.meta.env.PUBLIC_GA4_ID ?? '';
-const CF_ANALYTICS_TOKEN = import.meta.env.PUBLIC_CF_ANALYTICS_TOKEN ?? '';
 
 const homeHref = locale === 'en' ? '/' : `/${locale}/`;
 const privacyHref = buildLegalURL(locale, 'privacy');
@@ -32,14 +31,6 @@ const cookiesHref = buildLegalURL(locale, 'cookies');
 <html lang={locale}>
   <head>
     <SEOHead {title} {description} {canonical} {alternates} {jsonLd} {locale} {ogImage} />
-
-    {CF_ANALYTICS_TOKEN && (
-      <script
-        defer
-        src="https://static.cloudflareinsights.com/beacon.min.js"
-        data-cf-beacon={`{"token": "${CF_ANALYTICS_TOKEN}"}`}
-      />
-    )}
   </head>
   <body class="min-h-screen flex flex-col">
     <header class="border-b border-neutral-200 bg-white">

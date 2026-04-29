@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-04-29 — Analytics: drop manual CF beacon, switch to Pages auto-injection
+
+The Cloudflare Web Analytics beacon was being injected manually from
+`BaseLayout.astro` using `PUBLIC_CF_ANALYTICS_TOKEN`, which had been
+deployed with the placeholder value `"xxx"` — so no traffic was actually
+being recorded. Switched to Cloudflare Pages → Settings → Web Analytics
+auto-injection instead. The manual `<script>` and the env var (including
+the type declaration in `src/env.d.ts`) are removed to avoid double
+beacons.
+
+GSC verified separately by Blazej; no HTML meta tag needed (DNS / Pages
+connector path).
+
+GA4 (`PUBLIC_GA4_ID`) is unchanged: still loaded by `CookieConsent.tsx`
+only after explicit user consent.
+
 ## 2026-04-27 — Housekeeping: preserve in-flight design work + reconciliation xlsx history
 
 Two cleanup commits with no behavior change:
